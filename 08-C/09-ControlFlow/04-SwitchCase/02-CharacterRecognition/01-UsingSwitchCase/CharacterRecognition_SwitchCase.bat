@@ -1,0 +1,5 @@
+cl.exe CharacterRecognition_SwitchCase.c
+
+link.exe CharacterRecognition_SwitchCase.obj
+
+CharacterRecognition_SwitchCase
