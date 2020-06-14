@@ -1,0 +1,5 @@
+cl.exe UserInputDependentIteration.c
+
+link.exe UserInputDependentIteration.obj
+
+UserInputDependentIteration
