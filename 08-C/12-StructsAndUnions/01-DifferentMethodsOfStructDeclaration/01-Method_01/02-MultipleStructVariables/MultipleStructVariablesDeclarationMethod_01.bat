@@ -1,0 +1,5 @@
+cl.exe MultipleStructVariablesDeclarationMethod_01.c
+
+link.exe MultipleStructVariablesDeclarationMethod_01.obj
+
+MultipleStructVariablesDeclarationMethod_01

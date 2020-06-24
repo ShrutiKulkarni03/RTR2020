@@ -1,0 +1,5 @@
+cl.exe Converting2DArrayTo1DArray.c
+
+link.exe Converting2DArrayTo1DArray.obj
+
+Converting2DArrayTo1DArray
