@@ -1,5 +1,0 @@
-cl.exe MathematicalOperations_IfElseIfLadder.c
-
-link.exe MathematicalOperations_IfElseIfLadder.obj
-
-MathematicalOperations_IfElseIfLadder

@@ -1,5 +1,0 @@
-cl.exe IfElseIfLadder_WithOptionalEndingElse.c
-
-link.exe IfElseIfLadder_WithOptionalEndingElse.obj
-
-IfElseIfLadder_WithOptionalEndingElse

@@ -1,5 +1,0 @@
-cl.exe CharacterRecognition_IfElse_And_IfElseIfLadder.c
-
-link.exe CharacterRecognition_IfElse_And_IfElseIfLadder.obj
-
-CharacterRecognition_IfElse_And_IfElseIfLadder

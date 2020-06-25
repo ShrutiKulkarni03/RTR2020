@@ -1,5 +1,0 @@
-cl.exe UserControlledInfiniteLoop.c
-
-link.exe UserControlledInfiniteLoop.obj
-
-UserControlledInfiniteLoop
