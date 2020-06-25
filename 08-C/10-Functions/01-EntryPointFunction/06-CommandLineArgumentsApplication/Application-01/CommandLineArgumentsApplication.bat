@@ -1,0 +1,5 @@
+cl.exe CommandLineArgumentsApplication.c
+
+link.exe CommandLineArgumentsApplication.obj
+
+CommandLineArgumentsApplication

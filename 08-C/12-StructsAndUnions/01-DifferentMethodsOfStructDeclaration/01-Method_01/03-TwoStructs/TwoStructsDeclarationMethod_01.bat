@@ -1,0 +1,5 @@
+cl.exe TwoStructsDeclarationMethod_01.c
+
+link.exe TwoStructsDeclarationMethod_01.obj
+
+TwoStructsDeclarationMethod_01

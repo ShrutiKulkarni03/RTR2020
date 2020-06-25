@@ -1,0 +1,5 @@
+cl.exe SeperateOddAndEvenNumbers.c
+
+link.exe SeperateOddAndEvenNumbers.obj
+
+SeperateOddAndEvenNumbers

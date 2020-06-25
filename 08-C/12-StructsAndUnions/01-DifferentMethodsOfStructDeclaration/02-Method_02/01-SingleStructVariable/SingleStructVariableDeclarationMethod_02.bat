@@ -1,0 +1,5 @@
+cl.exe SingleStructVariableDeclarationMethod_02.c
+
+link.exe SingleStructVariableDeclarationMethod_02.obj
+
+SingleStructVariableDeclarationMethod_02

@@ -1,0 +1,5 @@
+cl.exe ThreeDimensionalIntegerArray.c
+
+link.exe ThreeDimensionalIntegerArray.obj
+
+ThreeDimensionalIntegerArray

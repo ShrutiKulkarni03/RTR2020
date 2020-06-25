@@ -1,0 +1,5 @@
+cl.exe SingleStructVariableInlineInitialization.c
+
+link.exe SingleStructVariableInlineInitialization.obj
+
+SingleStructVariableInlineInitialization
