@@ -1,5 +1,0 @@
-cl.exe InlineInitializationWithPieceMealDisplay.c
-
-link.exe InlineInitializationWithPieceMealDisplay.obj
-
-InlineInitializationWithPieceMealDisplay

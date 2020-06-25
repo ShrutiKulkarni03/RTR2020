@@ -1,5 +1,0 @@
-cl.exe SingleStructVariableDeclarationMethod_04.c
-
-link.exe SingleStructVariableDeclarationMethod_04.obj
-
-SingleStructVariableDeclarationMethod_04

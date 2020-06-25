@@ -1,5 +1,0 @@
-cl.exe IncrementDecrementOperators.c
-
-link.exe IncrementDecrementOperators.obj
-
-IncrementDecrementOperators

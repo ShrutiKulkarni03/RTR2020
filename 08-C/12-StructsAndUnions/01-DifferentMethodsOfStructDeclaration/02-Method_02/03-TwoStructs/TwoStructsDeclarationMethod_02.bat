@@ -1,5 +1,0 @@
-cl.exe TwoStructsDeclarationMethod_02.c
-
-link.exe TwoStructsDeclarationMethod_02.obj
-
-TwoStructsDeclarationMethod_02

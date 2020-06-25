@@ -1,5 +1,0 @@
-cl.exe InlineInitializationWithLoopsDisplay.c
-
-link.exe InlineInitializationWithLoopsDisplay.obj
-
-InlineInitializationWithLoopsDisplay
