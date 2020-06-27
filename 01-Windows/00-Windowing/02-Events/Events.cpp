@@ -65,6 +65,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		MessageBox(hwnd, TEXT("WM_LBUTTONDOWN is recieved"), TEXT("LMB"), MB_OK);
 		break;
 
+	case WM_RBUTTONDOWN:
+		MessageBox(hwnd, TEXT("WM_RBUTTONDOWN is recieved"), TEXT("RMB"), MB_OK);
+		break;
+
 	case WM_KEYDOWN:
 		MessageBox(hwnd, TEXT("WM_KEYDOWN is recieved"), TEXT("Key"), MB_OK);
 		break;
