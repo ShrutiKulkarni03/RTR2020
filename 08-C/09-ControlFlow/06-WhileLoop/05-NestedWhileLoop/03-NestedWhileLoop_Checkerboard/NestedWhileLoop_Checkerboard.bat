@@ -1,0 +1,5 @@
+cl.exe NestedWhileLoop_Checkerboard.c
+
+link.exe NestedWhileLoop_Checkerboard.obj
+
+NestedWhileLoop_Checkerboard
