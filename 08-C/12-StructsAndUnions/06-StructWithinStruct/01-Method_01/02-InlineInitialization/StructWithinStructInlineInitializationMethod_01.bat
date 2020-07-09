@@ -1,0 +1,5 @@
+cl.exe StructWithinStructInlineInitializationMethod_01.c
+
+link.exe StructWithinStructInlineInitializationMethod_01.obj
+
+StructWithinStructInlineInitializationMethod_01

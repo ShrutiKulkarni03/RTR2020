@@ -1,0 +1,5 @@
+cl.exe StructWithinStructDeclarationMethod_02.c
+
+link.exe StructWithinStructDeclarationMethod_02.obj
+
+StructWithinStructDeclarationMethod_02
