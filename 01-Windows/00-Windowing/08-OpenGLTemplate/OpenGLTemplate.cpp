@@ -33,6 +33,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	bool bDone = false;
 	int x, y, width, height;
 
+	if (fopen_s(&gpFile, "SPKLog.txt", "w") != 0)
+	{
+		MessageBox(NULL, TEXT("Cannot Open The Desired File\n"), TEXT("Error\n"), MB_OK);
+		exit(0);
+	}
+	else
+	{
+		fprintf(gpFile, ("Log File Created Successfully, Program Started Successfully!\n"));
+	}
+
 	//code
 	width = GetSystemMetrics(SM_CXSCREEN);
 	height = GetSystemMetrics(SM_CYSCREEN);
@@ -223,6 +233,7 @@ void Uninitialize(void)
 	//code
 	if (gpFile)
 	{
+		fprintf(gpFile, ("Log File Closed Successfully, Program Completed Successfully!\n"));
 		fclose(gpFile);
 		gpFile = NULL;
 	}

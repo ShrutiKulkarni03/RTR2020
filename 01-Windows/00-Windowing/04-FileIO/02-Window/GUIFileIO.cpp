@@ -14,8 +14,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	if (fopen_s(&gpFile, "SPKLog.txt", "w") != 0)
 	{
-		MessageBox(NULL, TEXT("Cannot Open The Desired File"), TEXT("Error"), MB_OK);
+		MessageBox(NULL, TEXT("Cannot Open The Desired File\n"), TEXT("Error"), MB_OK);
 		exit(0);
+	}
+	else
+	{
+		fprintf(gpFile, ("Log File Successfully Created, Program Started Successfully\n"));
 	}
 
 	wndclass.cbSize = sizeof(WNDCLASSEX);
