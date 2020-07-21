@@ -38,7 +38,7 @@ int main(void)
 	printf("\n\nData2\n\n");
 
 	printf("Enter Integer Value for 'i' of 'struct S_Struct data2' : ");
-	scanf("%d", &data3.si);
+	scanf("%d", &data2.si);
 
 	printf("Enter Floating-Point Value for 'f' of 'struct S_Struct data2' : ");
 	scanf("%f", &data2.sf);

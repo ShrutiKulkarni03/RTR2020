@@ -4,7 +4,7 @@
 
 #define MAX_STRING_LENGTH 500
 
-struct Character_Count
+/*struct Character_Count
 {
 	char c;
 	int c_count;
@@ -33,9 +33,13 @@ struct Character_Count
 						{ 'W', 0 },
 						{ 'X', 0 },
 						{ 'Y', 0 },
-						{ 'Z', 0 } };
+						{ 'Z', 0 } };*/
 
-
+struct Character_Count
+{
+	char c;
+	int c_count;
+} *CharacterCount;
 #define SIZE_OF_ENTIRE_ARRAY_OF_STRUCTS sizeof(CharacterCount)
 #define SIZE_OF_ONE_STRUCT_FROM_THE_ARRAY_OF_STRUCTS sizeof(CharacterCount[0])
 #define NUM_ELEMENTS_IN_ARRAY (SIZE_OF_ENTIRE_ARRAY_OF_STRUCTS / SIZE_OF_ONE_STRUCT_FROM_THE_ARRAY_OF_STRUCTS)
@@ -44,7 +48,7 @@ int main(void)
 {
 	char str[MAX_STRING_LENGTH];
 	int s, k, ActualStringLength = 0;
-
+	int count[26] = { 0 };/////pointer conversion
 	printf("\n\nEnter A String : \n");
 	gets_s(str, MAX_STRING_LENGTH);
 	ActualStringLength = strlen(str);
@@ -53,23 +57,42 @@ int main(void)
 	printf("%s\n\n", str);
 
 
-	for (s = 0; s < ActualStringLength; s++)
+	/*for (s = 0; s < ActualStringLength; s++)
 	{
 		for (k = 0; k < NUM_ELEMENTS_IN_ARRAY; k++) 
 		{
 			str[s] = toupper(str[s]);
 
+			
+				
 			if (str[s] == CharacterCount[k].c) 
 				CharacterCount[k].c_count++;
+				
 		}
+	}*/
+	for (s = 0; s < ActualStringLength; s++)
+	{
+		//for (s = 0; s < ActualStringLength; s++)
+		//{
+			if ('A' >= str[s] <= 'Z')// || ('a' >= str[s] <= 'z'))
+			{
+				str[s] = toupper(str[s]);
+				char c = str[s];
+				c = c - 'A';
+				count[c] = count[c] + 1;
+			}
+		//}
 	}
 	
 	printf("\nThe Number Of Occurences Of All Characters From The Alphabet Are : \n\n");
 
-	for (s = 0; s < NUM_ELEMENTS_IN_ARRAY; s++)
+	/*for (s = 0; s < NUM_ELEMENTS_IN_ARRAY; s++)
 	{
 		printf("%c = %d\n", CharacterCount[s].c, CharacterCount[s].c_count);
-	}
+	}*/
+
+	for (s = 0; s < 26; s++)
+		printf("%d", count[s]);
 	
 	getch();
 	return(0);
