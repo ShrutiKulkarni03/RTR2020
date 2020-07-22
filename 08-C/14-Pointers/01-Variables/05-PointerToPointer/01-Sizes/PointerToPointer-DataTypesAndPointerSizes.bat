@@ -1,0 +1,5 @@
+cl.exe PointerToPointer-DataTypesAndPointerSizes.c
+
+link.exe PointerToPointer-DataTypesAndPointerSizes.obj
+
+PointerToPointer-DataTypesAndPointerSizes
