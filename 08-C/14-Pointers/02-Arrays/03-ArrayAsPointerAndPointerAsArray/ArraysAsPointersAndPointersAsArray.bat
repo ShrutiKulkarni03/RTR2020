@@ -1,0 +1,5 @@
+cl.exe ArraysAsPointersAndPointersAsArray.c
+
+link.exe ArraysAsPointersAndPointersAsArray.obj
+
+ArraysAsPointersAndPointersAsArray
