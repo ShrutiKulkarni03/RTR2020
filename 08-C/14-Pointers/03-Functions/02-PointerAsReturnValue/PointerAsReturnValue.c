@@ -21,8 +21,8 @@ int main(void)
 		exit(0);
 	}
 
-	printf("\n\nReplaced String is : \n\n");
-	printf("%s\n", replaced_string);
+	printf("\n\nReplaced String is : \n");
+	printf("%s\n\n", replaced_string);
 
 	if (replaced_string)
 	{
@@ -43,7 +43,7 @@ char* ReplaceVowelWithHash(char* s)
 	int i;
 
 	new_string = (char*)malloc(MyStrlen(s) * sizeof(char));
-	if (new_string = NULL)
+	if (new_string == NULL)
 	{
 		printf("Could not allocate memory for new string!\n");
 		return(NULL);
