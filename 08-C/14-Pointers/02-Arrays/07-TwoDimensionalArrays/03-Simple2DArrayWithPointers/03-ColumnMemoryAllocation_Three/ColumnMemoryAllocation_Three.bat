@@ -1,0 +1,5 @@
+cl.exe ColumnMemoryAllocation_Three.c
+
+link.exe ColumnMemoryAllocation_Three.obj
+
+ColumnMemoryAllocation_Three
