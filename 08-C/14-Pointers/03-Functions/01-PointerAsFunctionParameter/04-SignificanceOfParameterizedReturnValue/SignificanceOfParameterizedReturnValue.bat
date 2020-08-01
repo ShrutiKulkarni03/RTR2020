@@ -1,0 +1,5 @@
+cl.exe SignificanceOfParameterizedReturnValue.c
+
+link.exe SignificanceOfParameterizedReturnValue.obj
+
+SignificanceOfParameterizedReturnValue
