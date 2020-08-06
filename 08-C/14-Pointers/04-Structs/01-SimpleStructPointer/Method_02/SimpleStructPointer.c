@@ -31,9 +31,9 @@ int main(void)
 	}
 
 	//Assigning values
-	(*sData).i = 3;
-	(*sData).f = 15.17;
-	(*sData).d = 7.15173;
+	sData->i = 3;
+	sData->f = 15.17;
+	sData->d = 7.15173;
 
 	//Displaying Values	
 	printf("\n\nData members of 'struct SData' are : \n\n");

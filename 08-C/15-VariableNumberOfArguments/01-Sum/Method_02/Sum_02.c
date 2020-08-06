@@ -11,10 +11,10 @@ int main(void)
 
 	// code
 	
-	ans = CalculateSum(7, 14, 21, 28, 35, 42);
+	ans = CalculateSum(7, 7, 14, 21, 28, 35, 42, 49);
 	printf("\n\nAnswer = %d\n\n", ans);
 
-	ans = CalculateSum(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+	ans = CalculateSum(9, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 	printf("Answer = %d\n\n", ans);
 
 	ans = CalculateSum(0);
