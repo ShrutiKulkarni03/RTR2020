@@ -29,8 +29,8 @@ FILE* gpFile = NULL;
 HDC ghdc = NULL;
 HGLRC ghrc = NULL;
 GLfloat angle = 0.0f;  //initialization
-int vWidth = 800;
-int vHeight = 600;
+int vWidth;
+int vHeight;
 
 
 //WinMain
@@ -161,7 +161,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case 0x46:
-		//case 0x66:
+			//case 0x66:
 			ToggleFullscreen();
 			break;
 
@@ -172,12 +172,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 
 		case 49:
 		case VK_NUMPAD1:
-			glViewport(0, vHeight / 2, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
+			glViewport(0, vHeight/2, vWidth / 2, vHeight / 2);
 			break;
 
 		case 50:
 		case VK_NUMPAD2:
-			glViewport(vWidth / 2, vHeight / 2, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
+			glViewport(vWidth / 2, vHeight / 2, vWidth / 2, vHeight / 2);
 			break;
 
 		case 51:
@@ -202,12 +202,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 
 		case 55:
 		case VK_NUMPAD7:
-			glViewport(0, 0, (GLsizei)vWidth, (GLsizei)vHeight / 2);
+			glViewport(0, vHeight / 2, (GLsizei)vWidth, (GLsizei)vHeight / 2);
 			break;
 
 		case 56:
 		case VK_NUMPAD8:
-			glViewport(0, vHeight / 2, (GLsizei)vWidth, (GLsizei)vHeight / 2);
+			glViewport(0, 0, (GLsizei)vWidth, (GLsizei)vHeight / 2);
 			break;
 
 		case 57:
@@ -323,6 +323,8 @@ void Initialize(void)
 
 void Resize(int width, int height)
 {
+	vWidth = width;
+	vHeight = height;
 	//code
 	if (height == 0)
 		height = 1;
