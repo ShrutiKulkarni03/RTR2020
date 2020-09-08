@@ -1,0 +1,3 @@
+cl.exe CommandlineArguementsOperations.c
+
+link.exe CommandlineArguementsOperations.obj
