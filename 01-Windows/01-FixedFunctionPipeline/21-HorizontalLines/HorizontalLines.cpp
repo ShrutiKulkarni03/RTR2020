@@ -285,6 +285,8 @@ void Resize(int width, int height)
 
 void Display(void)
 {
+	GLfloat y;
+
 	//code
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -306,164 +308,26 @@ void Display(void)
 	
 	glColor3f(0.0f, 1.0f, 0.0f);
 
-	//positive y axis
-
-	glVertex3f(2.5f, 0.0f, 0.0f);	
-	glVertex3f(-2.5f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);	
+	glVertex3f(-1.0f, 0.0f, 0.0f);
 
 	glColor3f(0.0f, 0.0f, 1.0f);
 
-	glVertex3f(2.5f, 0.05f, 0.0f);
-	glVertex3f(-2.5f, 0.05f, 0.0f);
+	//positive y axis horizontal lines
 
-	glVertex3f(2.5f, 0.1f, 0.0f);
-	glVertex3f(-2.5f, 0.1f, 0.0f);
+	for (y = 0.05f; y <= 1.05f; y += 0.05f)
+	{
+		glVertex3f(1.0f, y, 0.0f);
+		glVertex3f(-1.0f, y, 0.0f);
+	}
 
-	glVertex3f(2.5f, 0.15f, 0.0f);
-	glVertex3f(-2.5f, 0.15f, 0.0f);
+	//negative y axis horizontal lines
 
-	glVertex3f(2.5f, 0.2f, 0.0f);
-	glVertex3f(-2.5f, 0.2f, 0.0f);
-
-	glVertex3f(2.5f, 0.25f, 0.0f);
-	glVertex3f(-2.5f, 0.25f, 0.0f);
-
-	glVertex3f(2.5f, 0.3f, 0.0f);
-	glVertex3f(-2.5f, 0.3f, 0.0f);
-
-	glVertex3f(2.5f, 0.35f, 0.0f);
-	glVertex3f(-2.5f, 0.35f, 0.0f);
-
-	glVertex3f(2.5f, 0.4f, 0.0f);
-	glVertex3f(-2.5f, 0.4f, 0.0f);
-
-	glVertex3f(2.5f, 0.45f, 0.0f);
-	glVertex3f(-2.5f, 0.45f, 0.0f);
-
-	glVertex3f(2.5f, 0.5f, 0.0f);
-	glVertex3f(-2.5f, 0.5f, 0.0f);
-
-	glVertex3f(2.5f, 0.55f, 0.0f);
-	glVertex3f(-2.5f, 0.55f, 0.0f);
-
-	glVertex3f(2.5f, 0.6f, 0.0f);
-	glVertex3f(-2.5f, 0.6f, 0.0f);
-
-	glVertex3f(2.5f, 0.65f, 0.0f);
-	glVertex3f(-2.5f, 0.65f, 0.0f);
-
-	glVertex3f(2.5f, 0.7f, 0.0f);
-	glVertex3f(-2.5f, 0.7f, 0.0f);
-
-	glVertex3f(2.5f, 0.75f, 0.0f);
-	glVertex3f(-2.5f, 0.75f, 0.0f);
-
-	glVertex3f(2.5f, 0.8f, 0.0f);
-	glVertex3f(-2.5f, 0.8f, 0.0f);
-
-	glVertex3f(2.5f, 0.85f, 0.0f);
-	glVertex3f(-2.5f, 0.85f, 0.0f);
-
-	glVertex3f(2.5f, 0.9f, 0.0f);
-	glVertex3f(-2.5f, 0.9f, 0.0f);
-
-	glVertex3f(2.5f, 0.95f, 0.0f);
-	glVertex3f(-2.5f, 0.95f, 0.0f);
-
-	glVertex3f(2.5f, 1.0f, 0.0f);
-	glVertex3f(-2.5f, 1.0f, 0.0f);
-
-	glVertex3f(2.5f, 1.05f, 0.0f);
-	glVertex3f(-2.5f, 1.05f, 0.0f);
-
-	glVertex3f(2.5f, 1.1f, 0.0f);
-	glVertex3f(-2.5f, 1.1f, 0.0f);
-
-	glVertex3f(2.5f, 1.15f, 0.0f);
-	glVertex3f(-2.5f, 1.15f, 0.0f);
-
-	glVertex3f(2.5f, 1.2f, 0.0f);
-	glVertex3f(-2.5f, 1.2f, 0.0f);
-
-	glVertex3f(2.5f, 1.25f, 0.0f);
-	glVertex3f(-2.5f, 1.25f, 0.0f);
-
-	//negative y axis
-
-	glVertex3f(2.5f, -0.05f, 0.0f);
-	glVertex3f(-2.5f, -0.05f, 0.0f);
-
-	glVertex3f(2.5f, -0.1f, 0.0f);
-	glVertex3f(-2.5f, -0.1f, 0.0f);
-
-	glVertex3f(2.5f, -0.15f, 0.0f);
-	glVertex3f(-2.5f, -0.15f, 0.0f);
-
-	glVertex3f(2.5f, -0.2f, 0.0f);
-	glVertex3f(-2.5f, -0.2f, 0.0f);
-
-	glVertex3f(2.5f, -0.25f, 0.0f);
-	glVertex3f(-2.5f, -0.25f, 0.0f);
-
-	glVertex3f(2.5f, -0.3f, 0.0f);
-	glVertex3f(-2.5f, -0.3f, 0.0f);
-
-	glVertex3f(2.5f, -0.35f, 0.0f);
-	glVertex3f(-2.5f, -0.35f, 0.0f);
-
-	glVertex3f(2.5f, -0.4f, 0.0f);
-	glVertex3f(-2.5f, -0.4f, 0.0f);
-
-	glVertex3f(2.5f, -0.45f, 0.0f);
-	glVertex3f(-2.5f, -0.45f, 0.0f);
-
-	glVertex3f(2.5f, -0.5f, 0.0f);
-	glVertex3f(-2.5f, -0.5f, 0.0f);
-
-	glVertex3f(2.5f, -0.55f, 0.0f);
-	glVertex3f(-2.5f, -0.55f, 0.0f);
-
-	glVertex3f(2.5f, -0.6f, 0.0f);
-	glVertex3f(-2.5f, -0.6f, 0.0f);
-
-	glVertex3f(2.5f, -0.65f, 0.0f);
-	glVertex3f(-2.5f, -0.65f, 0.0f);
-
-	glVertex3f(2.5f, -0.7f, 0.0f);
-	glVertex3f(-2.5f, -0.7f, 0.0f);
-
-	glVertex3f(2.5f, -0.75f, 0.0f);
-	glVertex3f(-2.5f, -0.75f, 0.0f);
-
-	glVertex3f(2.5f, -0.8f, 0.0f);
-	glVertex3f(-2.5f, -0.8f, 0.0f);
-
-	glVertex3f(2.5f, -0.85f, 0.0f);
-	glVertex3f(-2.5f, -0.85f, 0.0f);
-
-	glVertex3f(2.5f, -0.9f, 0.0f);
-	glVertex3f(-2.5f, -0.9f, 0.0f);
-
-	glVertex3f(2.5f, -0.95f, 0.0f);
-	glVertex3f(-2.5f, -0.95f, 0.0f);
-
-	glVertex3f(2.5f, -1.0f, 0.0f);
-	glVertex3f(-2.5f, -1.0f, 0.0f);
-
-	glVertex3f(2.5f, -1.05f, 0.0f);
-	glVertex3f(-2.5f, -1.05f, 0.0f);
-
-	glVertex3f(2.5f, -1.1f, 0.0f);
-	glVertex3f(-2.5f, -1.1f, 0.0f);
-
-	glVertex3f(2.5f, -1.15f, 0.0f);
-	glVertex3f(-2.5f, -1.15f, 0.0f);
-
-	glVertex3f(2.5f, -1.2f, 0.0f);
-	glVertex3f(-2.5f, -1.2f, 0.0f);
-
-	glVertex3f(2.5f, -1.25f, 0.0f);
-	glVertex3f(-2.5f, -1.25f, 0.0f);
+	for (y = -0.05f; y >= -1.05f; y -= 0.05f)
+	{
+		glVertex3f(1.0f, y, 0.0f);
+		glVertex3f(-1.0f, y, 0.0f);
+	}
 
 
 
