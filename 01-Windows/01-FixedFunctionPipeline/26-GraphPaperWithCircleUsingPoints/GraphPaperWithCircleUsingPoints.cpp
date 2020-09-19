@@ -13,7 +13,7 @@
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
-#define PIE 3.1415
+#define PI 3.1415
 
 //global function declaration
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -361,7 +361,7 @@ void Display(void)
 
 	glColor3f(1.0f, 1.0f, 0.0f);
 
-	for (angle = 0.0f; angle <= 360.0f; angle += 1.5f)
+	for (angle = 0.0f; angle < 2 * PI; angle += 0.05f)
 	{
 		glVertex3f(0.5f * cos(angle), 0.5f * sin(angle), 0.0);
 	}

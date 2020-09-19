@@ -13,7 +13,7 @@
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
-#define PIE 3.1415
+#define PI 3.1415
 
 //global function declaration
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -299,11 +299,11 @@ void Display(void)
 
 	gluLookAt(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
-	glBegin(GL_LINES);	
-
-	glColor3f(0.0f, 0.0f, 1.0f);
+	glBegin(GL_LINES);
 
 	//positive x axis vertical lines
+
+	glColor3f(0.0f, 0.0f, 1.0f);	
 
 	for (x = 0.05f; x <= 1.05f; x += 0.05f)
 	{
@@ -350,25 +350,26 @@ void Display(void)
 
 	glEnd();
 
+	//circle
+
+	glBegin(GL_LINE_LOOP);
+
+	glColor3f(1.0f, 1.0f, 0.0f);
+
+	//for (angle = 0.0f; angle < 360.0f; angle += 0.001f)
+	for (angle = 0.0f; angle <= 2 * PI; angle += 0.01f)
+	{
+		glVertex3f(0.5f * cos(angle), 0.5f * sin(angle), 0.0);
+	}
+
+	glEnd();
+
 	glPointSize(2.0f);
 
 	glBegin(GL_POINTS);
 
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glEnd();
-
-	//circle
-
-	glBegin(GL_LINES);
-
-	glColor3f(1.0f, 1.0f, 0.0f);
-
-	for (angle = 0.0f; angle <= 360.0f; angle += 0.2f)
-	{
-		glVertex3f(0.5f * cos(angle), 0.5f * sin(angle), 0.0);
-	}
 
 	glEnd();
 
