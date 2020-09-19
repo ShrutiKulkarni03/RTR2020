@@ -132,13 +132,17 @@ void ToggleFullscreen(void)
 
 		if (dwStyle & WS_OVERLAPPEDWINDOW)
 		{
-			if (GetWindowPlacement(ghwnd, &wpPrev) && GetMonitorInfo(MonitorFromWindow(ghwnd, MONITORINFOF_PRIMARY), &mi) || EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode))
+			//if (GetWindowPlacement(ghwnd, &wpPrev) && GetMonitorInfo(MonitorFromWindow(ghwnd, MONITORINFOF_PRIMARY), &mi) || EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode))
+			if (GetWindowPlacement(ghwnd, &wpPrev) && GetMonitorInfo(MonitorFromWindow(ghwnd, MONITORINFOF_PRIMARY), &mi))
 			{
+			
 				lpDevMode.dmPelsWidth = 800;
 				lpDevMode.dmPelsHeight = 600;
 				lpDevMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
 
 				dwFlags = CDS_FULLSCREEN;
+
+				EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode);
 
 				SetWindowLong(ghwnd, GWL_STYLE, (dwStyle & ~WS_OVERLAPPEDWINDOW));
 
