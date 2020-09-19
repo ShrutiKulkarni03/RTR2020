@@ -1,5 +1,7 @@
 #include<windows.h>
 #include<WinUser.h>
+#include<stdio.h>
+
 
 //global funtion declaration
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -9,6 +11,7 @@ DWORD dwStyle;
 WINDOWPLACEMENT wpPrev = { sizeof(WINDOWPLACEMENT) };
 bool gbFullscreen = false;
 HWND ghwnd = NULL;
+FILE* gpFile = NULL;
 
 //WinMain
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int iCmdShow)
@@ -20,6 +23,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	MSG msg;
 	TCHAR szAppName[] = TEXT("MyApp");
 	int x, y, width, height;
+
+	if (fopen_s(&gpFile, "RenderLog.txt", "w") != 0)
+	{
+		MessageBox(NULL, TEXT("Cannot Open The Desired File\n"), TEXT("Error"), MB_OK);
+		exit(0);
+	}
+	else
+	{
+		fprintf(gpFile, ("Log File Created Successfully, Program Started Successfully.\n"));
+	}
+
 
 	//code
 	width = GetSystemMetrics(SM_CXSCREEN);
@@ -56,6 +70,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 		hInstance,
 		NULL);
 
+	
 	ghwnd = hwnd;
 
 	ShowWindow(hwnd, iCmdShow);
@@ -107,6 +122,7 @@ void ToggleFullscreen(void)
 	DEVMODE lpDevMode;
 	DWORD dwFlags;
 	LONG CDS;
+	
 
 
 	//code
@@ -116,7 +132,7 @@ void ToggleFullscreen(void)
 
 		if (dwStyle & WS_OVERLAPPEDWINDOW)
 		{
-			if (GetWindowPlacement(ghwnd, &wpPrev) && EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode), &mi)
+			if (GetWindowPlacement(ghwnd, &wpPrev) && GetMonitorInfo(MonitorFromWindow(ghwnd, MONITORINFOF_PRIMARY), &mi) || EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode))
 			{
 				lpDevMode.dmPelsWidth = 800;
 				lpDevMode.dmPelsHeight = 600;
@@ -126,9 +142,18 @@ void ToggleFullscreen(void)
 
 				SetWindowLong(ghwnd, GWL_STYLE, (dwStyle & ~WS_OVERLAPPEDWINDOW));
 
-				//SetWindowPos(ghwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_NOZORDER | SWP_FRAMECHANGED);
+				SetWindowPos(ghwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_NOZORDER | SWP_FRAMECHANGED);
 
 				CDS = ChangeDisplaySettings(&lpDevMode, dwFlags);
+
+				if (CDS == DISP_CHANGE_SUCCESSFUL)
+				{
+					fprintf(gpFile, "CDS Successful!\n");
+				}
+				else
+				{
+					fprintf(gpFile, "CDS Failed!\n");
+				}
 			}
 
 		}
@@ -145,6 +170,15 @@ void ToggleFullscreen(void)
 		SetWindowPlacement(ghwnd, &wpPrev);		
 
 		SetWindowPos(ghwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_FRAMECHANGED);
+
+		if (CDS == DISP_CHANGE_SUCCESSFUL)
+		{
+			fprintf(gpFile, "CDS default window Successfull!\n");
+		}
+		else
+		{
+			fprintf(gpFile, "CDS default window Failed!\n");
+		}
 	
 		ShowCursor(true);
 		gbFullscreen = false;
