@@ -411,8 +411,8 @@ void Update(void)
 
 	cloak_rot += 0.1f;
 
-	if (cloak_rot > 360.0f)
-		cloak_rot = 0.0f;
+	if (cloak_rot > 540.0f)
+		cloak_rot = 540.0f;
 
 	//stone
 
@@ -427,8 +427,8 @@ void Update(void)
 
 	stone_rot += 0.1f;
 
-	if (stone_rot > 360.0f)
-		stone_rot = 0.0f;
+	if (stone_rot > 540.0f)
+		stone_rot = 540.0f;
 
 	//wand
 
