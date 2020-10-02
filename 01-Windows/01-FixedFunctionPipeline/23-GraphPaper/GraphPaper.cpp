@@ -327,7 +327,7 @@ void Display(void)
 
 	//positive y axis horizontal lines
 
-	for (y = 0.05f; y <= 1.05f; y += 0.05f)
+	for (y = 0.05f; y <= 1.3f; y += 0.05f)
 	{
 		glVertex3f(1.0f, y, 0.0f);
 		glVertex3f(-1.0f, y, 0.0f);
