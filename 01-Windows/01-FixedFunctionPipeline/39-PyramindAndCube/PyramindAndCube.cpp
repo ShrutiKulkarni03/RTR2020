@@ -299,8 +299,6 @@ void Resize(int width, int height)
 void Display(void)
 {
 
-	//GLfloat x, y;
-
 	//code
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -310,6 +308,7 @@ void Display(void)
 	gluLookAt(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	glTranslatef(1.0f, 0.0f, 0.0f);
+	glScalef(0.85f, 0.85f, 0.85f);
 	glRotatef(cAngle, 1.0f, 1.0f, 1.0f);
 
 	glBegin(GL_QUADS);
@@ -369,33 +368,35 @@ void Display(void)
 
 	glBegin(GL_TRIANGLES);
 
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.3f, 0.0f);
-	glColor3f(0.0f, 1.0f, 1.0f);
+	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(-0.3f, -0.3f, 0.3f);
-	glColor3f(1.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.3f, -0.3f, 0.3f);
 
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.3f, 0.0f);
-	glColor3f(1.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.3f, -0.3f, 0.3f);
-	glColor3f(0.0f, 1.0f, 1.0f);
+	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.3f, -0.3f, -0.3f);
 
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.3f, 0.0f);
-	glColor3f(0.0f, 1.0f, 1.0f);
+	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.3f, -0.3f, -0.3f);
-	glColor3f(1.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(-0.3f, -0.3f, -0.3f);
 
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.3f, 0.0f);
-	glColor3f(1.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(-0.3f, -0.3f, -0.3f);
-	glColor3f(0.0f, 1.0f, 1.0f);
+	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(-0.3f, -0.3f, 0.3f);
+
+	glEnd();
 
 	glEnd();
 
