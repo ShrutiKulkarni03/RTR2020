@@ -351,7 +351,7 @@ void Display(void)
 
 	glPopMatrix();
 
-	glTranslatef(0.8f, 0.0f, 0.0f);
+	glTranslatef(0.9f, 0.0f, 0.0f);
 
 	glRotatef((GLfloat)elbow, 0.0f, 0.0f, 1.0f);
 
