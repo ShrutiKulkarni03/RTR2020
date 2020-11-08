@@ -32,7 +32,7 @@ HGLRC ghrc = NULL;
 GLfloat pAngle = 0.0f;
 GLfloat cAngle = 0.0f;
 
-GLuint stone_texture;
+GLuint sk_stone_texture;
 
 //WinMain
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int iCmdShow)
@@ -221,7 +221,7 @@ void Initialize(void)
 {
 	//function prototype
 	void Resize(int, int);
-	bool loadGLTexture(GLuint*, TCHAR[]);
+	bool SKloadGLTexture(GLuint*, TCHAR[]);
 
 	//variable declaration
 	PIXELFORMATDESCRIPTOR pfd;
@@ -278,7 +278,7 @@ void Initialize(void)
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	//Loading Textures
-	loadGLTexture(&stone_texture, MAKEINTRESOURCE(STONE_BITMAP));
+	SKloadGLTexture(&sk_stone_texture, MAKEINTRESOURCE(STONE_BITMAP));
 
 	glEnable(GL_TEXTURE_2D);
 
@@ -288,22 +288,22 @@ void Initialize(void)
 	Resize(WIN_WIDTH, WIN_HEIGHT);
 }
 
-bool loadGLTexture(GLuint* texture, TCHAR resourceID[])
+bool SKloadGLTexture(GLuint* texture, TCHAR resourceID[])
 {
 	//variable declaration
 
 	bool bResult = false;
-	HBITMAP hBitmap = NULL;
-	BITMAP bmp;
+	HBITMAP sk_hBitmap = NULL;
+	BITMAP sk_bmp;
 
 	//code
-	hBitmap = (HBITMAP)LoadImage(GetModuleHandle(NULL), resourceID, IMAGE_BITMAP,0,0, LR_CREATEDIBSECTION);    //Load Resource (LR) DIB - Device Independent Bitmap
+	sk_hBitmap = (HBITMAP)LoadImage(GetModuleHandle(NULL), resourceID, IMAGE_BITMAP,0,0, LR_CREATEDIBSECTION);    //Load Resource (LR) DIB - Device Independent Bitmap
 
-	if (hBitmap)
+	if (sk_hBitmap)
 	{
 		bResult = true;
 
-		GetObject(hBitmap, sizeof(BITMAP), &bmp);
+		GetObject(sk_hBitmap, sizeof(BITMAP), &sk_bmp);
 
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -318,9 +318,9 @@ bool loadGLTexture(GLuint* texture, TCHAR resourceID[])
 
 		//PUSHING DATA INTO GRAPHIC MEMORY USING GRAPHIC DRIVER
 
-		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, bmp.bmWidth, bmp.bmHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, bmp.bmBits);
+		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, sk_bmp.bmWidth, sk_bmp.bmHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, sk_bmp.bmBits);
 
-		DeleteObject(hBitmap);
+		DeleteObject(sk_hBitmap);
 
 	}
 
@@ -360,7 +360,7 @@ void Display(void)
 	//glTranslatef(-1.0f, 0.0f, 0.0f);
 	glRotatef(pAngle, 0.0f, 1.0f, 0.0f);
 
-	glBindTexture(GL_TEXTURE_2D, stone_texture);
+	glBindTexture(GL_TEXTURE_2D, sk_stone_texture);
 
 	glBegin(GL_TRIANGLES);
 
@@ -463,7 +463,7 @@ void Uninitialize(void)
 		ShowCursor(true);
 	}
 
-	glDeleteTextures(1, &stone_texture);
+	glDeleteTextures(1, &sk_stone_texture);
 
 	//
 	if (wglGetCurrentContext() == ghrc)

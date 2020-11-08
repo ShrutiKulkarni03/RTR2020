@@ -32,7 +32,7 @@ HGLRC ghrc = NULL;
 GLfloat pAngle = 0.0f;
 GLfloat cAngle = 0.0f;
 
-GLuint kundali_texture;
+GLuint sk_kundali_texture;
 
 //WinMain
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int iCmdShow)
@@ -221,7 +221,7 @@ void Initialize(void)
 {
 	//function prototype
 	void Resize(int, int);
-	bool loadGLTexture(GLuint*, TCHAR[]);
+	bool SKloadGLTexture(GLuint*, TCHAR[]);
 
 	//variable declaration
 	PIXELFORMATDESCRIPTOR pfd;
@@ -278,7 +278,7 @@ void Initialize(void)
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	//Loading Textures
-	loadGLTexture(&kundali_texture, MAKEINTRESOURCE(KUNDALI_BITMAP));
+	SKloadGLTexture(&sk_kundali_texture, MAKEINTRESOURCE(KUNDALI_BITMAP));
 
 	glEnable(GL_TEXTURE_2D);
 
@@ -288,22 +288,22 @@ void Initialize(void)
 	Resize(WIN_WIDTH, WIN_HEIGHT);
 }
 
-bool loadGLTexture(GLuint* texture, TCHAR resourceID[])
+bool SKloadGLTexture(GLuint* texture, TCHAR resourceID[])
 {
 	//variable declaration
 
 	bool bResult = false;
-	HBITMAP hBitmap = NULL;
-	BITMAP bmp;
+	HBITMAP sk_hBitmap = NULL;
+	BITMAP sk_bmp;
 
 	//code
-	hBitmap = (HBITMAP)LoadImage(GetModuleHandle(NULL), resourceID, IMAGE_BITMAP,0,0, LR_CREATEDIBSECTION);    //Load Resource (LR) DIB - Device Independent Bitmap
+	sk_hBitmap = (HBITMAP)LoadImage(GetModuleHandle(NULL), resourceID, IMAGE_BITMAP,0,0, LR_CREATEDIBSECTION);    //Load Resource (LR) DIB - Device Independent Bitmap
 
-	if (hBitmap)
+	if (sk_hBitmap)
 	{
 		bResult = true;
 
-		GetObject(hBitmap, sizeof(BITMAP), &bmp);
+		GetObject(sk_hBitmap, sizeof(BITMAP), &sk_bmp);
 
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -318,9 +318,9 @@ bool loadGLTexture(GLuint* texture, TCHAR resourceID[])
 
 		//PUSHING DATA INTO GRAPHIC MEMORY USING GRAPHIC DRIVER
 
-		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, bmp.bmWidth, bmp.bmHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, bmp.bmBits);
+		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, sk_bmp.bmWidth, sk_bmp.bmHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, sk_bmp.bmBits);
 
-		DeleteObject(hBitmap);
+		DeleteObject(sk_hBitmap);
 
 	}
 
@@ -359,7 +359,7 @@ void Display(void)
 	glRotatef(cAngle, 1.0f, 1.0f, 1.0f);
 	
 	
-	glBindTexture(GL_TEXTURE_2D, kundali_texture);
+	glBindTexture(GL_TEXTURE_2D, sk_kundali_texture);
 
 	glBegin(GL_QUADS);
 
@@ -498,7 +498,7 @@ void Uninitialize(void)
 	}
 
 	
-	glDeleteTextures(1, &kundali_texture);
+	glDeleteTextures(1, &sk_kundali_texture);
 
 	//
 	if (wglGetCurrentContext() == ghrc)
