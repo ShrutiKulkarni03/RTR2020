@@ -1,0 +1,3 @@
+#include "SPK.h"
+
+MYICON ICON Icon.ico
