@@ -374,10 +374,9 @@ void Display(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(0.0f, 0.0f, -0.55f);
+	glTranslatef(0.0f, 0.0f, -6.0);
 
 
-	glScalef(0.3f, 0.3f, 0.3f);
 	glRotatef(pAngle, 0.0f, 1.0f, 0.0f);
 
 	glBegin(GL_TRIANGLES);
@@ -387,47 +386,47 @@ void Display(void)
 	//front face	
 	glNormal3f(0.0f, 0.447214f, 0.894427f);
 
-	glVertex3f(0.0f, 0.3f, 0.0f);	
-	glVertex3f(-0.3f, -0.3f, 0.3f);
-	glVertex3f(0.3f, -0.3f, 0.3f);
+	glVertex3f(0.0f, 1.0f, 0.0f);	
+	glVertex3f(-1.0f, -1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
 
 	//right face
 	glNormal3f(0.894427f, 0.447214f, 0.0f);
 	
-	glVertex3f(0.0f, 0.3f, 0.0f);
-	glVertex3f(0.3f, -0.3f, 0.3f);
-	glVertex3f(0.3f, -0.3f, -0.3f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
 
 	//back face
 	glNormal3f(0.0f, 0.447214f, -0.894427f);
 
-	glVertex3f(0.0f, 0.3f, 0.0f);
-	glVertex3f(0.3f, -0.3f, -0.3f);
-	glVertex3f(-0.3f, -0.3f, -0.3f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
 
 	//left face
 	glNormal3f(-0.894427f, 0.447214f, 0.0f);
 
-	glVertex3f(0.0f, 0.3f, 0.0f);
-	glVertex3f(-0.3f, -0.3f, -0.3f);
-	glVertex3f(-0.3f, -0.3f, 0.3f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
+	glVertex3f(-1.0f, -1.0f, 1.0f);
 
 	glEnd();
 
 
 
-	glBegin(GL_QUADS);
+	/*glBegin(GL_QUADS);
 
 	glColor3f(1.0f, 0.0f, 1.0f);
 
 	glNormal3f(0.0f, -1.0, 0.0f);
 
-	glVertex3f(0.3f, -0.3f, -0.3f);
-	glVertex3f(-0.3f, -0.3f, -0.3f);
-	glVertex3f(-0.3f, -0.3f, 0.3f);
-	glVertex3f(0.3f, -0.3f, 0.3f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
+	glVertex3f(-1.0f, -1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
 
-	glEnd();
+	glEnd();*/
 	
 
 	//normals are calculated by glu library... we don't need to specify normals explicitly
