@@ -273,12 +273,12 @@ void Initialize(void)
 		DestroyWindow(ghwnd);
 	}
 
-	/*glClearDepth(1.0f);
+	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
 	glShadeModel(GL_SMOOTH);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);*/
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	//Loading Textures
 	SKloadGLTexture();
