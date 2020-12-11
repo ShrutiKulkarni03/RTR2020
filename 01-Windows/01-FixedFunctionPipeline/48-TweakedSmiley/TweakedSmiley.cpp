@@ -407,10 +407,10 @@ void Display(void)
 
 		glColor3f(1.0f, 1.0f, 1.0f);
 
-		glTexCoord2f(0.5f, 1.0f);
+		glTexCoord2f(0.5f, 0.5f);
 		glVertex3f(1.0f, 1.0f, 0.0f);
 
-		glTexCoord2f(0.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.5f);
 		glVertex3f(-1.0f, 1.0f, 0.0f);
 
 		glTexCoord2f(0.0f, 0.0f);
