@@ -1,0 +1,7 @@
+#include "Resources.h"
+
+MYICON ICON Icon.ico
+MARBLE_BITMAP BITMAP marble.bmp
+
+
+
