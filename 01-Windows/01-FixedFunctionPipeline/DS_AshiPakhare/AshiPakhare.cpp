@@ -262,7 +262,7 @@ void enqueue(void (*FunctionPointer) (void))
 
 void dequeue(void)
 {
-	front->FunctionPointer();
+	//front->FunctionPointer();
 	front = front->next;
 }
 
@@ -393,6 +393,11 @@ void Initialize(void)
 		PlaySong = true;
 	}
 
+	enqueue(Scene1);
+	enqueue(Scene2);
+	enqueue(Scene3);
+	enqueue(Scene4);
+	enqueue(Scene5);
 
 	Resize(WIN_WIDTH, WIN_HEIGHT);
 }
@@ -483,9 +488,9 @@ void Display(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0f, 0.0, 15.0f, 0.0f, 0.0, 0.0f, 0.0f, 1.0f, 0.0f);     //trials
-	//gluLookAt(0.0f, LookAtTranslateY, 15.0f, 0.0f, LookAtTranslateY, 0.0f, 0.0f, 1.0f, 0.0f);     //MainCamera
-	//gluLookAt(0.0f, 25.0f, 15.0f, 0.0f, 25.0f, 0.0f, 0.0f, 1.0f, 0.0f);   //EndCreditsFrame
+	//gluLookAt(0.0f, 0.0, 15.0f, 0.0f, 0.0, 0.0f, 0.0f, 1.0f, 0.0f);     //trials
+	gluLookAt(0.0f, LookAtTranslateY, 15.0f, 0.0f, LookAtTranslateY, 0.0f, 0.0f, 1.0f, 0.0f);     //MainCamera
+	//gluLookAt(0.0f, 25.0f, 15.0f, 0.0f, 25.0f, 0.0f, 0.0f, 1.0f, 0.0f);  //EndCreditsFrame
 	//gluLookAt(0.0f, 30.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f);    //top view
 
 	glPushMatrix();
@@ -854,49 +859,192 @@ void Display(void)
 	SwapBuffers(ghdc);
 }
 
-void Update(void)
+/*void Update(void)
 {
 
-	enqueue(Scene1);
-	enqueue(Scene2);
-	enqueue(Scene3);
-	enqueue(Scene4);
-	enqueue(Scene5);
-
-
+	
 	Timer += TimerSpeed;
 
 	SunTranslate.Y += SunTranslateSpeed;
 	if (SunTranslate.Y >= 22.0f)
 		SunTranslate.Y = 22.0f;
 
-	dequeue();
-	dequeue();
-	dequeue();
-	dequeue();
+	FadeInQuadAlpha -= FadeInQuadAlphaSpeed;
+	if (FadeInQuadAlpha <= 0.0f)
+	{
+		FadeInQuadAlpha = 0.0f;
+	}
 
+	
 	//Scene5();
 	//Scene4();
 	//Scene3();
 	//Scene2();
 	//Scene1();
 
-}
+}*/
 
-/*void Update(void)
+void Update(void)
 {
 	Timer += TimerSpeed;
 
-
-
 	SunTranslate.Y += SunTranslateSpeed;
-	if (SunTranslate.Y >= 22.0f)
-		SunTranslate.Y = 22.0f;
+	if (SunTranslate.Y >= 50.0f)
+		SunTranslate.Y = 50.0f;
+
+	FadeInQuadAlpha -= FadeInQuadAlphaSpeed;
+	if (FadeInQuadAlpha <= 0.0f)
+	{
+		FadeInQuadAlpha = 0.0f;
+	}
+
+
+	static int SkyGradient = 0;
+
+	switch (SkyGradient)
+	{
+		//Morning to Noon
+
+	case 0:
+
+		SkyMid.R -= SkyColorAnimateSpeed;
+		if (SkyMid.R <= 0.29f)
+		{
+			SkyMid.R = 0.29f;
+		}
+
+		SkyMid.G -= SkyColorAnimateSpeed;
+		if (SkyMid.G <= 0.45f)
+		{
+			SkyMid.G = 0.45f;
+		}
+
+		SkyMid.B -= SkyColorAnimateSpeed;
+		if (SkyMid.B <= 0.63f)
+		{
+			SkyMid.B = 0.63f;
+		}
+
+
+
+		SkyBottom.R -= SkyColorAnimateSpeed;
+		if (SkyBottom.R <= 0.78f)
+		{
+			SkyBottom.R = 0.78f;
+		}
+
+		SkyBottom.G += SkyColorAnimateSpeed;
+		if (SkyBottom.G >= 0.84f)
+		{
+			SkyBottom.G = 0.84f;
+		}
+
+		SkyBottom.B += SkyColorAnimateSpeed;
+		if (SkyBottom.B >= 0.9f)
+		{
+			SkyBottom.B = 0.9f;
+			SkyGradient++;
+		}
+
+		break;
+
+
+		//Noon to Evening
+
+	case 1:
+
+		SkyMid.R += SkyColorAnimateSpeed;
+		if (SkyMid.R >= 0.47f)
+		{
+			SkyMid.R = 0.47f;
+		}
+
+		SkyMid.G += SkyColorAnimateSpeed;
+		if (SkyMid.G >= 0.56f)
+		{
+			SkyMid.G = 0.56f;
+		}
+
+		SkyMid.B += SkyColorAnimateSpeed;
+		if (SkyMid.B >= 0.96f)
+		{
+			SkyMid.B = 0.96f;
+		}
+
+
+
+		SkyBottom.R += SkyColorAnimateSpeed;
+		if (SkyBottom.R >= 0.91f)
+		{
+			SkyBottom.R = 0.91f;
+		}
+
+		SkyBottom.G -= SkyColorAnimateSpeed;
+		if (SkyBottom.G <= 0.73f)
+		{
+			SkyBottom.G = 0.73f;
+		}
+
+		SkyBottom.B -= SkyColorAnimateSpeed;
+		if (SkyBottom.B <= 0.74f)
+		{
+			SkyBottom.B = 0.74f;
+			SkyGradient++;
+		}
+
+		break;
+
+
+		//Evening to Night
+
+	case 2:
+
+		SkyMid.R -= SkyColorAnimateSpeed;
+		if (SkyMid.R <= 0.12f)
+		{
+			SkyMid.R = 0.12f;
+		}
+
+		SkyMid.G -= SkyColorAnimateSpeed;
+		if (SkyMid.G <= 0.17f)
+		{
+			SkyMid.G = 0.17f;
+		}
+
+		SkyMid.B -= SkyColorAnimateSpeed;
+		if (SkyMid.B <= 0.28f)
+		{
+			SkyMid.B = 0.28f;
+		}
+
+
+
+		SkyBottom.R -= SkyColorAnimateSpeed;
+		if (SkyBottom.R <= 0.54f)
+		{
+			SkyBottom.R = 0.54f;
+		}
+
+		SkyBottom.G -= SkyColorAnimateSpeed;
+		if (SkyBottom.G <= 0.58f)
+		{
+			SkyBottom.G = 0.58f;
+		}
+
+		SkyBottom.B -= SkyColorAnimateSpeed;
+		if (SkyBottom.B <= 0.58f)
+		{
+			SkyBottom.B = 0.58f;
+			SkyGradient++;
+		}
+
+		break;
+
+	}
 
 
 	switch (Scene)
 	{
-
 
 		//SCENE 1
 
@@ -904,7 +1052,6 @@ void Update(void)
 
 	case 0:
 
-		//Bird2 (red)
 
 		if (SunTranslate.Y >= 0.0f)
 		{
@@ -912,10 +1059,9 @@ void Update(void)
 			isScene1 = true;
 		}
 
-
 		if (isScene1 == true)
 		{
-
+			//Bird2 (red)
 
 			switch (B2WingsRot)
 			{
@@ -958,88 +1104,85 @@ void Update(void)
 				isBird2Still = true;
 			}
 
-		}
 
-		if (isBird2Still == true)
-		{
-			Bird2WingsRotate = 165.0f;
-		}
-
-
-		//Bird3 (purple)
-
-
-		if (SunTranslate.Y >= 0.0f)
-		{
-			isBird3Still = false;
-		}
-
-
-		if (isBird3Still == false)
-		{
-
-			static int B3WingsRot = 0;
-			switch (B3WingsRot)
+			if (isBird2Still == true)
 			{
-			case 0:
-				Bird3WingsRotate -= BirdsWingsSpeed;
-				if (Bird3WingsRotate <= WingSwingMin)
+				Bird2WingsRotate = 165.0f;
+			}
+
+
+			//Bird3 (purple)
+
+
+			if (SunTranslate.Y >= 0.0f)
+			{
+				isBird3Still = false;
+			}
+
+
+			if (isBird3Still == false)
+			{
+
+				static int B3WingsRot = 0;
+				switch (B3WingsRot)
 				{
-					Bird3WingsRotate = WingSwingMin;
-					B3WingsRot++;
-				}
-				break;
+				case 0:
+					Bird3WingsRotate -= BirdsWingsSpeed;
+					if (Bird3WingsRotate <= WingSwingMin)
+					{
+						Bird3WingsRotate = WingSwingMin;
+						B3WingsRot++;
+					}
+					break;
 
-			case 1:
-				Bird3WingsRotate += BirdsWingsSpeed;
-				if (Bird3WingsRotate >= WingSwingMax)
+				case 1:
+					Bird3WingsRotate += BirdsWingsSpeed;
+					if (Bird3WingsRotate >= WingSwingMax)
+					{
+						Bird3WingsRotate = WingSwingMax;
+						B3WingsRot--;
+					}
+					break;
+				}
+
+				Bird3Translate.X += BirdsTranslateSpeed;
+				if (Bird3Translate.X >= -3.6f)
 				{
-					Bird3WingsRotate = WingSwingMax;
-					B3WingsRot--;
+					Bird3Translate.X = -3.6f;
 				}
-				break;
+
+				Bird3Translate.Y -= BirdsTranslateSpeed - 0.013175f;
+				if (Bird3Translate.Y <= 2.8f)
+				{
+					Bird3Translate.Y = 2.8f;
+					isBird3Still = true;
+					isGirl1Visible = true;
+					isGirl1Still = false;
+					isScene2 = true;
+					Scene++;
+				}
+
+				Bird3Translate.Z -= BirdsTranslateSpeed;
+				if (Bird3Translate.Z <= -0.9f)
+				{
+					Bird3Translate.Z = -0.9f;
+				}
+
 			}
 
-			Bird3Translate.X += BirdsTranslateSpeed;
-			if (Bird3Translate.X >= -3.6f)
+			if (isBird3Still == true)
 			{
-				Bird3Translate.X = -3.6f;
-			}
-
-			Bird3Translate.Y -= BirdsTranslateSpeed - 0.013175f;
-			if (Bird3Translate.Y <= 2.8f)
-			{
-				Bird3Translate.Y = 2.8f;
-				isBird3Still = true;
-				isGirl1Visible = true;
-				isGirl1Still = false;
-				isScene2 = true;
-				Scene++;
-			}
-
-			Bird3Translate.Z -= BirdsTranslateSpeed;
-			if (Bird3Translate.Z <= -0.9f)
-			{
-				Bird3Translate.Z = -0.9f;
+				Bird3WingsRotate = 165.0f;
 			}
 
 		}
 
-		if (isBird3Still == true)
-		{
-			Bird3WingsRotate = 165.0f;
-		}
 		break;
 
 
 
-		
-
-
-
-
+				
 		//SCENE2
-
 
 
 
@@ -1394,7 +1537,10 @@ void Update(void)
 		break;
 
 
+
+
 		//SCENE 3
+
 
 
 	case 2:
@@ -1910,12 +2056,7 @@ void Update(void)
 
 		}
 
-		
-
-		
-
 		break;
-
 
 
 
@@ -1970,7 +2111,7 @@ void Update(void)
 				if (Bird1Translate.Y >= 0.1f)
 				{
 					Bird1Translate.Y = 0.1f;
-					isBird1Still = true;
+					//isBird1Still = true;
 				}
 
 				Bird1Translate.Z -= BirdsTranslateSpeed + 0.004f;
@@ -2179,12 +2320,15 @@ void Update(void)
 					Girl2Translate.X = 2.0f;
 					//isGirl1Still = true;
 					//isGirl1Visible = false;
+					
 				}
 
 				Girl2Translate.Z += GirlsTranslateSpeed + 0.006;
 				if (Girl2Translate.Z >= 15.0f)
 				{
 					Girl2Translate.Z = 15.0f;
+					isScene6 = true;
+					Scene++;
 				}
 
 
@@ -2238,19 +2382,34 @@ void Update(void)
 
 			}
 		}
-
 		
-
-
 		break;
 		
 			
+
+
+		//SCENE 6
+
+
+
+	case 5:
+
+		if (isScene6 == true)
+		{
+			LookAtTranslateY += LookAtTranslateSpeed;
+			if (LookAtTranslateY >= 25.0f)
+			{
+				LookAtTranslateY = 25.0f;
+			}
+		}
+
+		break;
 
 	
 	}
 
 
-}*/
+}
 
 void Uninitialize(void)
 {

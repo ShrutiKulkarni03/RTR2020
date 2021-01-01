@@ -31,7 +31,7 @@ POSITION SunTranslate = { 0.0f, -2.0f, -25.5 };
 
 //SKY
 
-COLOR SkyTop = { 0.38f, 0.55f, 1.0f };
+COLOR SkyTop = { 0.07f, 0.09f, 0.16f };
 COLOR SkyMid = { 0.47f, 0.56f, 0.96f };
 COLOR SkyBottom = { 0.99f, 0.72f, 0.12f };
 
@@ -91,11 +91,11 @@ POSITION Girl2Translate = { 2.0f, -0.2f, 15.0f };
 
 //update() speed variables
 
-GLfloat FadeInQuadAlphaSpeed = 0.1f;
-GLfloat LookAtTranslateSpeed = 0.1f;
+GLfloat FadeInQuadAlphaSpeed = 0.005f;
+GLfloat LookAtTranslateSpeed = 0.05f;
 GLfloat SunTranslateSpeed = 0.01f;
 GLfloat SunColorAnimateSpeed = 0.1f;
-GLfloat SkyColorAnimateSpeed = 0.0001f;
+GLfloat SkyColorAnimateSpeed = 0.0002f;
 GLfloat BirdsTranslateSpeed = 0.02f;
 GLfloat BirdsRotateSpeed = 0.05f;
 GLfloat BirdsWingsSpeed = 3.0f;
@@ -126,10 +126,11 @@ bool isScene2 = false;
 bool isScene3 = false;
 bool isScene4 = false;
 bool isScene5 = false;
+bool isScene6 = false;
 
 GLfloat Timer = -2.0f;
 GLfloat LookAtTranslateY = 0.0f;
-GLfloat FadeInQuadAlpha = 0.0f;
+GLfloat FadeInQuadAlpha = 1.0f;
 GLfloat RiceAlpha = 0.0f;
 
 
@@ -3362,10 +3363,10 @@ void FadeInQuad(void)
 
 	glBegin(GL_QUADS);
 
-	glVertex3f(2.0f, 2.0f, 13.0f);
-	glVertex3f(-2.0f, 2.0f, 13.0f);
-	glVertex3f(-2.0f, -2.0f, 13.0f);
-	glVertex3f(2.0f, -2.0f, 13.0f);
+	glVertex3f(2.0f, 2.0f, 14.0f);
+	glVertex3f(-2.0f, 2.0f, 14.0f);
+	glVertex3f(-2.0f, -2.0f, 14.0f);
+	glVertex3f(2.0f, -2.0f, 14.0f);
 
 	glEnd();
 
@@ -4700,4 +4701,21 @@ void Scene5(void)
 		}
 	}
 }
+
+
+
+
+void Scene6(void)
+{
+	if (isScene6 == true)
+	{
+		LookAtTranslateY += LookAtTranslateSpeed;
+		if (LookAtTranslateY >= 25.0f)
+		{
+			LookAtTranslateY = 25.0f;
+		}
+	}
+}
+
+
 
