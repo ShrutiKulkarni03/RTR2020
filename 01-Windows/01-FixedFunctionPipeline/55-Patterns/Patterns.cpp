@@ -323,6 +323,7 @@ void Display(void)
 
 	glPushMatrix();
 
+	glLineWidth(1.5f);
 	glColor3f(1.0f, 1.0f, 1.0f);
 
 	//1
