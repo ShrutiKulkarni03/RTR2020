@@ -1,0 +1,20 @@
+Description:
+-------------------
+पाखरे जशी काही काळासाठी एकत्र येऊन दाणे टिपून उडून जातात, तसेच माणसे सुधा नात्यांची रंगत संगत वाढवून आपल्या मनावर आठवणी काेरून जातात.
+
+Details:
+------------
+गीत - अशी पाखरे येती
+कवी - मंगेश पाडगावकर
+गायक - सुधीर फडके
+
+Technology Used :
+-----------------------------
+Rendering: OpenGL FFP
+OS: Windows 10
+Language: C++
+
+Backgroud Music:
+-----------------------------
+Ashi Pankhare Yeti
+https://www.youtube.com/watch?v=SGXlaek3-Ds
