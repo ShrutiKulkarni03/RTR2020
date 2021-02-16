@@ -91,7 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	//CreateWindow
 	hwnd = CreateWindowEx(WS_EX_APPWINDOW,
 		szAppName,
-		TEXT("My Application - SHRUTI KULKARNI"),
+		TEXT("FFP Project - SHRUTI KULKARNI"),
 		(WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE),
 		0,
 		0,
