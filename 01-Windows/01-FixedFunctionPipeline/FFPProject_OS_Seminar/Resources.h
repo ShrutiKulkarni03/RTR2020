@@ -3,7 +3,6 @@
 #define MYICON 310
 #define AUDIO 311
 
-#define WINDOW_BITMAP 311
 #define WALL_BITMAP 312
 #define TREE_BARK1_BITMAP 313
 #define TREE_BARK2_BITMAP 314
