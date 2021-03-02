@@ -166,10 +166,12 @@ void CreateWindow(void)
     }
     
     defaultScreen=XDefaultScreen(gpDisplay);
+    
+    gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    //gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
+    
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
