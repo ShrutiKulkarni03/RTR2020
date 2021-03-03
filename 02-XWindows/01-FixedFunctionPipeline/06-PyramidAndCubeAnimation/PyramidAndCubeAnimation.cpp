@@ -3,7 +3,9 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -25,6 +27,9 @@ GLXContext gGLXContext;
 int giWindowWidth=800;
 int giWindowHeight=600;
 
+GLfloat pAngle = 0.0f;
+GLfloat cAngle = 0.0f;
+
 //entry-point function
 int main(void)
 {
@@ -35,6 +40,7 @@ int main(void)
     void Initialize(void);
     void Resize(int, int);
     void Draw(void);
+    void Update(void);
     
     //variable declarations
     int winWidth=giWindowWidth;
@@ -131,6 +137,7 @@ int main(void)
         }
         
         Draw();
+        Update();
     }
     
     Uninitialize();
@@ -149,11 +156,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -171,7 +180,7 @@ void CreateWindow(void)
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+   
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +226,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,10 +273,18 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
 }
 
 
@@ -279,15 +296,132 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
     //code
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glFlush();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    gluLookAt(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    
+    glTranslatef(1.0f, 0.0f, 0.0f);
+    glScalef(0.85f, 0.85f, 0.85f);
+    glRotatef(cAngle, 1.0f, 1.0f, 1.0f);
+    
+    glBegin(GL_QUADS);
+    
+    glColor3f(0.5f, 0.0f, 0.0f);
+    
+    glVertex3f(0.3f, 0.3f, 0.3f);
+    glVertex3f(-0.3f, 0.3f, 0.3f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    glColor3f(0.0f, 1.0f, 0.0f);
+    
+    glVertex3f(0.3f, 0.3f, -0.3f);
+    glVertex3f(0.3f, 0.3f, 0.3f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    
+    glColor3f(0.0f, 0.0f, 1.0f);
+    
+    glVertex3f(-0.3f, 0.3f, -0.3f);
+    glVertex3f(0.3f, 0.3f, -0.3f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    
+    glColor3f(0.0f, 1.0f, 1.0f);
+    
+    glVertex3f(-0.3f, 0.3f, 0.3f);
+    glVertex3f(-0.3f, 0.3f, -0.3f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    
+    glColor3f(1.0f, 0.0f, 1.0f);
+    
+    glVertex3f(0.3f, 0.3f, -0.3f);
+    glVertex3f(-0.3f, 0.3f, -0.3f);
+    glVertex3f(-0.3f, 0.3f, 0.3f);
+    glVertex3f(0.3f, 0.3f, 0.3f);
+    
+    glColor3f(1.0f, 1.0f, 0.0f);
+    
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    
+    glEnd();
+    
+    
+    
+    glLoadIdentity();
+    
+    gluLookAt(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    
+    glTranslatef(-1.0f, 0.0f, 0.0f);
+    glRotatef(pAngle, 0.0f, 1.0f, 0.0f);
+    
+    
+    glBegin(GL_TRIANGLES);
+    
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    
+    glEnd();
+    
+    
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+}
+
+
+void Update(void)
+{
+    pAngle -= 0.1f;
+    if (pAngle >= 360.0f)
+        pAngle = 0.0f;
+    
+    cAngle += 0.1f;
+    if (cAngle >= 360.0f)
+        cAngle = 0.0f;
 }
 
 

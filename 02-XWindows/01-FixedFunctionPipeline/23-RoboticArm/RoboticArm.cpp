@@ -3,7 +3,9 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -25,6 +27,13 @@ GLXContext gGLXContext;
 int giWindowWidth=800;
 int giWindowHeight=600;
 
+GLfloat angle = 0.0f;
+
+int shoulder = 0;
+int elbow = 0;
+
+GLUquadric* quadric = NULL;
+
 //entry-point function
 int main(void)
 {
@@ -35,6 +44,7 @@ int main(void)
     void Initialize(void);
     void Resize(int, int);
     void Draw(void);
+    void Update(void);
     
     //variable declarations
     int winWidth=giWindowWidth;
@@ -80,6 +90,22 @@ int main(void)
                                 ToggleFullscreen();
                                 bFullscreen=false;
                             }
+                            break;
+                            
+                        case XK_S:
+                            shoulder = (shoulder + 3) % 360;
+                            break;
+                            
+                        case XK_s:
+                            shoulder = (shoulder - 3) % 360;
+                            break;
+                            
+                        case XK_E:
+                            elbow = (elbow + 3) % 360;
+                            break;
+                            
+                        case XK_e:
+                            elbow = (elbow - 3) % 360;
                             break;
                         
                         default:
@@ -131,6 +157,7 @@ int main(void)
         }
         
         Draw();
+        Update();
     }
     
     Uninitialize();
@@ -149,11 +176,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -171,7 +200,7 @@ void CreateWindow(void)
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+   
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +246,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,10 +293,18 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
 }
 
 
@@ -279,15 +316,69 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
     //code
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glFlush();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glTranslatef(0.0f, 0.0f, -12.0f);
+    
+    glPushMatrix();
+    
+    glRotatef((GLfloat)shoulder, 0.0f, 0.0f, 1.0f);
+    
+    glTranslatef(1.0f, 0.0f, 0.0f);
+    
+    glPushMatrix();
+    
+    glScalef(2.0f, 0.5f, 1.0f);
+    
+    glColor3f(0.5f, 0.35f, 0.05f);
+    
+    quadric = gluNewQuadric();
+    
+    gluSphere(quadric, 0.5f, 10, 10);
+    
+    glPopMatrix();
+    
+    glTranslatef(0.9f, 0.0f, 0.0f);
+    
+    glRotatef((GLfloat)elbow, 0.0f, 0.0f, 1.0f);
+    
+    glTranslatef(1.0f, 0.0f, 0.0f);
+    
+    glScalef(2.0f, 0.5f, 1.0f);
+    
+    glColor3f(0.5f, 0.35f, 0.05f);
+    
+    quadric = gluNewQuadric();
+    
+    gluSphere(quadric, 0.5f, 10, 10);
+    
+    glPopMatrix();
+    
+    glPopMatrix();
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+}
+
+
+void Update(void)
+{
+   //code
 }
 
 
@@ -295,6 +386,9 @@ void Uninitialize(void)
 {
     //variable declarations
     GLXContext currentGLXContext;
+    
+    
+    gluDeleteQuadric(quadric);
     
     currentGLXContext = glXGetCurrentContext();
     

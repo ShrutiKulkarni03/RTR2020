@@ -3,12 +3,22 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
+
+#include<SOIL/SOIL.h>
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
 #include<X11/XKBlib.h>
 #include<X11/keysym.h>
+
+
+#define CHECK_IMAGE_WIDTH 64
+#define CHECK_IMAGE_HEIGHT 64
+
 
 //namespaces
 using namespace std;
@@ -21,6 +31,18 @@ XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
+GLuint textureID;
+
+GLuint sk_smiley_texture;
+GLuint PressedDigit = 0;
+
+//function prototypes
+void Resize(int, int);
+void LoadBitmapAsTexture(void);
+
+GLubyte CheckImage[CHECK_IMAGE_HEIGHT][CHECK_IMAGE_WIDTH][4];
+
+GLuint TexImage;
 
 int giWindowWidth=800;
 int giWindowHeight=600;
@@ -33,7 +55,7 @@ int main(void)
     void ToggleFullscreen(void);
     void Uninitialize(void);
     void Initialize(void);
-    void Resize(int, int);
+    //void Resize(int, int);
     void Draw(void);
     
     //variable declarations
@@ -82,8 +104,9 @@ int main(void)
                             }
                             break;
                         
+                       
                         default:
-                            break; 
+                            break;
                             
                     }
                     break;
@@ -91,17 +114,7 @@ int main(void)
                 case ButtonPress:
                     switch(event.xbutton.button)
                     {
-                        case 1:
-                            break;
-                            
-                        case 2:
-                            break;
-                            
-                        case 3:
-                            break;
-                            
-                        default:
-                            break;
+                        //code
                     }
                     break;
                     
@@ -131,6 +144,7 @@ int main(void)
         }
         
         Draw();
+        
     }
     
     Uninitialize();
@@ -149,11 +163,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -166,12 +182,10 @@ void CreateWindow(void)
     }
     
     defaultScreen=XDefaultScreen(gpDisplay);
-    
-    gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+    //gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +231,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,10 +278,73 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    //depth
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
+    //Loading Textures
+    LoadBitmapAsTexture();    
+    glEnable(GL_TEXTURE_2D);
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
+}
+
+
+void LoadBitmapAsTexture (void)
+{
+       
+    //Function Prototype
+    
+    void MakeCheckImage(void);
+    
+    //code
+    
+    MakeCheckImage();
+    
+    
+    glGenTextures(1, &TexImage);
+    
+    glBindTexture(GL_TEXTURE_2D, TexImage);
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, CHECK_IMAGE_WIDTH, CHECK_IMAGE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, CheckImage);
+    
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    
+}
+
+
+void MakeCheckImage(void)
+{
+    int i, j, c;
+    
+    for (i = 0; i < CHECK_IMAGE_HEIGHT; i++)
+    {
+        for (j = 0; j < CHECK_IMAGE_WIDTH; j++)
+        {
+            c = ((((i & 0x8) == 0) ^ ((j & 0x8)) == 0)) * 255;
+            
+            CheckImage[i][j][0] = (GLubyte)c;
+            CheckImage[i][j][1] = (GLubyte)c;
+            CheckImage[i][j][2] = (GLubyte)c;
+            CheckImage[i][j][3] = 255;
+            
+        }
+    }
 }
 
 
@@ -279,15 +356,66 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
     //code
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glFlush();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glTranslatef(0.0f, 0.0f, -3.6f);
+    
+    
+    glBegin(GL_QUADS);
+    
+    //glColor3f(0.5f, 0.0f, 0.0f);
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-2.0f, -1.0f, 0.0f);
+    
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-2.0f, 1.0f, 0.0f);
+    
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(0.0f, 1.0f, 0.0f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.0f, -1.0f, 0.0f);
+    
+    glEnd();
+    
+    
+    glBegin(GL_QUADS);
+    
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(1.0f, -1.0f, 0.0f);
+    
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(1.0f, 1.0f, 0.0f);
+    
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(2.41421f, 1.0f, -1.41421f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(2.41421f, -1.0f, -1.41421f);
+    
+    
+    glEnd();
+    
+    
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+    
 }
 
 
@@ -297,6 +425,8 @@ void Uninitialize(void)
     GLXContext currentGLXContext;
     
     currentGLXContext = glXGetCurrentContext();
+    
+
     
     if(currentGLXContext == gGLXContext)
     {

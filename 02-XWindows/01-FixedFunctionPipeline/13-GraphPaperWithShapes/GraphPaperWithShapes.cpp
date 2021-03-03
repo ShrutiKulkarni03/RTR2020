@@ -3,12 +3,17 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+#include<math.h>
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
 #include<X11/XKBlib.h>
 #include<X11/keysym.h>
+
+#define PI 3.1415
 
 //namespaces
 using namespace std;
@@ -25,6 +30,8 @@ GLXContext gGLXContext;
 int giWindowWidth=800;
 int giWindowHeight=600;
 
+GLfloat x, y;
+
 //entry-point function
 int main(void)
 {
@@ -35,6 +42,7 @@ int main(void)
     void Initialize(void);
     void Resize(int, int);
     void Draw(void);
+    void Update(void);
     
     //variable declarations
     int winWidth=giWindowWidth;
@@ -131,6 +139,7 @@ int main(void)
         }
         
         Draw();
+        Update();
     }
     
     Uninitialize();
@@ -149,11 +158,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -171,7 +182,7 @@ void CreateWindow(void)
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+   
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +228,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,10 +275,18 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
 }
 
 
@@ -279,15 +298,209 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
-    //code
-    glClear(GL_COLOR_BUFFER_BIT);
     
-    glFlush();
+    //variable declaration
+    
+    GLfloat x1 = 0.0f;
+    GLfloat x2 = 0.5f;
+    GLfloat x3 = -0.5f;
+    
+    GLfloat y1 = 0.5f;
+    GLfloat y2 = -0.5f;
+    GLfloat y3 = -0.5f;
+    
+    GLfloat rect_x1 = -0.5f;
+    GLfloat rect_x2 = 0.5f;
+    GLfloat rect_y1 = 0.5f;
+    GLfloat rect_y2 = -0.5f;
+    
+    GLfloat in_x, in_y;
+    
+    GLfloat da, db, dc, a, b, c, in_r, ex_r, value, diagonal;
+    GLfloat s;
+    GLfloat angle;
+    
+    
+    //funtion prototype
+    void Graph(void);
+    
+    
+    //code
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    gluLookAt(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+
+	Graph();
+	
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	glLineWidth(2.0f);
+
+	glBegin(GL_LINES);
+	
+
+	//Rectangle
+
+	glVertex3f(0.5f, 0.5f, 0.0f);
+	glVertex3f(-0.5f, 0.5f, 0.0f);
+
+	glVertex3f(-0.5f, 0.5f, 0.0f);
+	glVertex3f(-0.5f, -0.5f, 0.0f);
+
+	glVertex3f(-0.5f, -0.5f, 0.0f);
+	glVertex3f(0.5f, -0.5f, 0.0f);
+
+	glVertex3f(0.5f, -0.5f, 0.0f);
+	glVertex3f(0.5f, 0.5f, 0.0f);
+
+
+	//Triangle
+
+	glVertex3f(0.0f, 0.5f, 0.0f);
+	glVertex3f(-0.5f, -0.5f, 0.0f);
+
+	glVertex3f(-0.5f, -0.5f, 0.0f);
+	glVertex3f(0.5f, -0.5f, 0.0f);
+
+	glVertex3f(0.5f, -0.5f, 0.0f);
+	glVertex3f(0.0f, 0.5f, 0.0f);
+
+	glEnd();
+
+
+	//Incircle
+
+	glBegin(GL_LINE_LOOP);
+
+	da = ((x2 - x3) * (x2 - x3)) + ((y2 - y3) * (y2 - y3));
+	a = sqrt(da);
+
+	db = ((x3 - x1) * (x3 - x1)) + ((y3 - y1) * (y3 - y1));
+	b = sqrt(db);
+
+	dc = ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2));
+	c = sqrt(dc);
+
+	in_x = ((a * x1) + (b * x2) + (c * x3)) / (a + b + c);
+	in_y = ((a * y1) + (b * y2) + (c * y3)) / (a + b + c);
+
+	s = (a + b + c) / 2;
+
+	value = s * (s - a) * (s - b) * (s - c);
+
+	in_r = (sqrt(value))/s;
+
+
+	for (angle = 0.0f; angle <= 2 * PI; angle += 0.01f)
+	{
+		glVertex3f(in_r * cos(angle) + in_x, in_r * sin(angle) + in_y, 0.0);
+	}
+
+	glEnd();
+
+
+	//Outer Circle
+
+	glBegin(GL_LINE_LOOP);
+
+	diagonal = sqrt(((rect_x2 - rect_x1) * (rect_x2 - rect_x1)) + ((rect_y2 - rect_y1) * (rect_y2 - rect_y1)));
+
+	ex_r = diagonal / 2;
+
+	for (angle = 0.0f; angle <= 2 * PI; angle += 0.01f)
+	{
+		glVertex3f(ex_r * cos(angle), ex_r * sin(angle), 0.0);
+	}
+
+	glEnd();
+
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+}
+
+
+void Graph(void)
+{
+	glPointSize(3.0f);
+
+	glBegin(GL_POINTS);
+
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+
+	glEnd();
+
+	glLineWidth(1.0f);
+
+	glBegin(GL_LINES);
+
+	glColor3f(0.0f, 0.0f, 1.0f);
+
+	//positive x axis vertical lines
+
+	for (x = 0.05f; x <= 1.05f; x += 0.05f)
+	{
+		glVertex3f(x, 1.0f, 0.0f);
+		glVertex3f(x, -1.0f, 0.0f);
+	}
+
+	//negative x axis vertical lines
+
+	for (x = -0.05f; x >= -1.05f; x -= 0.05f)
+	{
+		glVertex3f(x, 1.0f, 0.0f);
+		glVertex3f(x, -1.0f, 0.0f);
+	}
+
+	//positive y axis horizontal lines
+
+	for (y = 0.05f; y <= 1.05f; y += 0.05f)
+	{
+		glVertex3f(1.0f, y, 0.0f);
+		glVertex3f(-1.0f, y, 0.0f);
+	}
+
+	//negative y axis horizontal lines
+
+	for (y = -0.05f; y >= -1.05f; y -= 0.05f)
+	{
+		glVertex3f(1.0f, y, 0.0f);
+		glVertex3f(-1.0f, y, 0.0f);
+	}
+
+
+	//Axes
+
+	glColor3f(0.0f, 1.0f, 0.0f);
+
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, -1.0f, 0.0f);
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(-1.0f, 0.0f, 0.0f);
+
+	glEnd();
+
+}
+
+void Update(void)
+{
+   //code
 }
 
 

@@ -3,7 +3,12 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
+
+#include<SOIL/SOIL.h>
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -21,9 +26,23 @@ XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
+GLuint textureID;
+
+GLfloat pAngle = 0.0f;
+GLfloat cAngle = 0.0f;
+
+GLuint stone_texture;
+GLuint kundali_texture;
+
+
+//function prototypes
+void Resize(int, int);
+GLuint LoadBitmapAsTexture(const char *);
+
 
 int giWindowWidth=800;
 int giWindowHeight=600;
+
 
 //entry-point function
 int main(void)
@@ -33,8 +52,9 @@ int main(void)
     void ToggleFullscreen(void);
     void Uninitialize(void);
     void Initialize(void);
-    void Resize(int, int);
+    //void Resize(int, int);
     void Draw(void);
+    void Update(void);
     
     //variable declarations
     int winWidth=giWindowWidth;
@@ -81,9 +101,10 @@ int main(void)
                                 bFullscreen=false;
                             }
                             break;
-                        
-                        default:
-                            break; 
+                                               
+                            
+                        default:                    
+                            break;
                             
                     }
                     break;
@@ -91,17 +112,7 @@ int main(void)
                 case ButtonPress:
                     switch(event.xbutton.button)
                     {
-                        case 1:
-                            break;
-                            
-                        case 2:
-                            break;
-                            
-                        case 3:
-                            break;
-                            
-                        default:
-                            break;
+                        //code
                     }
                     break;
                     
@@ -131,6 +142,7 @@ int main(void)
         }
         
         Draw();
+        Update();
     }
     
     Uninitialize();
@@ -149,11 +161,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -166,12 +180,10 @@ void CreateWindow(void)
     }
     
     defaultScreen=XDefaultScreen(gpDisplay);
-    
-    gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+    //gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +229,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,10 +276,52 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    //depth
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
+    //texture
+    glEnable(GL_TEXTURE_2D);
+    stone_texture = LoadBitmapAsTexture("Stone.bmp");
+    kundali_texture = LoadBitmapAsTexture("Vijay_Kundali.bmp");
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
+}
+
+
+GLuint LoadBitmapAsTexture(const char * path)
+{
+    //variable declarations    
+    int width, height;
+    unsigned char * imageData = NULL;
+    
+    
+    //code
+    imageData = SOIL_load_image(path, &width, &height, NULL, SOIL_LOAD_RGB);
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    
+    glGenTextures(1, &textureID);
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+    
+    SOIL_free_image_data(imageData);
+    
+    return(textureID);
+    
 }
 
 
@@ -279,15 +333,211 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
     //code
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glFlush();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    gluLookAt(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    
+    glTranslatef(1.0f, 0.0f, 0.0f);
+    glScalef(0.85f, 0.85f, 0.85f);
+    glRotatef(cAngle, 1.0f, 1.0f, 1.0f);
+    
+    
+    glBindTexture(GL_TEXTURE_2D, kundali_texture);
+    
+    glBegin(GL_QUADS);
+    
+    //front face
+    
+    //glColor3f(0.5f, 0.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(0.3f, 0.3f, 0.3f);
+    
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-0.3f, 0.3f, 0.3f);
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    //right face
+    
+    //glColor3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(0.3f, 0.3f, -0.3f);
+    
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(0.3f, 0.3f, 0.3f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    
+    //back face
+    
+    //glColor3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(-0.3f, 0.3f, -0.3f);
+    
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(0.3f, 0.3f, -0.3f);
+    
+    //left face
+    
+    //glColor3f(0.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-0.3f, 0.3f, 0.3f);
+    
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(-0.3f, 0.3f, -0.3f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    
+    //top face
+    
+    //glColor3f(1.0f, 0.0f, 1.0f);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(0.3f, 0.3f, -0.3f);
+    
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-0.3f, 0.3f, -0.3f);
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-0.3f, 0.3f, 0.3f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.3f, 0.3f, 0.3f);
+    
+    //bottom face
+    
+    //glColor3f(1.0f, 1.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    
+    
+    glEnd();
+    
+    //pyramid
+    
+    glLoadIdentity();
+    
+    gluLookAt(0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    
+    glTranslatef(-1.0f, 0.0f, 0.0f);
+    glRotatef(pAngle, 0.0f, 1.0f, 0.0f);
+    
+    glBindTexture(GL_TEXTURE_2D, stone_texture);
+    
+    glBegin(GL_TRIANGLES);
+    
+    //front face
+    
+    //glColor3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.5f, 1.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    
+    //glColor3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    
+    //glColor3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    //right face
+    
+    //glColor3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.5f, 1.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    
+    //glColor3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, 0.3f);
+    
+    //glColor3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    
+    //back face
+    
+    //glColor3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.5f, 1.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    
+    //glColor3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(0.3f, -0.3f, -0.3f);
+    
+    //glColor3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    
+    //left face
+    
+    //glColor3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.5f, 1.0f);
+    glVertex3f(0.0f, 0.3f, 0.0f);
+    
+    //glColor3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, -0.3f);
+    
+    //glColor3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(-0.3f, -0.3f, 0.3f);
+    
+    glEnd();
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+    
+}
+
+
+void Update(void)
+{
+    pAngle -= 0.3f;
+    if (pAngle >= 360.0f)
+        pAngle = 0.0f;
+    
+    cAngle += 0.3f;
+    if (cAngle >= 360.0f)
+        cAngle = 0.0f;
 }
 
 
@@ -297,6 +547,9 @@ void Uninitialize(void)
     GLXContext currentGLXContext;
     
     currentGLXContext = glXGetCurrentContext();
+    
+    glDeleteTextures(1, &stone_texture);
+    glDeleteTextures(1, &kundali_texture);
     
     if(currentGLXContext == gGLXContext)
     {

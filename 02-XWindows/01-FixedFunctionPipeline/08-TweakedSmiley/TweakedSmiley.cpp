@@ -3,7 +3,12 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
+
+#include<SOIL/SOIL.h>
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -21,6 +26,16 @@ XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
+GLuint textureID;
+
+GLuint sk_smiley_texture;
+GLuint PressedDigit = 0;
+
+//function prototypes
+void Resize(int, int);
+GLuint LoadBitmapAsTexture(const char *);
+
+GLuint texture_smiley;
 
 int giWindowWidth=800;
 int giWindowHeight=600;
@@ -33,7 +48,7 @@ int main(void)
     void ToggleFullscreen(void);
     void Uninitialize(void);
     void Initialize(void);
-    void Resize(int, int);
+    //void Resize(int, int);
     void Draw(void);
     
     //variable declarations
@@ -82,8 +97,37 @@ int main(void)
                             }
                             break;
                         
+                       
+                        case XK_1:
+                        //case 49:
+                            PressedDigit = 1;
+                            glEnable(GL_TEXTURE_2D);
+                            break;
+                            
+                        //case 98:
+                        case XK_2:
+                        //case 50:
+                            PressedDigit = 2;
+                            glEnable(GL_TEXTURE_2D);
+                            break;
+                            
+                        //case 99:
+                        //case 51:                       
+                        case XK_3:
+                            PressedDigit = 3;
+                            glEnable(GL_TEXTURE_2D);
+                            break;
+                            
+                        //case 100:
+                        //case 52:                       
+                        case XK_4:
+                            PressedDigit = 4;
+                            glEnable(GL_TEXTURE_2D);
+                            break;
+                            
                         default:
-                            break; 
+                            glDisable(GL_TEXTURE_2D);
+                            break;
                             
                     }
                     break;
@@ -91,17 +135,7 @@ int main(void)
                 case ButtonPress:
                     switch(event.xbutton.button)
                     {
-                        case 1:
-                            break;
-                            
-                        case 2:
-                            break;
-                            
-                        case 3:
-                            break;
-                            
-                        default:
-                            break;
+                        //code
                     }
                     break;
                     
@@ -131,6 +165,7 @@ int main(void)
         }
         
         Draw();
+        
     }
     
     Uninitialize();
@@ -149,11 +184,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -166,12 +203,10 @@ void CreateWindow(void)
     }
     
     defaultScreen=XDefaultScreen(gpDisplay);
-    
-    gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+    //gpXVisualInfo=(XVisualInfo *)malloc(sizeof(XVisualInfo));
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +252,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,10 +299,51 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    //depth
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
+    //texture
+    glEnable(GL_TEXTURE_2D);
+    texture_smiley = LoadBitmapAsTexture("Smiley.bmp");
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
+}
+
+
+GLuint LoadBitmapAsTexture(const char * path)
+{
+    //variable declarations    
+    int width, height;
+    unsigned char * imageData = NULL;
+    
+    
+    //code
+    imageData = SOIL_load_image(path, &width, &height, NULL, SOIL_LOAD_RGB);
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    
+    glGenTextures(1, &textureID);
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+    
+    SOIL_free_image_data(imageData);
+    
+    return(textureID);
+    
 }
 
 
@@ -279,15 +355,133 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
     //code
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glFlush();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glTranslatef(0.0f, 0.0f, -5.0f);
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    
+    if (PressedDigit == 1)
+    {
+        glBegin(GL_QUADS);
+        
+        glColor3f(1.0f, 1.0f, 1.0f);
+        
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(1.0f, 1.0f, 0.0f);
+        
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(-1.0f, 1.0f, 0.0f);
+        
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(-1.0f, -1.0f, 0.0f);
+        
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(1.0f, -1.0f, 0.0f);
+        
+        glEnd();
+        
+    }
+    
+    
+    else if (PressedDigit == 2)
+	{
+		glBegin(GL_QUADS);
+
+		glColor3f(1.0f, 1.0f, 1.0f);
+
+		glTexCoord2f(0.5f, 0.5f);
+		glVertex3f(1.0f, 1.0f, 0.0f);
+
+		glTexCoord2f(0.0f, 0.5f);
+		glVertex3f(-1.0f, 1.0f, 0.0f);
+
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+
+		glTexCoord2f(0.5f, 0.0f);
+		glVertex3f(1.0f, -1.0f, 0.0f);
+
+		glEnd();
+
+	}
+	
+	else if (PressedDigit == 3)
+	{
+		glBegin(GL_QUADS);
+
+		glColor3f(1.0f, 1.0f, 1.0f);
+
+		glTexCoord2f(2.0f, 2.0f);
+		glVertex3f(1.0f, 1.0f, 0.0f);
+
+		glTexCoord2f(0.0f, 2.0f);
+		glVertex3f(-1.0f, 1.0f, 0.0f);
+
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+
+		glTexCoord2f(2.0f, 0.0f);
+		glVertex3f(1.0f, -1.0f, 0.0f);
+
+		glEnd();
+
+	}
+	
+	else if (PressedDigit == 4)
+	{
+		glBegin(GL_QUADS);
+
+		glColor3f(1.0f, 1.0f, 1.0f);
+
+		glTexCoord2f(0.5f, 0.5f);
+		glVertex3f(1.0f, 1.0f, 0.0f);
+
+		glTexCoord2f(0.5f, 0.5f);
+		glVertex3f(-1.0f, 1.0f, 0.0f);
+
+		glTexCoord2f(0.5f, 0.5f);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+
+		glTexCoord2f(0.5f, 0.5f);
+		glVertex3f(1.0f, -1.0f, 0.0f);
+
+		glEnd();
+
+	}
+	
+	else
+	{
+		//PressedDigit = 0;
+		glBegin(GL_QUADS);
+
+		glColor3f(1.0f, 1.0f, 1.0f);
+
+		glVertex3f(1.0f, 1.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, 0.0f);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+		glVertex3f(1.0f, -1.0f, 0.0f);
+
+		glEnd();
+	}
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+    
 }
 
 
@@ -297,6 +491,12 @@ void Uninitialize(void)
     GLXContext currentGLXContext;
     
     currentGLXContext = glXGetCurrentContext();
+    
+    if(texture_smiley)
+    {
+        glDeleteTextures(1, &texture_smiley);
+        texture_smiley = 0;
+    }
     
     if(currentGLXContext == gGLXContext)
     {

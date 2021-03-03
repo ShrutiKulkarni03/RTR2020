@@ -3,7 +3,9 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -25,6 +27,11 @@ GLXContext gGLXContext;
 int giWindowWidth=800;
 int giWindowHeight=600;
 
+GLfloat angle = 0.0f;
+int vWidth;
+int vHeight;
+
+
 //entry-point function
 int main(void)
 {
@@ -35,6 +42,7 @@ int main(void)
     void Initialize(void);
     void Resize(int, int);
     void Draw(void);
+    void Update(void);
     
     //variable declarations
     int winWidth=giWindowWidth;
@@ -81,7 +89,57 @@ int main(void)
                                 bFullscreen=false;
                             }
                             break;
+                            
+                        case 48:
+                            glViewport(0, 0, (GLsizei)vWidth, (GLsizei)vHeight);
+                            break;
+                            
+                        case 49:
+                        //case VK_NUMPAD1:
+                            glViewport(0, vHeight/2, vWidth / 2, vHeight / 2);
+                            break;
+                            
+                        case 50:
+                        //case VK_NUMPAD2:
+                            glViewport(vWidth / 2, vHeight / 2, vWidth / 2, vHeight / 2);
+                            break;
+                            
+                        case 51:
+                        //case VK_NUMPAD3:
+                            glViewport(vWidth / 2, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
+                            break;
+                            
+                        case 52:
+                        //case VK_NUMPAD4:
+                            glViewport(0, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
+                            break;
+                            
+                        case 53:
+                        //case VK_NUMPAD5:
+                            glViewport(0, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight);
+                            break;
+                            
+                        case 54:
+                        //case VK_NUMPAD6:
+                            glViewport(vWidth / 2, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight);
+                            break;
+                            
+                        case 55:
+                        //case VK_NUMPAD7:
+                            glViewport(0, vHeight / 2, (GLsizei)vWidth, (GLsizei)vHeight / 2);
+                            break;
                         
+                        case 56:
+                        //case VK_NUMPAD8:
+                            glViewport(0, 0, (GLsizei)vWidth, (GLsizei)vHeight / 2);
+                            break;
+                            
+                        case 57:
+                        //case VK_NUMPAD9:
+                            glViewport(vWidth / 4, vHeight / 4, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
+                            break;
+                            
+                            
                         default:
                             break; 
                             
@@ -131,6 +189,7 @@ int main(void)
         }
         
         Draw();
+        Update();
     }
     
     Uninitialize();
@@ -149,11 +208,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -171,7 +232,7 @@ void CreateWindow(void)
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+   
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +278,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,30 +325,75 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
 }
 
 
 void Resize(int width, int height)
 {
+    
+    vWidth = width;
+    vHeight = height;
+    
     if(height==0)
     {
         height=1;
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
     //code
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glFlush();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glTranslatef(0.0f, 0.0f, -3.0f);
+    
+    glRotatef(angle, 0.0f, 1.0f, 0.0f);
+    
+    glBegin(GL_TRIANGLES);
+    
+    glColor3f(0.0f, 1.0f, 1.0f);
+    glVertex3f(0.0f, 0.5f, 0.0f);
+    
+    glColor3f(1.0f, 0.0f, 1.0f);
+    glVertex3f(-0.5f, -0.5f, 0.0f);
+    
+    glColor3f(1.0f, 1.0f, 0.0f);
+    glVertex3f(0.5f, -0.5f, 0.0f);
+    
+    glEnd();
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+}
+
+
+void Update(void)
+{
+    angle -= 0.5f;
+    if (angle <= -360.0f)
+        angle = 0.0f;
 }
 
 

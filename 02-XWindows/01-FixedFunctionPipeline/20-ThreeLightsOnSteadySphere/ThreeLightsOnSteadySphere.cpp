@@ -3,7 +3,9 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -25,6 +27,38 @@ GLXContext gGLXContext;
 int giWindowWidth=800;
 int giWindowHeight=600;
 
+GLfloat angle = 0.0f;  //initialization
+
+bool bLight = false;
+
+GLfloat LightAmbientZero[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat LightDiffuseZero[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+GLfloat LightSpecularZero[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+GLfloat LightPositionZero[] = { 0.0f, 0.0f, 0.0f, 1.0f };    //positional light
+
+GLfloat LightAmbientOne[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat LightDiffuseOne[] = { 0.0f, 1.0f, 0.0f, 1.0f };
+GLfloat LightSpecularOne[] = { 0.0f, 1.0f, 0.0f, 1.0f };
+GLfloat LightPositionOne[] = { 0.0f, 0.0f, 0.0f, 1.0f };    //positional light
+
+GLfloat LightAmbientTwo[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat LightDiffuseTwo[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+GLfloat LightSpecularTwo[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+GLfloat LightPositionTwo[] = { 0.0f, 0.0f, 0.0f, 1.0f };    //positional light
+
+GLfloat MaterialAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat MaterialDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+GLfloat MaterialSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+GLfloat MaterialShininess = 50.0f;
+
+GLfloat LightAngle0 = 0.0f;
+GLfloat LightAngle1 = 0.0f;
+GLfloat LightAngle2 = 0.0f;
+
+GLUquadric* quadric = NULL;
+
+
+
 //entry-point function
 int main(void)
 {
@@ -35,6 +69,7 @@ int main(void)
     void Initialize(void);
     void Resize(int, int);
     void Draw(void);
+    void Update(void);
     
     //variable declarations
     int winWidth=giWindowWidth;
@@ -79,6 +114,21 @@ int main(void)
                             {
                                 ToggleFullscreen();
                                 bFullscreen=false;
+                            }
+                            break;
+                            
+                        case 'L':
+                        case 'l':
+                            if (bLight == true)
+                            {
+                                glDisable(GL_LIGHTING);
+                                bLight = false;
+                                
+                            }
+                            else
+                            {
+                                glEnable(GL_LIGHTING);
+                                bLight = true;
                             }
                             break;
                         
@@ -131,6 +181,7 @@ int main(void)
         }
         
         Draw();
+        Update();
     }
     
     Uninitialize();
@@ -149,11 +200,13 @@ void CreateWindow(void)
     XSetWindowAttributes winAttribs;
     int defaultScreen;
     int styleMask;
-    static int frameBufferAttributes[] = {GLX_RGBA,              //static is conventional
-                                          GLX_RED_SIZE, 1,
-                                          GLX_GREEN_SIZE, 1,
-                                          GLX_BLUE_SIZE, 1,
-                                          GLX_ALPHA_SIZE, 1,
+    static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
+                                          GLX_RGBA,              //static is conventional
+                                          GLX_RED_SIZE, 8,
+                                          GLX_GREEN_SIZE, 8,
+                                          GLX_BLUE_SIZE, 8,
+                                          GLX_ALPHA_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -171,7 +224,7 @@ void CreateWindow(void)
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+   
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +270,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -264,10 +317,46 @@ void Initialize(void)
     
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
+    //depth
+    
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);    
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
+    
+    //Light Initialization
+    
+    glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbientZero);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuseZero);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecularZero);
+    glEnable(GL_LIGHT0);
+    
+    glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbientOne);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuseOne);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, LightSpecularOne);
+    glEnable(GL_LIGHT1);
+    
+    glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbientTwo);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuseTwo);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, LightSpecularTwo);
+    glEnable(GL_LIGHT2);
+    
+    
+    //Material Initialization
+    
+    glMaterialfv(GL_FRONT, GL_AMBIENT, MaterialAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, MaterialDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, MaterialSpecular);
+    glMaterialf(GL_FRONT, GL_SHININESS, MaterialShininess);
+    
     //SetClearColor
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Black
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
 }
 
 
@@ -279,15 +368,98 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
-    //code
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glFlush();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glPushMatrix();
+    
+    gluLookAt(0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    
+    glPushMatrix();
+    
+    
+    
+    glRotatef(LightAngle0, 1.0f, 0.0f, 0.0f);
+    
+    LightPositionZero[1] = LightAngle0;
+    
+    glLightfv(GL_LIGHT0, GL_POSITION, LightPositionZero);
+    
+    glPopMatrix();
+    glPushMatrix();
+    
+    
+    
+    glRotatef(LightAngle1, 0.0f, 1.0f, 0.0f);
+    
+    LightPositionOne[0] = LightAngle1;
+    
+    glLightfv(GL_LIGHT1, GL_POSITION, LightPositionOne);
+    
+    glPopMatrix();
+    glPushMatrix();
+    
+    
+    
+    glRotatef(LightAngle2, 0.0f, 0.0f, 1.0f);
+    
+    LightPositionTwo[0] = LightAngle2;
+    
+    glLightfv(GL_LIGHT2, GL_POSITION, LightPositionTwo);
+    
+    glPopMatrix();
+    //glPushMatrix();
+    
+    
+    glTranslatef(0.0f, 0.0f, -1.0f);
+    
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    
+    quadric = gluNewQuadric();
+    
+    glColor3f(1.0f, 1.0f, 1.0f);
+    gluSphere(quadric, 0.5f, 50, 50);
+    
+    glPopMatrix();
+    
+    
+    glXSwapBuffers(gpDisplay, gWindow);
+}
+
+
+void Update(void)
+{
+    //code
+    
+    LightAngle0 += 0.2f;
+    if (LightAngle0 >= 360.0f)
+	{
+		LightAngle0 = 0.0f;
+	}
+
+	LightAngle1 += 0.2f;
+	if (LightAngle1 >= 360.0f)
+	{
+		LightAngle1 = 0.0f;
+	}
+
+	LightAngle2 += 0.2f;
+	if (LightAngle2 >= 360.0f)
+	{
+		LightAngle2 = 0.0f;
+	}
 }
 
 
@@ -295,6 +467,13 @@ void Uninitialize(void)
 {
     //variable declarations
     GLXContext currentGLXContext;
+    
+    
+    if (quadric)
+    {
+        gluDeleteQuadric(quadric);
+        quadric = NULL;
+    }
     
     currentGLXContext = glXGetCurrentContext();
     

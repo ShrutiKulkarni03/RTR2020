@@ -3,7 +3,9 @@
 #include<stdlib.h>
 #include<memory.h>
 #include<GL/gl.h>
+#include<GL/glu.h>
 #include<GL/glx.h>   //bridging API
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -171,7 +173,7 @@ void CreateWindow(void)
         
     gpXVisualInfo = glXChooseVisual(gpDisplay, defaultScreen, frameBufferAttributes);
         
-    
+   
     if(gpXVisualInfo==NULL)
     {
         printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
@@ -217,7 +219,7 @@ void CreateWindow(void)
         exit(1);
     }
     
-    XStoreName(gpDisplay, gWindow, "Bluescreen - Shruti Kulkarni");
+    XStoreName(gpDisplay, gWindow, "My XWindow Assignment - Shruti Kulkarni");
         
     Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, gWindow, &windowManagerDelete, 1);
@@ -268,6 +270,8 @@ void Initialize(void)
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f); //blue
     
     Resize(giWindowWidth, giWindowHeight);
+    
+    
 }
 
 
@@ -279,6 +283,11 @@ void Resize(int width, int height)
     }
     
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
@@ -286,6 +295,24 @@ void Draw(void)
 {
     //code
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glTranslatef(0.0f, 0.0f, -3.0f);
+    
+    glBegin(GL_TRIANGLES);
+    
+    glColor3f(1.0f, 1.0f, 1.0f);      //red
+    glVertex3f(0.0f, 1.0f, 0.0f);     //apex
+    
+    //glColor3f(0.0f, 1.0f, 0.0f);      //green
+    glVertex3f(-1.0f, -1.0f, 0.0f);   //left bottom
+    
+    //glColor3f(0.0f, 0.0f, 1.0f);      //blue
+    glVertex3f(1.0f, -1.0f, 0.0f);    //right bottom
+    
+    glEnd();
     
     glFlush();
 }
