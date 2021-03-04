@@ -204,7 +204,7 @@ void ToggleFullscreen(void)
 		SetWindowLong(ghwnd, GWL_STYLE, (dwStyle | WS_OVERLAPPEDWINDOW));
 		SetWindowPlacement(ghwnd, &wpPrev);
 		SetWindowPos(ghwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_FRAMECHANGED);
-		
+
 		ShowCursor(true);
 		gbFullscreen = false;
 	}
@@ -227,13 +227,14 @@ void Initialize(void)
 	//struct pfd
 	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
 	pfd.nVersion = 1;
-	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	pfd.iPixelType = PFD_TYPE_RGBA;
 	pfd.cColorBits = 32;
 	pfd.cRedBits = 8;
 	pfd.cGreenBits = 8;
 	pfd.cBlueBits = 8;
 	pfd.cAlphaBits = 8;
+	pfd.cDepthBits = 32;
 
 	iPixelFormatIndex = ChoosePixelFormat(ghdc, &pfd);
 
@@ -270,8 +271,6 @@ void Initialize(void)
 		ghrc = NULL;
 		ReleaseDC(ghwnd, ghdc);
 		ghdc = NULL;
-		DestroyWindow(ghwnd);
-		Uninitialize();
 	}
 
 	glShadeModel(GL_SMOOTH);
@@ -346,4 +345,3 @@ void Uninitialize(void)
 		gpFile = NULL;
 	}
 }
-
