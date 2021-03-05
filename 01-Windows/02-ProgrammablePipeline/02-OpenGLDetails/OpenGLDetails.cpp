@@ -360,7 +360,7 @@ void Uninitialize(void)
 	//
 	if (gpFile)
 	{
-		fprintf(gpFile, ("Log File Closed Successfully, Program Completed Successfully.\n"));
+		fprintf(gpFile, ("\nLog File Closed Successfully, Program Completed Successfully.\n"));
 		fclose(gpFile);
 		gpFile = NULL;
 	}
