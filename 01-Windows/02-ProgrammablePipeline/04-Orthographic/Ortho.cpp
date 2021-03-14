@@ -322,7 +322,7 @@ void Initialize(void)
 
 	//provide source code to vertex shader
 	const GLchar *vertexShaderSourceCode =
-		"#version 450" \
+		"#version 450 core" \
 		"\n" \
 		"in vec4 vPosition;" \
 		"uniform mat4 u_mvpMatrix;" \
