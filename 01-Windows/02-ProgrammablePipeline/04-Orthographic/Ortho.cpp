@@ -504,11 +504,21 @@ void Resize(int width, int height)
 
 	if (width <= height)
 	{
-		orthographicProjectionMatrix = ortho(-100.0f, 100.0f, (-100.0f * (height / width)), (100.0f * (height / width)), -100.0f, 100.0f);
+		orthographicProjectionMatrix = ortho(-100.0f,	//field of view 'y' FOVY
+											100.0f,		//field of view 'x' FOVX
+											-100.0f * ((GLfloat)height / (GLfloat)width),
+											100.0f * ((GLfloat)height / (GLfloat)width),
+											-100.0f,	//near
+											100.0f);
 	}
 	else
 	{
-		orthographicProjectionMatrix = ortho(-100.0f, 100.0f, (-100.0f * (width / height)), (100.0f * (width / height)), -100.0f, 100.0f);
+		orthographicProjectionMatrix = ortho(-100.0f * ((GLfloat)width / (GLfloat)height),
+											100.0f * ((GLfloat)width / (GLfloat)height),
+											-100.0f,
+											100.0f,
+											-100.0f,
+											100.0f);
 	}
 }
 
