@@ -44,8 +44,6 @@ FILE* gpFile = NULL;
 HDC ghdc = NULL;
 HGLRC ghrc = NULL;
 
-GLuint vertexShaderObject;
-GLuint fragmentShaderObject;
 GLuint shaderProgramObject;
 
 GLuint vao;                          //vertex array object
@@ -240,6 +238,9 @@ void Initialize(void)
 	//variable declaration
 	PIXELFORMATDESCRIPTOR pfd;
 	int iPixelFormatIndex;
+	GLuint vertexShaderObject;
+	GLuint fragmentShaderObject;
+
 
 	//code
 	ghdc = GetDC(ghwnd);
@@ -583,28 +584,32 @@ void Uninitialize(void)
 		vbo_position = 0;
 	}
 
-	/*****SHADERS*****/
+	/*****SAFE SHADER CLEAN-UP*****/
 
-	//detach vertex shader from shaderprogram object
-	glDetachShader(shaderProgramObject, vertexShaderObject);
+	if (shaderProgramObject)
+	{
+		glUseProgram(shaderProgramObject);
+		GLsizei shaderCount;
+		glGetProgramiv(shaderProgramObject, GL_ATTACHED_SHADERS, &shaderCount);
 
-	//detach fragment shader from shaderprogram object
-	glDetachShader(shaderProgramObject, fragmentShaderObject);
+		GLuint* pShaders = NULL;
+		pShaders = (GLuint*)malloc(sizeof(GLuint) * shaderCount);
 
-	//delete vertex shader object
-	glDeleteShader(vertexShaderObject);
-	vertexShaderObject = 0;
+		glGetAttachedShaders(shaderProgramObject, shaderCount, &shaderCount, pShaders); 
 
-	//delete fragment shader object
-	glDeleteShader(fragmentShaderObject);
-	fragmentShaderObject = 0;
+		for (GLsizei i = 0; i < shaderCount; i++)
+		{
+			glDetachShader(shaderProgramObject, pShaders[i]);
+			glDeleteShader(pShaders[i]);
+			pShaders[i] = 0;
+		}
+		free(pShaders);
 
-	//delete shader program object
-	glDeleteProgram(shaderProgramObject);
-	shaderProgramObject = 0;
+		glDeleteProgram(shaderProgramObject);
+		shaderProgramObject = 0;
+		glUseProgram(0);
 
-	//unlink shader program
-	glUseProgram(0);
+	}
 
 
 
