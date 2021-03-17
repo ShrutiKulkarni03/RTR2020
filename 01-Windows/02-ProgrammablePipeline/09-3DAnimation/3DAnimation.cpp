@@ -45,8 +45,6 @@ FILE* gpFile = NULL;
 HDC ghdc = NULL;
 HGLRC ghrc = NULL;
 
-GLuint vertexShaderObject;
-GLuint fragmentShaderObject;
 GLuint shaderProgramObject;
 
 //vao for pyramid
@@ -254,6 +252,9 @@ void Initialize(void)
 	//variable declaration
 	PIXELFORMATDESCRIPTOR pfd;
 	int iPixelFormatIndex;
+	GLuint vertexShaderObject;
+	GLuint fragmentShaderObject;
+
 
 	//code
 	ghdc = GetDC(ghwnd);
@@ -653,21 +654,23 @@ void Display(void)
 	mat4 modelViewMatrix;
 	mat4 modelViewProjectionMatrix;
 	mat4 translateMatrix;	
-	mat4 rotateMatrix;
+	mat4 rotateXMatrix;
+	mat4 rotateYMatrix;
+	mat4 rotateZMatrix;
 	mat4 scaleMatrix;
 	
 
 	//PYRAMID TRANSFORMATION
 
 	translateMatrix = mat4::identity();	
-	rotateMatrix = mat4::identity();
+	rotateYMatrix = mat4::identity();
 	modelViewMatrix = mat4::identity();
 	modelViewProjectionMatrix = mat4::identity();
 
 	translateMatrix = translate(-1.0f, 0.0f, -3.0f);	
-	rotateMatrix = rotate(pyramidAngle, 0.0f, 1.0f, 0.0f);
+	rotateYMatrix = rotate(pyramidAngle, 0.0f, 1.0f, 0.0f);
 
-	modelViewMatrix = translateMatrix * rotateMatrix;
+	modelViewMatrix = translateMatrix * rotateYMatrix;
 
 	modelViewProjectionMatrix = perspectiveProjectionMatrix * modelViewMatrix;  //pre-multiplication of matrices
 
@@ -687,16 +690,20 @@ void Display(void)
 
 	translateMatrix = mat4::identity();
 	scaleMatrix = mat4::identity();
-	rotateMatrix = mat4::identity();
+	rotateXMatrix = mat4::identity();
+	rotateYMatrix = mat4::identity();
+	rotateZMatrix = mat4::identity();
 	modelViewMatrix = mat4::identity();
 	modelViewProjectionMatrix = mat4::identity();
 
-	translateMatrix = translate(1.0f, 0.0f, -3.0f);	
+	translateMatrix = translate(1.0f, 0.0f, -3.0f);		
 	scaleMatrix = scale(0.45f, 0.45f, 0.45f);
-	rotateMatrix = rotate(cubeAngle, 1.0f, 0.0f, 0.0f);
-	
+	rotateXMatrix = rotate(cubeAngle, 1.0f, 0.0f, 0.0f);
+	rotateYMatrix = rotate(cubeAngle, 0.0f, 1.0f, 0.0f);
+	rotateZMatrix = rotate(cubeAngle, 0.0f, 0.0f, 1.0f);
 
-	modelViewMatrix = translateMatrix * scaleMatrix * rotateMatrix;
+
+	modelViewMatrix = translateMatrix * scaleMatrix * rotateXMatrix * rotateYMatrix * rotateZMatrix;
 
 	modelViewProjectionMatrix = perspectiveProjectionMatrix * modelViewMatrix;
 
@@ -791,28 +798,32 @@ void Uninitialize(void)
 
 
 
-	/*****SHADERS*****/
+	/*****SAFE SHADER CLEAN-UP*****/
 
-	//detach vertex shader from shaderprogram object
-	glDetachShader(shaderProgramObject, vertexShaderObject);
+	if (shaderProgramObject)
+	{
+		glUseProgram(shaderProgramObject);
+		GLsizei shaderCount;
+		glGetProgramiv(shaderProgramObject, GL_ATTACHED_SHADERS, &shaderCount);
 
-	//detach fragment shader from shaderprogram object
-	glDetachShader(shaderProgramObject, fragmentShaderObject);
+		GLuint* pShaders = NULL;
+		pShaders = (GLuint*)malloc(sizeof(GLuint) * shaderCount);
 
-	//delete vertex shader object
-	glDeleteShader(vertexShaderObject);
-	vertexShaderObject = 0;
+		glGetAttachedShaders(shaderProgramObject, shaderCount, &shaderCount, pShaders);
 
-	//delete fragment shader object
-	glDeleteShader(fragmentShaderObject);
-	fragmentShaderObject = 0;
+		for (GLsizei i = 0; i < shaderCount; i++)
+		{
+			glDetachShader(shaderProgramObject, pShaders[i]);
+			glDeleteShader(pShaders[i]);
+			pShaders[i] = 0;
+		}
+		free(pShaders);
 
-	//delete shader program object
-	glDeleteProgram(shaderProgramObject);
-	shaderProgramObject = 0;
+		glDeleteProgram(shaderProgramObject);
+		shaderProgramObject = 0;
+		glUseProgram(0);
 
-	//unlink shader program
-	glUseProgram(0);
+	}
 
 
 
