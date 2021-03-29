@@ -23,6 +23,7 @@ XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
+char keys[26];
 
 int giWindowWidth=800;
 int giWindowHeight=600;
@@ -78,6 +79,13 @@ int main(void)
                             bDone=true;
                             break;
                             
+                    }
+                    
+                    XLookupString((XKeyEvent*)&event, keys, sizeof(keys), NULL, NULL);
+                    
+                    switch(keys[0])
+                    {
+                            
                         case XK_F:
                         case XK_f:
                             if(bFullscreen==false)
@@ -92,19 +100,20 @@ int main(void)
                             }
                             break;
                             
-                        case XK_S:
+                            
+                        case 'S':
                             shoulder = (shoulder + 3) % 360;
                             break;
                             
-                        case XK_s:
+                        case 's':
                             shoulder = (shoulder - 3) % 360;
                             break;
                             
-                        case XK_E:
+                        case 'E':
                             elbow = (elbow + 3) % 360;
                             break;
                             
-                        case XK_e:
+                        case 'e':
                             elbow = (elbow - 3) % 360;
                             break;
                         
