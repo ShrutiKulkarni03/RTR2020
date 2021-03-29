@@ -23,6 +23,7 @@ XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
+char keys[26];
 
 int giWindowWidth=800;
 int giWindowHeight=600;
@@ -78,8 +79,15 @@ int main(void)
                             bDone=true;
                             break;
                             
-                        case XK_F:
-                        case XK_f:
+                    }
+                    
+                    XLookupString((XKeyEvent*)&event, keys, sizeof(keys), NULL, NULL);
+                    
+                    switch(keys[0])
+                    {
+                            
+                        case 'F':
+                        case 'f':
                             if(bFullscreen==false)
                             {
                                 ToggleFullscreen();
