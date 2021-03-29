@@ -23,6 +23,7 @@ XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
+char keys[26];
 
 int giWindowWidth=800;
 int giWindowHeight=600;
@@ -70,14 +71,27 @@ int main(void)
                     
                 case KeyPress:
                     keysym=XkbKeycodeToKeysym(gpDisplay, event.xkey.keycode, 0, 0);
-                    switch(keysym)
+                    
+                    
+                     switch(keysym)
                     {
                         case XK_Escape:
-                            bDone=true;
+                            //bDone=true;
+                            Uninitialize();
+                            exit(0);
                             break;
                             
-                        case XK_F:
-                        case XK_f:
+                        
+                    }
+                                
+                    
+                    //XLookupString(gpDisplay, keys, sizeof(keys), NULL, NULL);
+                    XLookupString((XKeyEvent*)&event, keys, sizeof(keys), NULL, NULL);
+                            
+                    switch(keys[0])
+                    {
+                        case 'F':
+                        case 'f':
                             if(bFullscreen==false)
                             {
                                 ToggleFullscreen();
@@ -90,51 +104,53 @@ int main(void)
                             }
                             break;
                             
-                        case 48:
+                            
+                            
+                        case '0':
                             glViewport(0, 0, (GLsizei)vWidth, (GLsizei)vHeight);
                             break;
                             
-                        case 49:
+                        case '1':
                         //case VK_NUMPAD1:
                             glViewport(0, vHeight/2, vWidth / 2, vHeight / 2);
                             break;
                             
-                        case 50:
+                        case '2':
                         //case VK_NUMPAD2:
                             glViewport(vWidth / 2, vHeight / 2, vWidth / 2, vHeight / 2);
                             break;
                             
-                        case 51:
+                        case '3':
                         //case VK_NUMPAD3:
                             glViewport(vWidth / 2, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
                             break;
                             
-                        case 52:
+                        case '4':
                         //case VK_NUMPAD4:
                             glViewport(0, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
                             break;
                             
-                        case 53:
+                        case '5':
                         //case VK_NUMPAD5:
                             glViewport(0, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight);
                             break;
                             
-                        case 54:
+                        case '6':
                         //case VK_NUMPAD6:
                             glViewport(vWidth / 2, 0, (GLsizei)vWidth / 2, (GLsizei)vHeight);
                             break;
                             
-                        case 55:
+                        case '7':
                         //case VK_NUMPAD7:
                             glViewport(0, vHeight / 2, (GLsizei)vWidth, (GLsizei)vHeight / 2);
                             break;
                         
-                        case 56:
+                        case '8':
                         //case VK_NUMPAD8:
                             glViewport(0, 0, (GLsizei)vWidth, (GLsizei)vHeight / 2);
                             break;
                             
-                        case 57:
+                        case '9':
                         //case VK_NUMPAD9:
                             glViewport(vWidth / 4, vHeight / 4, (GLsizei)vWidth / 2, (GLsizei)vHeight / 2);
                             break;
@@ -374,13 +390,13 @@ void Draw(void)
     
     glBegin(GL_TRIANGLES);
     
-    glColor3f(0.0f, 1.0f, 1.0f);
+    glColor3f(1.0f, 0.0f, 0.0f);
     glVertex3f(0.0f, 0.5f, 0.0f);
     
-    glColor3f(1.0f, 0.0f, 1.0f);
+    glColor3f(0.0f, 1.0f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.0f);
     
-    glColor3f(1.0f, 1.0f, 0.0f);
+    glColor3f(0.0f, 0.0f, 1.0f);
     glVertex3f(0.5f, -0.5f, 0.0f);
     
     glEnd();
