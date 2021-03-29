@@ -86,8 +86,8 @@ int main(void)
                     switch(keys[0])
                     {
                             
-                        case XK_F:
-                        case XK_f:
+                        case 'F':
+                        case 'f':
                             if(bFullscreen==false)
                             {
                                 ToggleFullscreen();
