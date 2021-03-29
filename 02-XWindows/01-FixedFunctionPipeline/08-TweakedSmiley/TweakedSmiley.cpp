@@ -27,6 +27,7 @@ Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
 GLuint textureID;
+char keys[26];
 
 GLuint sk_smiley_texture;
 GLuint PressedDigit = 0;
@@ -76,15 +77,28 @@ int main(void)
                     break;
                     
                 case KeyPress:
+                    
                     keysym=XkbKeycodeToKeysym(gpDisplay, event.xkey.keycode, 0, 0);
+                    
                     switch(keysym)
                     {
                         case XK_Escape:
-                            bDone=true;
+                            //bDone=true;
+                            Uninitialize();
+                            exit(0);
                             break;
                             
-                        case XK_F:
-                        case XK_f:
+                        
+                    }
+                                
+                    
+                    //XLookupString(gpDisplay, keys, sizeof(keys), NULL, NULL);
+                    XLookupString((XKeyEvent*)&event, keys, sizeof(keys), NULL, NULL);
+                            
+                    switch(keys[0])
+                    {
+                        case 'F':
+                        case 'f':
                             if(bFullscreen==false)
                             {
                                 ToggleFullscreen();
@@ -96,31 +110,23 @@ int main(void)
                                 bFullscreen=false;
                             }
                             break;
-                        
-                       
-                        case XK_1:
-                        //case 49:
+                            
+                        case '1':
                             PressedDigit = 1;
                             glEnable(GL_TEXTURE_2D);
                             break;
                             
-                        //case 98:
-                        case XK_2:
-                        //case 50:
+                        case '2':
                             PressedDigit = 2;
                             glEnable(GL_TEXTURE_2D);
                             break;
                             
-                        //case 99:
-                        //case 51:                       
-                        case XK_3:
+                        case '3':
                             PressedDigit = 3;
                             glEnable(GL_TEXTURE_2D);
                             break;
                             
-                        //case 100:
-                        //case 52:                       
-                        case XK_4:
+                        case '4':
                             PressedDigit = 4;
                             glEnable(GL_TEXTURE_2D);
                             break;
@@ -128,9 +134,10 @@ int main(void)
                         default:
                             glDisable(GL_TEXTURE_2D);
                             break;
-                            
                     }
+                    
                     break;
+                    
                     
                 case ButtonPress:
                     switch(event.xbutton.button)
