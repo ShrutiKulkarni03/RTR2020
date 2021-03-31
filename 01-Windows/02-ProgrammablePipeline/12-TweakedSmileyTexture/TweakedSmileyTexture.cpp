@@ -67,7 +67,7 @@ GLfloat texcoord[8];
 GLuint smiley_texture;
 GLuint white_texture;
 UINT PressedDigit = 0;
-bool default_texture = false;
+
 
 
 //WinMain
@@ -216,7 +216,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		default:
-			default_texture = true;
+			PressedDigit = 0;
 			break;
 
 		}
@@ -232,7 +232,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		default:
-			default_texture = true;
 			break;
 		}
 		break;
@@ -722,7 +721,7 @@ void Display(void)
 		texcoord[6] = 0.5f;     //s
 		texcoord[7] = 0.5f;     //t
 	}
-	else if (default_texture == true)
+	else if (PressedDigit == 0)
 	{
 		glBindTexture(GL_TEXTURE_2D, white_texture);
 
