@@ -27,8 +27,6 @@ GLXContext gGLXContext;
 int giWindowWidth=800;
 int giWindowHeight=600;
 
-GLfloat angle = 0.0f;
-
 bool bLight = false;
 
 //LIGHT1 - ambient and spot
@@ -413,7 +411,6 @@ void Resize(int width, int height)
 void Draw(void)
 {
    //code
-	//static GLfloat angle = 0.0f;  //initialization
 	
 	//declaration
 	void drawSpheres(void);
