@@ -1,0 +1,5 @@
+#include "Resources.h"
+
+MYICON ICON Icon.ico
+SMILEY_BITMAP BITMAP Smiley.bmp
+WHITE_BITMAP BITMAP White.bmp

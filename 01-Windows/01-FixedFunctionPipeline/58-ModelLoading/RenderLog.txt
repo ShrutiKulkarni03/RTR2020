@@ -1,0 +1,4 @@
+Log File Created Successfully, Program Started Successfully.
+MonkeyHead LOG file successful.
+gp_vertices->size : 507 gp_texture->size: 556 g_normals: 942 g_face_tri: 968
+Log File Closed Successfully, Program Completed Successfully.
