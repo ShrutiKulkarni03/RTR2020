@@ -502,7 +502,7 @@ void Initialize(void)
 	glGenBuffers(1, &vbo_sphere_elements);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_sphere_elements);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements), sphere_elements, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
 
