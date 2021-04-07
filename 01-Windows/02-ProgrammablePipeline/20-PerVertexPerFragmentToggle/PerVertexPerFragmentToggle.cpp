@@ -61,21 +61,41 @@ GLuint vbo_sphere_elements;
 
 //UNIFORMS
 
-GLuint modelMatrixUniform;
-GLuint viewMatrixUniform;
-GLuint projectionMatrixUniform;
-
 GLuint LKeyPressedUniform;
 
-GLuint lAUniform;
-GLuint lDUniform;
-GLuint lSUniform;
-GLuint lightPositionUniform;
+//PV
 
-GLuint kAUniform;
-GLuint kDUniform;
-GLuint kSUniform;
-GLfloat kShininessUniform;
+GLuint modelMatrixUniformPV;
+GLuint viewMatrixUniformPV;
+GLuint projectionMatrixUniformPV;
+
+GLuint lAUniformPV;
+GLuint lDUniformPV;
+GLuint lSUniformPV;
+GLuint lightPositionUniformPV;
+
+GLuint kAUniformPV;
+GLuint kDUniformPV;
+GLuint kSUniformPV;
+GLfloat kShininessUniformPV;
+
+//PF
+
+GLuint modelMatrixUniformPF;
+GLuint viewMatrixUniformPF;
+GLuint projectionMatrixUniformPF;
+
+GLuint lAUniformPF;
+GLuint lDUniformPF;
+GLuint lSUniformPF;
+GLuint lightPositionUniformPF;
+
+GLuint kAUniformPF;
+GLuint kDUniformPF;
+GLuint kSUniformPF;
+GLfloat kShininessUniformPF;
+
+
 
 
 mat4 perspectiveProjectionMatrix;   //4x4 matrix
@@ -241,8 +261,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 
-		case 'P':
-		case 'p':
+		case 'V':
+		case 'v':
 			pvLighting = true;
 			break;
 
@@ -570,21 +590,21 @@ void Initialize(void)
 	}
 
 	//get uniform location
-	modelMatrixUniform = glGetUniformLocation(shaderProgramObjectPV, "u_model_matrix");
-	viewMatrixUniform = glGetUniformLocation(shaderProgramObjectPV, "u_view_matrix");
-	projectionMatrixUniform = glGetUniformLocation(shaderProgramObjectPV, "u_projection_matrix");
+	modelMatrixUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_model_matrix");
+	viewMatrixUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_view_matrix");
+	projectionMatrixUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_projection_matrix");
 
 	LKeyPressedUniform = glGetUniformLocation(shaderProgramObjectPV, "u_lKeyPressed");
 
-	lAUniform = glGetUniformLocation(shaderProgramObjectPV, "u_lA");
-	lDUniform = glGetUniformLocation(shaderProgramObjectPV, "u_lD");
-	lSUniform = glGetUniformLocation(shaderProgramObjectPV, "u_lS");
-	lightPositionUniform = glGetUniformLocation(shaderProgramObjectPV, "u_light_position");
+	lAUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_lA");
+	lDUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_lD");
+	lSUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_lS");
+	lightPositionUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_light_position");
 
-	kAUniform = glGetUniformLocation(shaderProgramObjectPV, "u_kA");
-	kDUniform = glGetUniformLocation(shaderProgramObjectPV, "u_kD");
-	kSUniform = glGetUniformLocation(shaderProgramObjectPV, "u_kS");
-	kShininessUniform = glGetUniformLocation(shaderProgramObjectPV, "u_materialShininess");
+	kAUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_kA");
+	kDUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_kD");
+	kSUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_kS");
+	kShininessUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_materialShininess");
 
 	
 
@@ -775,21 +795,21 @@ void Initialize(void)
 	}
 
 	//get uniform location
-	modelMatrixUniform = glGetUniformLocation(shaderProgramObjectPF, "u_model_matrix");
-	viewMatrixUniform = glGetUniformLocation(shaderProgramObjectPF, "u_view_matrix");
-	projectionMatrixUniform = glGetUniformLocation(shaderProgramObjectPF, "u_projection_matrix");
+	modelMatrixUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_model_matrix");
+	viewMatrixUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_view_matrix");
+	projectionMatrixUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_projection_matrix");
 
 	LKeyPressedUniform = glGetUniformLocation(shaderProgramObjectPF, "u_lKeyPressed");
 
-	lAUniform = glGetUniformLocation(shaderProgramObjectPF, "u_lA");
-	lDUniform = glGetUniformLocation(shaderProgramObjectPF, "u_lD");
-	lSUniform = glGetUniformLocation(shaderProgramObjectPF, "u_lS");
-	lightPositionUniform = glGetUniformLocation(shaderProgramObjectPF, "u_light_position");
+	lAUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_lA");
+	lDUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_lD");
+	lSUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_lS");
+	lightPositionUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_light_position");
 
-	kAUniform = glGetUniformLocation(shaderProgramObjectPF, "u_kA");
-	kDUniform = glGetUniformLocation(shaderProgramObjectPF, "u_kD");
-	kSUniform = glGetUniformLocation(shaderProgramObjectPF, "u_kS");
-	kShininessUniform = glGetUniformLocation(shaderProgramObjectPF, "u_materialShininess");
+	kAUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_kA");
+	kDUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_kD");
+	kSUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_kS");
+	kShininessUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_materialShininess");
 
 
 
@@ -875,33 +895,69 @@ void Display(void)
 
 	if (bLight == true)
 	{
-		GLfloat lightPosition[] = { 100.0f, 100.0f, 100.0f, 1.0f };
+		if (pvLighting == true)
+		{
+			GLfloat lightPosition[] = { 100.0f, 100.0f, 100.0f, 1.0f };
 
-		glUniform1i(LKeyPressedUniform, 1);
+			glUniform1i(LKeyPressedUniform, 1);
 
-		///****GOURAUD****/
+			///****GOURAUD****/
 
-		//glUniform3f(lAUniform, 0.0f, 0.0f, 0.0f);
-		//glUniform3f(lDUniform, 1.0f, 1.0f, 1.0f);
-		//glUniform3f(lSUniform, 1.0f, 1.0f, 1.0f);
-		//glUniform4fv(lightPositionUniform, 1, (GLfloat*)lightPosition);
+			//glUniform3f(lAUniform, 0.0f, 0.0f, 0.0f);
+			//glUniform3f(lDUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform3f(lSUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform4fv(lightPositionUniform, 1, (GLfloat*)lightPosition);
 
-		//glUniform3f(kAUniform, 0.0f, 0.0f, 0.0f);
-		//glUniform3f(kDUniform, 1.0f, 1.0f, 1.0f);
-		//glUniform3f(kSUniform, 1.0f, 1.0f, 1.0f);
-		//glUniform1f(kShininessUniform, 50.0);
+			//glUniform3f(kAUniform, 0.0f, 0.0f, 0.0f);
+			//glUniform3f(kDUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform3f(kSUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform1f(kShininessUniform, 50.0);
 
-		/****ALBEDO****/
+			/****ALBEDO****/
+
+			glUniform3f(lAUniformPV, 0.1f, 0.1f, 0.1f);
+			glUniform3f(lDUniformPV, 1.0f, 1.0f, 1.0f);
+			glUniform3f(lSUniformPV, 1.0f, 1.0f, 1.0f);
+			glUniform4fv(lightPositionUniformPV, 1, (GLfloat*)lightPosition);
+
+			glUniform3f(kAUniformPV, 0.0f, 0.0f, 0.0f);
+			glUniform3f(kDUniformPV, 0.5f, 0.2f, 0.7f);
+			glUniform3f(kSUniformPV, 0.7f, 0.7f, 0.7f);
+			glUniform1f(kShininessUniformPV, 128.0);
+		}
+
+		else
+		{
+			GLfloat lightPosition[] = { 100.0f, 100.0f, 100.0f, 1.0f };
+
+			glUniform1i(LKeyPressedUniform, 1);
+
+			///****GOURAUD****/
+
+			//glUniform3f(lAUniform, 0.0f, 0.0f, 0.0f);
+			//glUniform3f(lDUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform3f(lSUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform4fv(lightPositionUniform, 1, (GLfloat*)lightPosition);
+
+			//glUniform3f(kAUniform, 0.0f, 0.0f, 0.0f);
+			//glUniform3f(kDUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform3f(kSUniform, 1.0f, 1.0f, 1.0f);
+			//glUniform1f(kShininessUniform, 50.0);
+
+			/****ALBEDO****/
+
+			glUniform3f(lAUniformPF, 0.1f, 0.1f, 0.1f);
+			glUniform3f(lDUniformPF, 1.0f, 1.0f, 1.0f);
+			glUniform3f(lSUniformPF, 1.0f, 1.0f, 1.0f);
+			glUniform4fv(lightPositionUniformPF, 1, (GLfloat*)lightPosition);
+
+			glUniform3f(kAUniformPF, 0.0f, 0.0f, 0.0f);
+			glUniform3f(kDUniformPF, 0.5f, 0.2f, 0.7f);
+			glUniform3f(kSUniformPF, 0.7f, 0.7f, 0.7f);
+			glUniform1f(kShininessUniformPF, 128.0);
+		}
 		
-		glUniform3f(lAUniform, 0.1f, 0.1f, 0.1f);
-		glUniform3f(lDUniform, 1.0f, 1.0f, 1.0f);
-		glUniform3f(lSUniform, 1.0f, 1.0f, 1.0f);
-		glUniform4fv(lightPositionUniform, 1, (GLfloat*)lightPosition);
-
-		glUniform3f(kAUniform, 0.0f, 0.0f, 0.0f);
-		glUniform3f(kDUniform, 0.5f, 0.2f, 0.7f);
-		glUniform3f(kSUniform, 0.7f, 0.7f, 0.7f);
-		glUniform1f(kShininessUniform, 128.0);
+		
 
 	}
 	else
@@ -933,9 +989,21 @@ void Display(void)
 	projectionMatrix = perspectiveProjectionMatrix * viewMatrix * modelMatrix;  //pre-multiplication of matrices
 	//projectionMatrix = perspectiveProjectionMatrix;
 
-	glUniformMatrix4fv(modelMatrixUniform, 1, GL_FALSE, modelMatrix);
-	glUniformMatrix4fv(viewMatrixUniform, 1, GL_FALSE, viewMatrix);
-	glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, projectionMatrix);
+	if (pvLighting == true)
+	{
+		glUniformMatrix4fv(modelMatrixUniformPV, 1, GL_FALSE, modelMatrix);
+		glUniformMatrix4fv(viewMatrixUniformPV, 1, GL_FALSE, viewMatrix);
+		glUniformMatrix4fv(projectionMatrixUniformPV, 1, GL_FALSE, projectionMatrix);
+	}
+	else
+	{
+		glUniformMatrix4fv(modelMatrixUniformPF, 1, GL_FALSE, modelMatrix);
+		glUniformMatrix4fv(viewMatrixUniformPF, 1, GL_FALSE, viewMatrix);
+		glUniformMatrix4fv(projectionMatrixUniformPF, 1, GL_FALSE, projectionMatrix);
+	}
+
+
+	
 
 
 	//bind vao
