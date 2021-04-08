@@ -798,10 +798,10 @@ void Initialize(void)
 	shaderProgramObjectPF = glCreateProgram();
 
 	//attach vertex shader to shader program
-	glAttachShader(shaderProgramObjectPF, vertexShaderObjectPV);
+	glAttachShader(shaderProgramObjectPF, vertexShaderObjectPF);
 
 	//attach fragment shader to shader program
-	glAttachShader(shaderProgramObjectPF, fragmentShaderObjectPV);
+	glAttachShader(shaderProgramObjectPF, fragmentShaderObjectPF);
 
 	//pre-linking binding
 	glBindAttribLocation(shaderProgramObjectPF, SPK_ATTRIBUTE_POSITION, "vPosition");
