@@ -675,8 +675,9 @@ void Initialize(void)
 
 void Resize(int width, int height)
 {
-	vWidth = width;
-	vHeight = height;
+	vWidth= width;
+	vHeight= height;
+
 
 	//code
 	if (height == 0)
@@ -684,20 +685,11 @@ void Resize(int width, int height)
 
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
-	perspectiveProjectionMatrix = vmath::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	perspectiveProjectionMatrix = vmath::perspective(45.0f, ((GLfloat)width / 4) / ((GLfloat)height / 6), 0.1f, 100.0f);
 }
 
 void Display(void)
 {
-
-	mat4 modelMatrix;
-	mat4 viewMatrix;
-	mat4 projectionMatrix;
-	mat4 translateMatrix;
-	mat4 scaleMatrix;
-
-	GLfloat sphereScale = 1.0f;
-
 
 	GLfloat r = 5.0f;
 
@@ -780,7 +772,7 @@ void drawSpheres(void)
 	mat4 translateMatrix;
 	mat4 scaleMatrix;
 
-	GLfloat sphereScale = 1.0f;
+	GLfloat sphereScale = 1.5f;
 
 
 	
