@@ -164,7 +164,6 @@ void CreateWindow(void)
     int defaultScreen;
     int styleMask;
     static int frameBufferAttributes[] = {GLX_DOUBLEBUFFER, True,
-                                          GLX_RGBA,              //static is conventional
                                           GLX_X_RENDERABLE, True,
                                           GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
                                           GLX_RENDER_TYPE, GLX_RGBA_BIT,
@@ -173,8 +172,8 @@ void CreateWindow(void)
                                           GLX_GREEN_SIZE, 8,
                                           GLX_BLUE_SIZE, 8,
                                           GLX_ALPHA_SIZE, 8,
-                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           GLX_STENCIL_SIZE, 8,
+                                          GLX_DEPTH_SIZE, 24,      //V4L (Video for Linux) recommends 24bit not 32bit
                                           None};                   //when only 5 members out of many are to be initialized use '0' or 'None'               
     
     //code
@@ -351,11 +350,11 @@ void Initialize(void)
     
     if(isDirectContext == true)
     {
-        printf("Rendering Context is Direct Hardware Rendering Context");
+        printf("Rendering Context is Direct Hardware Rendering Context\n");
     }
     else
     {
-        printf("Rendering Context is Software Rendering Context");
+        printf("Rendering Context is Software Rendering Context\n");
     }
                            
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
