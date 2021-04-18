@@ -5,7 +5,8 @@
 #include<GL/glew.h>
 #include<GL/gl.h>
 #include<GL/glx.h>   //bridging API
-#include<fstream>
+#include"vmath.h"
+
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -14,9 +15,20 @@
 
 //namespaces
 using namespace std;
+using namespace vmath;
+
+enum
+{
+	SPK_ATTRIBUTE_POSITION = 0,
+	SPK_ATTRIBUTE_COLOR,
+	SPK_ATTRIBUTE_NORMAL,
+	SPK_ATTRIBUTE_TEXCOORD,	
+};
 
 //global variable declarations
 bool bFullscreen = false;
+
+void Uninitialize(void);
 
 Display *gpDisplay=NULL;
 XVisualInfo *gpXVisualInfo=NULL;
@@ -33,14 +45,23 @@ GLXFBConfig gGLXFBConfig;
 int giWindowWidth=800;
 int giWindowHeight=600;
 
+
+GLuint shaderProgramObject;
+
+GLuint vao;                          //vertex array object
+GLuint vbo_position;                          //vertex buffer object
+GLuint mvpMatrixUniform;
+
+mat4 perspectiveProjectionMatrix;   //4x4 matrix
+
 //entry-point function
 int main(void)
 {
     //function prototypes
     void CreateWindow(void);
     void ToggleFullscreen(void);
-    void Uninitialize(void);
     void Initialize(void);
+    void Uninitialize(void);
     void Resize(int, int);
     void Draw(void);
     //void Update(void);
@@ -342,6 +363,9 @@ void Initialize(void)
     //function prototype
     void Resize(int, int);   //for warm-up call
     
+    GLuint vertexShaderObject;
+	GLuint fragmentShaderObject;
+    
     glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((GLubyte*)"glXCreateContextAttribsARB");
     
     const int attribs[] = {GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
@@ -375,26 +399,177 @@ void Initialize(void)
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
     
-    /*//OpenGL related LOG
-
-	fprintf(gpFile, "OpenGL VENDOR : %s\n", glGetString(GL_VENDOR));
-	fprintf(gpFile, "OpenGL RENDERER : %s\n", glGetString(GL_RENDERER));
-	fprintf(gpFile, "OpenGL VERSION : %s\n", glGetString(GL_VERSION));
-	fprintf(gpFile, "GLSL[Graphics Library Shading Language] VERSION : %s\n\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-	fprintf(gpFile, "EXTENTIONS : \n");
-
-	//OpenGL Enabled Extensions
-
-	GLint numExt;
-
-	glGetIntegerv(GL_NUM_EXTENSIONS, &numExt);
-
-	for (int i = 0; i < numExt; i++)
+    GLenum glew_error = glewInit();
+	if (glew_error != GLEW_OK)
 	{
-		fprintf(gpFile, "%s\n", glGetStringi(GL_EXTENSIONS, i));
-	}*/
-    
-    
+		Uninitialize();
+	}
+	
+	
+	/********SHADERS********/
+
+	
+	/*****VERTEX SHADER*****/
+
+	//create shader
+	vertexShaderObject = glCreateShader(GL_VERTEX_SHADER);
+
+	//provide source code to vertex shader
+	const GLchar *vertexShaderSourceCode =
+		"#version 450 core \n" \
+		"\n" \
+		"in vec4 vPosition; \n" \
+		"uniform mat4 u_mvpMatrix; \n" \
+		"void main(void) \n" \
+		"{ \n" \
+		"gl_Position = u_mvpMatrix * vPosition; \n" \
+		"} \n";
+
+	glShaderSource(vertexShaderObject, 1, (const GLchar**)&vertexShaderSourceCode, NULL);
+
+	//compile shader
+	glCompileShader(vertexShaderObject);
+
+	//vertex shader compilation error checking
+	GLint infoLogLength = 0;
+	GLint shaderCompiledStatus = 0;
+	char* szBuffer = NULL;
+
+	glGetShaderiv(vertexShaderObject, GL_COMPILE_STATUS, &shaderCompiledStatus);
+
+	if (shaderCompiledStatus == GL_FALSE)
+	{
+		glGetShaderiv(vertexShaderObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetShaderInfoLog(vertexShaderObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nVertex Shader Compilation Log : %s\n", szBuffer);
+				free(szBuffer);
+				Uninitialize();
+			}
+
+		}
+	}
+
+
+	/*****FRAGMENT SHADER*****/
+
+	//create shader
+	fragmentShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
+
+	//provide source code to fragment shader
+	const GLchar* fragmentShaderSourceCode =
+		"#version 450 core \n" \
+		"\n" \
+		"out vec4 FragColor; \n" \
+		"void main(void) \n" \
+		"{ \n" \
+		"FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f); \n" \
+		"} \n";
+
+	glShaderSource(fragmentShaderObject, 1, (const GLchar**)&fragmentShaderSourceCode, NULL);
+
+	//compile shader
+	glCompileShader(fragmentShaderObject);
+
+	//fragment shader compilation error checking
+	infoLogLength = 0;
+	shaderCompiledStatus = 0;
+	szBuffer = NULL;
+
+	glGetShaderiv(fragmentShaderObject, GL_COMPILE_STATUS, &shaderCompiledStatus);
+
+	if (shaderCompiledStatus == GL_FALSE)
+	{
+		glGetShaderiv(fragmentShaderObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetShaderInfoLog(fragmentShaderObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nFragment Shader Compilation Log : %s\n", szBuffer);
+				free(szBuffer);
+				Uninitialize();
+
+			}
+		}
+	}
+
+
+	/*****SHADER PROGRAM*****/
+
+	//create
+	shaderProgramObject = glCreateProgram();
+
+	//attach vertex shader to shader program
+	glAttachShader(shaderProgramObject, vertexShaderObject);
+
+	//attach fragment shader to shader program
+	glAttachShader(shaderProgramObject, fragmentShaderObject);
+
+	//pre-linking binding
+	glBindAttribLocation(shaderProgramObject, SPK_ATTRIBUTE_POSITION, "vPosition");
+
+	//link shader
+	glLinkProgram(shaderProgramObject);
+
+	//shader linking error checking
+	infoLogLength = 0;
+	GLint shaderProgramLinkStatus;
+	szBuffer = NULL;
+
+	glGetProgramiv(shaderProgramObject, GL_LINK_STATUS, &shaderProgramLinkStatus);
+
+	if (shaderProgramLinkStatus == GL_FALSE)
+	{
+		glGetProgramiv(shaderProgramObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetProgramInfoLog(shaderProgramObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nShader Program Link Log : %s\n", szBuffer);
+				free(szBuffer);
+				Uninitialize();
+			}
+		}
+	}
+
+	//get MVP uniform location
+	mvpMatrixUniform = glGetUniformLocation(shaderProgramObject, "u_mvpMatrix");
+
+
+	//vertices array declaration
+	const GLfloat triangleVertices[] = { 0.0f, 1.0f, 0.0f,
+										-1.0f, -1.0f, 0.0f,
+										1.0f, -1.0f, 0.0f };
+
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(1, &vbo_position);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_position);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(SPK_ATTRIBUTE_POSITION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	glEnableVertexAttribArray(SPK_ATTRIBUTE_POSITION);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
     
     
     glShadeModel(GL_SMOOTH);
@@ -419,13 +594,48 @@ void Resize(int width, int height)
 		height = 1;
 
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+
+	perspectiveProjectionMatrix = vmath::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 
 void Draw(void)
 {
-    //code
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//start using OpenGL program object
+	glUseProgram(shaderProgramObject);
+
+	//OpenGL Drawing
+
+	mat4 translateMatrix;
+	mat4 modelViewMatrix;
+	mat4 modelViewProjectionMatrix;
+	
+
+	
+	translateMatrix = mat4::identity();
+	modelViewMatrix = mat4::identity();
+	modelViewProjectionMatrix = mat4::identity();
+	translateMatrix = translate(0.0f, 0.0f, -3.0f);
+	
+
+	modelViewMatrix = translateMatrix;
+
+	modelViewProjectionMatrix = perspectiveProjectionMatrix * modelViewMatrix;  //pre-multiplication of matrices
+
+	glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, modelViewProjectionMatrix);
+
+	//bind vao
+	glBindVertexArray(vao);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	//unbind vao
+	glBindVertexArray(0);
+
+	//stop using OpenGL program object
+	glUseProgram(0);
     
     glXSwapBuffers(gpDisplay, gWindow);
 }
@@ -435,6 +645,46 @@ void Uninitialize(void)
 {
     //variable declarations
     GLXContext currentGLXContext;
+    
+    if (vao)
+	{
+		glDeleteVertexArrays(1, &vao);
+		vao = 0;
+	}
+
+	if (vbo_position)
+	{
+		glDeleteBuffers(1, &vbo_position);
+		vbo_position = 0;
+	}
+
+	/*****SAFE SHADER CLEAN-UP*****/
+
+	if (shaderProgramObject)
+	{
+		glUseProgram(shaderProgramObject);
+		GLsizei shaderCount;
+		glGetProgramiv(shaderProgramObject, GL_ATTACHED_SHADERS, &shaderCount);
+
+		GLuint* pShaders = NULL;
+		pShaders = (GLuint*)malloc(sizeof(GLuint) * shaderCount);
+
+		glGetAttachedShaders(shaderProgramObject, shaderCount, &shaderCount, pShaders);
+
+		for (GLsizei i = 0; i < shaderCount; i++)
+		{
+			glDetachShader(shaderProgramObject, pShaders[i]);
+			glDeleteShader(pShaders[i]);
+			pShaders[i] = 0;
+		}
+		free(pShaders);
+
+		glDeleteProgram(shaderProgramObject);
+		shaderProgramObject = 0;
+		glUseProgram(0);
+
+	}
+
     
     currentGLXContext = glXGetCurrentContext();
     
