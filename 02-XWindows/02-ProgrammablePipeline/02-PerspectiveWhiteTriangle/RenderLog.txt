@@ -1,0 +1,32 @@
+Log File Created Successfully, Program Started Successfully.
+
+Number of FBConfigs = 24
+
+When i = 0 -> samples = 0 -> sampleBuffers = 0
+When i = 1 -> samples = 0 -> sampleBuffers = 0
+When i = 2 -> samples = 0 -> sampleBuffers = 0
+When i = 3 -> samples = 0 -> sampleBuffers = 0
+When i = 4 -> samples = 2 -> sampleBuffers = 1
+When i = 5 -> samples = 2 -> sampleBuffers = 1
+When i = 6 -> samples = 2 -> sampleBuffers = 1
+When i = 7 -> samples = 2 -> sampleBuffers = 1
+When i = 8 -> samples = 4 -> sampleBuffers = 1
+When i = 9 -> samples = 4 -> sampleBuffers = 1
+When i = 10 -> samples = 4 -> sampleBuffers = 1
+When i = 11 -> samples = 4 -> sampleBuffers = 1
+When i = 12 -> samples = 8 -> sampleBuffers = 1
+When i = 13 -> samples = 8 -> sampleBuffers = 1
+When i = 14 -> samples = 8 -> sampleBuffers = 1
+When i = 15 -> samples = 8 -> sampleBuffers = 1
+When i = 16 -> samples = 0 -> sampleBuffers = 0
+When i = 17 -> samples = 0 -> sampleBuffers = 0
+When i = 18 -> samples = 0 -> sampleBuffers = 0
+When i = 19 -> samples = 0 -> sampleBuffers = 0
+When i = 20 -> samples = 0 -> sampleBuffers = 0
+When i = 21 -> samples = 0 -> sampleBuffers = 0
+When i = 22 -> samples = 0 -> sampleBuffers = 0
+When i = 23 -> samples = 0 -> sampleBuffers = 0
+
+Rendering Context is Direct Hardware Rendering Context.
+
+Log File Closed Successfully, Program Completed Successfully.
