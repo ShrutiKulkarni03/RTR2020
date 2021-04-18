@@ -672,6 +672,12 @@ void Uninitialize(void)
 		vbo_position = 0;
 	}
 
+	if (vbo_color)
+	{
+		glDeleteBuffers(1, &vbo_color);
+		vbo_color = 0;
+	}
+
 	/*****SAFE SHADER CLEAN-UP*****/
 
 	if (shaderProgramObject)
