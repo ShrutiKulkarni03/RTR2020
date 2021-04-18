@@ -18,6 +18,8 @@ using namespace std;
 //global variable declarations
 bool bFullscreen = false;
 
+void Uninitialize(void);
+
 Display *gpDisplay=NULL;
 XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
@@ -39,8 +41,8 @@ int main(void)
     //function prototypes
     void CreateWindow(void);
     void ToggleFullscreen(void);
-    void Uninitialize(void);
     void Initialize(void);
+    void Uninitialize(void);
     void Resize(int, int);
     void Draw(void);
     //void Update(void);
@@ -375,6 +377,11 @@ void Initialize(void)
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
     
     
+    GLenum glew_error = glewInit();
+	if (glew_error != GLEW_OK)
+	{
+		Uninitialize();
+	}
     
     
     glShadeModel(GL_SMOOTH);
