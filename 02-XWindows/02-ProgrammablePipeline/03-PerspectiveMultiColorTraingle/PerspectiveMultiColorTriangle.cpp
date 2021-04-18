@@ -522,6 +522,7 @@ void Initialize(void)
 
 	//pre-linking binding
 	glBindAttribLocation(shaderProgramObject, SPK_ATTRIBUTE_POSITION, "vPosition");
+	glBindAttribLocation(shaderProgramObject, SPK_ATTRIBUTE_COLOR, "vColor");
 
 	//link shader
 	glLinkProgram(shaderProgramObject);
