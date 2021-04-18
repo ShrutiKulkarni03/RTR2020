@@ -5,7 +5,7 @@
 #include<GL/glew.h>
 #include<GL/gl.h>
 #include<GL/glx.h>   //bridging API
-
+#include<fstream>
 
 #include<X11/Xlib.h>
 #include<X11/Xutil.h>
@@ -23,6 +23,8 @@ XVisualInfo *gpXVisualInfo=NULL;
 Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
+FILE* gpFile = NULL;
+//fstream gpFile;
 
 typedef GLXContext(* glXCreateContextAttribsARBProc)(Display *, GLXFBConfig, GLXContext, Bool, const int *);
 glXCreateContextAttribsARBProc glXCreateContextAttribsARB = NULL;
@@ -47,6 +49,19 @@ int main(void)
     int winWidth=giWindowWidth;
     int winHeight=giWindowHeight;
     bool bDone = false;
+    
+    gpFile = fopen("RenderLog.txt", "w");
+    
+    if(gpFile == NULL)
+	{
+		exit(0);
+	}
+	else
+	{
+		fprintf(gpFile, ("Log File Created Successfully, Program Started Successfully.\n\n"));
+	}
+    
+    
     
     //code
     CreateWindow();
@@ -180,7 +195,7 @@ void CreateWindow(void)
     gpDisplay=XOpenDisplay(NULL);
     if(gpDisplay==NULL)
     {
-        printf("Error : Unable to open X Display.\nExiting Now!\n\n");
+        fprintf(gpFile, "Error : Unable to open X Display.\nExiting Now!\n\n");
         Uninitialize();
         exit(1);
     }
@@ -190,7 +205,7 @@ void CreateWindow(void)
     
     pGLXFBConfig = glXChooseFBConfig(gpDisplay, XDefaultScreen(gpDisplay), frameBufferAttributes, &numFBConfigs);
     
-    printf("Number of FBConfigs = %d\n", numFBConfigs);
+    fprintf(gpFile, "Number of FBConfigs = %d\n\n", numFBConfigs);
     
     int bestFrameBufferConfig = -1;
     int worstFrameBufferConfig = -1;
@@ -220,7 +235,7 @@ void CreateWindow(void)
                 worstNumberOfSamples = samples;
             }
             
-            printf("When i = %d -> samples = %d -> sampleBuffers = %d\n", i, samples, sampleBuffers);
+            fprintf(gpFile, "When i = %d -> samples = %d -> sampleBuffers = %d\n", i, samples, sampleBuffers);
             
         }
         
@@ -241,7 +256,7 @@ void CreateWindow(void)
    
     if(gpXVisualInfo==NULL)
     {
-        printf("Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
+        fprintf(gpFile, "Error : Unable to allocate memory for Visual Info.\nExiting Now!\n\n");
         Uninitialize();
         exit(1);
     }
@@ -249,7 +264,7 @@ void CreateWindow(void)
     
     if(gpXVisualInfo==NULL)
     {
-        printf("Error : Unable to get a Visual.\nExiting Now!\n\n");
+        fprintf(gpFile, "Error : Unable to get a Visual.\nExiting Now!\n\n");
         Uninitialize();
         exit(1);
     }
@@ -279,7 +294,7 @@ void CreateWindow(void)
     
     if(!gWindow)
     {
-        printf("Error : Failed to create Main Window.\nExiting Now!\n\n");
+        fprintf(gpFile, "Error : Failed to create Main Window.\nExiting Now!\n\n");
         Uninitialize();
         exit(1);
     }
@@ -350,11 +365,11 @@ void Initialize(void)
     
     if(isDirectContext == true)
     {
-        printf("Rendering Context is Direct Hardware Rendering Context\n");
+        fprintf(gpFile, "\nRendering Context is Direct Hardware Rendering Context.\n");
     }
     else
     {
-        printf("Rendering Context is Software Rendering Context\n");
+        fprintf(gpFile, "\nRendering Context is Software Rendering Context.\n");
     }
                            
     glXMakeCurrent(gpDisplay, gWindow, gGLXContext);
@@ -433,6 +448,13 @@ void Uninitialize(void)
     {
         XCloseDisplay(gpDisplay);
         gpDisplay=NULL;
+    }
+    
+    if (gpFile)
+	{
+		fprintf(gpFile, ("\nLog File Closed Successfully, Program Completed Successfully.\n"));
+		fclose(gpFile);
+		gpFile = NULL;
     }
     
 }
