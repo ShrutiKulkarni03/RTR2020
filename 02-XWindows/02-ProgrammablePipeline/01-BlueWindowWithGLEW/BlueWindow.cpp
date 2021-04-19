@@ -26,7 +26,6 @@ Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
 FILE* gpFile = NULL;
-//fstream gpFile;
 
 typedef GLXContext(* glXCreateContextAttribsARBProc)(Display *, GLXFBConfig, GLXContext, Bool, const int *);
 glXCreateContextAttribsARBProc glXCreateContextAttribsARB = NULL;
