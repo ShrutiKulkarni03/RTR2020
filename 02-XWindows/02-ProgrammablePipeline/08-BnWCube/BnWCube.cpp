@@ -36,7 +36,7 @@ Colormap gColormap;
 Window gWindow;
 GLXContext gGLXContext;
 FILE* gpFile = NULL;
-//fstream gpFile;
+
 
 typedef GLXContext(* glXCreateContextAttribsARBProc)(Display *, GLXFBConfig, GLXContext, Bool, const int *);
 glXCreateContextAttribsARBProc glXCreateContextAttribsARB = NULL;
@@ -645,6 +645,9 @@ void Initialize(void)
     
     //SetClearColor
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //black
+    
+    //set perspective matrix to identity matrix
+	perspectiveProjectionMatrix = mat4::identity();
     
     Resize(giWindowWidth, giWindowHeight);
     
