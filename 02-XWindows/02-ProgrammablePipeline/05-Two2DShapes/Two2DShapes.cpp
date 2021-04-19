@@ -415,6 +415,26 @@ void Initialize(void)
 	}
 	
 	
+	//OpenGL related LOG
+
+	fprintf(gpFile, "OpenGL VENDOR : %s\n", glGetString(GL_VENDOR));
+	fprintf(gpFile, "OpenGL RENDERER : %s\n", glGetString(GL_RENDERER));
+	fprintf(gpFile, "OpenGL VERSION : %s\n", glGetString(GL_VERSION));
+	fprintf(gpFile, "GLSL[Graphics Library Shading Language] VERSION : %s\n\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	fprintf(gpFile, "EXTENTIONS : \n");
+
+	//OpenGL Enabled Extensions
+
+	GLint numExt;
+
+	glGetIntegerv(GL_NUM_EXTENSIONS, &numExt);
+
+	for (int i = 0; i < numExt; i++)
+	{
+		fprintf(gpFile, "%s\n", glGetStringi(GL_EXTENSIONS, i));
+	}
+	
+	
 	/********SHADERS********/
 
 	
