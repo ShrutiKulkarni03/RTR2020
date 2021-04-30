@@ -1,0 +1,7 @@
+#include "Resource.h"
+
+FLAG_ICON ICON Icon.ico
+AUDIO WAVE AbTumhareHawaleVatanSathiyon.wav
+
+
+

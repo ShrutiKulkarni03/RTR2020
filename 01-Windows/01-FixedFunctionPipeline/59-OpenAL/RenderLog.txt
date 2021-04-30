@@ -1,0 +1,7 @@
+Log File Created Successfully, Program Started Successfully.
+Device created!
+Context created!
+Source Generated!
+Wave File Loaded!
+stereo16
+Log File Closed Successfully, Program Completed Successfully.
