@@ -344,10 +344,7 @@ public class GLESView extends GLSurfaceView implements GLSurfaceView.Renderer, O
 	{
 		GLES32.glViewport(0, 0, width, height);
 
-		if(width<=height)
-		{
-			Matrix.perspectiveM(perspectiveProjectionMatrix, 0, 45.0f, (float)width / (float)height, 0.1f, 100.0f);
-		}
+		Matrix.perspectiveM(perspectiveProjectionMatrix, 0, 45.0f, (float)width / (float)height, 0.1f, 100.0f);
 		
 	}
 
@@ -370,7 +367,7 @@ public class GLESView extends GLSurfaceView implements GLSurfaceView.Renderer, O
 
 		Matrix.translateM(translateMatrix, 0, 0.0f, 0.0f, -3.0f);
 
-		modelViewMatrix[0] = translateMatrix[0];
+		Matrix.multiplyMM(modelViewMatrix, 0, modelViewMatrix, 0, translateMatrix, 0);
 
 		Matrix.multiplyMM(modelViewProjectionMatrix, 0, perspectiveProjectionMatrix, 0, modelViewMatrix, 0);
 
