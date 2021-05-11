@@ -49,8 +49,8 @@ public class GLESView extends GLSurfaceView implements GLSurfaceView.Renderer, O
 	private float pyramidAngle = 0.0f;
 	private float cubeAngle = 0.0f;
 
-	private int stone_texture;
-	private int kundali_texture;
+	private int stone_texture[] = new int[1];
+	private int kundali_texture[] = new int[1];
 	
 	
 	
@@ -465,8 +465,8 @@ public class GLESView extends GLSurfaceView implements GLSurfaceView.Renderer, O
 		GLES32.glEnable(GLES32.GL_CULL_FACE);
 
 		//textures
-		stone_texture = loadTexture(R.raw.stone);
-		kundali_texture = loadTexture(R.raw.vijay_kundali);
+		stone_texture[0] = loadTexture(R.raw.stone);
+		kundali_texture[0] = loadTexture(R.raw.vijay_kundali);
 		
 
 		GLES32.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -545,7 +545,7 @@ public class GLESView extends GLSurfaceView implements GLSurfaceView.Renderer, O
 
 		//texture
 		GLES32.glActiveTexture(GLES32.GL_TEXTURE0);
-		GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, stone_texture);
+		GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, stone_texture[0]);
 		GLES32.glUniform1i(textureSamplerUniform, 0);
 
 
@@ -588,7 +588,7 @@ public class GLESView extends GLSurfaceView implements GLSurfaceView.Renderer, O
 
 		//texture
 		GLES32.glActiveTexture(GLES32.GL_TEXTURE0);
-		GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, kundali_texture);
+		GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, kundali_texture[0]);
 		GLES32.glUniform1i(textureSamplerUniform, 0);
 
 		//bind vao
@@ -666,8 +666,8 @@ public class GLESView extends GLSurfaceView implements GLSurfaceView.Renderer, O
 		}
 
 		//textures
-		//GLES32.glDeleteTextures(1, stone_texture);
-		//GLES32.glDeleteTextures(1, kundali_texture);
+		GLES32.glDeleteTextures(1, stone_texture, 0);
+		GLES32.glDeleteTextures(1, kundali_texture, 0);
 
 		
 
