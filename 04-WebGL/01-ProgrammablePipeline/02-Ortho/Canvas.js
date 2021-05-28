@@ -250,23 +250,23 @@ function resize()
 
 	if(canvas.width <= canvas.height)
 	{
-		mat4.ortho(orthographicProjectionMatrix, (-100.0, 
+		mat4.ortho(orthographicProjectionMatrix, -100.0, 
 												 100.0, 
 												 (-100.0 * (canvas.height / canvas.width)), 
 												 (100.0 * (canvas.height / canvas.width)), 
 												 -100.0, 
-												 100.0));
+												 100.0);
 	}
 		
 
 	else
 	{
-		mat4.ortho(orthographicProjectionMatrix, (-100.0 * (canvas.width / canvas.height), 
-												  100.0 * (canvas.width / canvas.height),
+		mat4.ortho(orthographicProjectionMatrix,  (-100.0 * (canvas.width / canvas.height)), 
+												  (100.0 * (canvas.width / canvas.height)),
 												  -100.0,
 												  100.0,
 												  -100.0, 
-												  100.0));
+												  100.0);
 	}
 		
 }
