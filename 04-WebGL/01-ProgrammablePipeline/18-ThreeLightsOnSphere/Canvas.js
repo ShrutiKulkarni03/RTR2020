@@ -589,8 +589,14 @@ function draw()
 	}
 	else
 	{
-		gl.uniform1i(lKeyPressedUniformPV, 0);
-		gl.uniform1i(lKeyPressedUniformPF, 0);
+		if(pvLighting==true)
+		{
+			gl.uniform1i(lKeyPressedUniformPV, 0);
+		}
+		else
+		{
+			gl.uniform1i(lKeyPressedUniformPF, 0);
+		}
 	}
 
 
