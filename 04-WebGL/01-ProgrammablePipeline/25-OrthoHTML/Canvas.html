@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang = "en">
+
+	<!--HEAD-->
+	<head>
+
+		<meta charset = "UTF-8" />
+		<title> SPK-Canvas </title>
+
+	</head>
+	
+	<!--BODY-->
+	<body onload="main()">
+
+		<!--Canvas Window-->
+		<canvas id="SPK" width="800" height="600">
+
+			This browser doesn't support html5 canvas!
+
+		</canvas>
+
+		<script id="vs" type="x-shader/x-vertex">#version 300 es
+			in vec4 vPosition;
+			uniform mat4 u_mvp_matrix;
+			void main(void)
+			{
+				gl_Position = u_mvp_matrix * vPosition;
+			}</script>
+
+		<script id="fs" type="x-shader/x-fragment">#version 300 es
+			precision highp float;
+			out vec4 FragColor;
+			void main(void)
+			{
+				FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+			}</script>
+
+		<script src="gl-matrix-min.js"></script>
+		<script src="Canvas.js"></script>
+
+	</body>
+
+</html>
+
