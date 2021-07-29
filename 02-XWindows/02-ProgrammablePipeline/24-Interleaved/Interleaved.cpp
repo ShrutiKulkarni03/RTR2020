@@ -85,6 +85,7 @@ mat4 perspectiveProjectionMatrix;   //4x4 matrix
 //update variables
 GLfloat cubeAngle = 0.0f;
 
+bool bLight = false;
 
 //entry-point function
 int main(void)
