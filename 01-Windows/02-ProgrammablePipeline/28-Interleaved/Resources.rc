@@ -1,6 +1,0 @@
-#include "Resources.h"
-
-MYICON ICON Icon.ico
-KUNDALI_BITMAP BITMAP Vijay_Kundali.bmp
-
-
