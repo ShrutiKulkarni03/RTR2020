@@ -2,8 +2,8 @@ Log File Created Successfully, Program Started Successfully.
 
 GPU Info Log: 
 Graphic Card Name: NVIDIA GeForce GT 730
-Graphic Card Memory [VRAM]: 3221225472 bytes
-VRAM (GB) = 3
+Graphic Card Memory [VRAM]: 4249223168 bytes
+VRAM (GB) = 4
 
 d3dInfo() successful
 
