@@ -1,0 +1,58 @@
+{
+  "buildCommand" : "prepareForIndexing",
+  "configuredTargets" : [
+    {
+      "guid" : "70a158165b321dd11bb4fb6a82c6716a8e5c2577938490ee8fd80c61423df47d"
+    }
+  ],
+  "continueBuildingAfterErrors" : true,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "iphonesimulator",
+      "sdk" : "iphonesimulator14.5",
+      "sdkVariant" : "iphonesimulator",
+      "supportedArchitectures" : [
+        "arm64",
+        "x86_64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/shrutikulkarni/Astromedicomp/MyCodes/06-iOS/01-ProgrammablePipeline/03-PerspectiveWhiteTriangle/DerivedData/Bluescreen/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/shrutikulkarni/Astromedicomp/MyCodes/06-iOS/01-ProgrammablePipeline/03-PerspectiveWhiteTriangle/DerivedData/Bluescreen/Build/Products",
+      "derivedDataPath" : "/Users/shrutikulkarni/Astromedicomp/MyCodes/06-iOS/01-ProgrammablePipeline/03-PerspectiveWhiteTriangle/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/shrutikulkarni/Astromedicomp/MyCodes/06-iOS/01-ProgrammablePipeline/03-PerspectiveWhiteTriangle/DerivedData/Bluescreen/Index/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/shrutikulkarni/Astromedicomp/MyCodes/06-iOS/01-ProgrammablePipeline/03-PerspectiveWhiteTriangle/DerivedData/Bluescreen/Index/PrecompiledHeaders",
+      "pchPath" : "/Users/shrutikulkarni/Astromedicomp/MyCodes/06-iOS/01-ProgrammablePipeline/03-PerspectiveWhiteTriangle/DerivedData/Bluescreen/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ASSETCATALOG_FILTER_FOR_DEVICE_MODEL" : "iPhone10,5",
+          "ASSETCATALOG_FILTER_FOR_DEVICE_OS_VERSION" : "14.5",
+          "BUILD_ACTIVE_RESOURCES_ONLY" : "YES",
+          "ENABLE_PREVIEWS" : "NO",
+          "TARGET_DEVICE_IDENTIFIER" : "7B619AFC-6343-41D3-B3FA-7A916BAB4C2C",
+          "TARGET_DEVICE_MODEL" : "iPhone10,5",
+          "TARGET_DEVICE_OS_VERSION" : "14.5",
+          "TARGET_DEVICE_PLATFORM_NAME" : "iphonesimulator"
+        }
+      }
+    }
+  },
+  "qos" : "default",
+  "schemeCommand" : "launch",
+  "shouldCollectMetrics" : false,
+  "showNonLoggedProgress" : true,
+  "useDryRun" : true,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

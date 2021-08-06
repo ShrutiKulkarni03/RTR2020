@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>10</integer>
+	<key>logs</key>
+	<dict>
+		<key>092107DC-D112-4BFC-B877-3BAB841EB6AD</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>092107DC-D112-4BFC-B877-3BAB841EB6AD.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Bluescreen project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Bluescreen</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build Bluescreen</string>
+			<key>timeStartedRecording</key>
+			<real>649942436.34136605</real>
+			<key>timeStoppedRecording</key>
+			<real>649942436.39086699</real>
+			<key>title</key>
+			<string>Build Bluescreen</string>
+			<key>uniqueIdentifier</key>
+			<string>092107DC-D112-4BFC-B877-3BAB841EB6AD</string>
+		</dict>
+		<key>87634E57-2F39-4915-847D-0F3D3ED1DFA0</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>87634E57-2F39-4915-847D-0F3D3ED1DFA0.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Bluescreen project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Bluescreen</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build Bluescreen</string>
+			<key>timeStartedRecording</key>
+			<real>649941709.82749104</real>
+			<key>timeStoppedRecording</key>
+			<real>649941713.47953904</real>
+			<key>title</key>
+			<string>Build Bluescreen</string>
+			<key>uniqueIdentifier</key>
+			<string>87634E57-2F39-4915-847D-0F3D3ED1DFA0</string>
+		</dict>
+		<key>DA3F71EE-8A16-4749-87B5-5F1E8A2C5DFC</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>DA3F71EE-8A16-4749-87B5-5F1E8A2C5DFC.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Bluescreen project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Bluescreen</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build Bluescreen</string>
+			<key>timeStartedRecording</key>
+			<real>649941714.89967895</real>
+			<key>timeStoppedRecording</key>
+			<real>649941714.92547596</real>
+			<key>title</key>
+			<string>Build Bluescreen</string>
+			<key>uniqueIdentifier</key>
+			<string>DA3F71EE-8A16-4749-87B5-5F1E8A2C5DFC</string>
+		</dict>
+		<key>F25503A3-1D1B-4B85-B433-DE5C4D75BCA1</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>F25503A3-1D1B-4B85-B433-DE5C4D75BCA1.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Bluescreen project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Bluescreen</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build Bluescreen</string>
+			<key>timeStartedRecording</key>
+			<real>649942434.43686199</real>
+			<key>timeStoppedRecording</key>
+			<real>649942434.58303797</real>
+			<key>title</key>
+			<string>Build Bluescreen</string>
+			<key>uniqueIdentifier</key>
+			<string>F25503A3-1D1B-4B85-B433-DE5C4D75BCA1</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

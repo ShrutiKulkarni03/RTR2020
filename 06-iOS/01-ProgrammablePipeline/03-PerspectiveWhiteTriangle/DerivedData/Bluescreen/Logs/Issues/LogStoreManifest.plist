@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>10</integer>
+	<key>logs</key>
+	<dict>
+		<key>25094B91-E3CF-4011-9031-87E07509A285</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogMajorGroupSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.target.product-type.application</string>
+			<key>fileName</key>
+			<string>25094B91-E3CF-4011-9031-87E07509A285.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>signature</key>
+			<string>Bluescreen-dhbffbamxpdtdpauxyupwmhzgylm</string>
+			<key>timeStartedRecording</key>
+			<real>649942436.38754499</real>
+			<key>timeStoppedRecording</key>
+			<real>649942436.38763595</real>
+			<key>title</key>
+			<string>Build target Bluescreen</string>
+			<key>uniqueIdentifier</key>
+			<string>25094B91-E3CF-4011-9031-87E07509A285</string>
+		</dict>
+	</dict>
+	<key>preserveOldLogs</key>
+	<true/>
+</dict>
+</plist>
