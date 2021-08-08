@@ -505,7 +505,7 @@ void Display(void)
 	//code	
 	gpID3D11DeviceContext->ClearRenderTargetView(gpID3D11RenderTargetView, gClearColor);
 
-	gpIDXGISwapChain->Present(0, 0);
+	gpIDXGISwapChain->Present(1, 0);
 }
 
 void Uninitialize(void)
