@@ -1,0 +1,46 @@
+Log File Created Successfully, Program Started Successfully.
+
+GPU Info Log: 
+Graphic Card Name: NVIDIA GeForce GT 730
+Graphic Card Memory [VRAM]: 4249223168 bytes
+VRAM (GB) = 4
+
+d3dInfo() successful
+
+D3D11CreateDeviceAndSwapChain() successful
+
+The Chosen Driver is:
+Hardware Type chosen
+
+The Supported Highest Feature Level is:
+11.0
+
+D3DCompile() successful for vertex shader
+
+ID3D11Device::CreateVertexShader() successful
+
+D3DCompile() successful for pixel shader
+
+ID3D11Device::CreatePixelShader() successful
+
+ID3D11Device::CreateInputLayout() successful
+
+ID3D11Device::CreateBuffer() successful
+
+ID3D11Device::CreateBuffer() successful
+
+CreateRenderTargetView() successful
+
+Resize() successful
+
+Initialize() successful
+
+CreateRenderTargetView() successful
+
+WM_SIZE- resize() successful
+
+CreateRenderTargetView() successful
+
+WM_SIZE- resize() successful
+
+Log File Closed Successfully, Program Completed Successfully.
