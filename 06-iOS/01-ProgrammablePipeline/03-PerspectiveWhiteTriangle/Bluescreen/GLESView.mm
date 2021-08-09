@@ -111,7 +111,7 @@ enum
 
         //provide source code to vertex shader
         const GLchar *vertexShaderSourceCode =
-            "#version 300 core \n" \
+            "#version 300 es \n" \
             "\n" \
             "in vec4 vPosition; \n" \
             "uniform mat4 u_mvpMatrix; \n" \
@@ -160,7 +160,7 @@ enum
 
         //provide source code to fragment shader
         const GLchar* fragmentShaderSourceCode =
-            "#version 300 core \n" \
+            "#version 300 es \n" \
             "\n" \
             "precision highp float; \n" \
             "out vec4 FragColor; \n" \
