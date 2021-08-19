@@ -115,21 +115,28 @@ int main(int argc, char* argv[])
     
     //enum
     
-//    struct Light
-//    {
-//        vec4 lightAmbient;
-//        vec4 lightDiffuse;
-//        vec4 lightSpecular;
-//        vec4 lightPosition;
-//    };
+    struct Light
+    {
+        vec4 lightAmbient;
+        vec4 lightDiffuse;
+        vec4 lightSpecular;
+        vec4 lightPosition;
+    };
+
     
     //global variables for opengl
+    
+    bool bLight;
+    bool pvLighting;
+    struct Light light[3];
     
     //PV
     GLuint shaderProgramObjectPV;
     GLuint vertexShaderObjectPV;
     GLuint fragmentShaderObjectPV;
     
+    //PV
+
     GLuint modelMatrixUniformPV;
     GLuint viewMatrixUniformPV;
     GLuint projectionMatrixUniformPV;
@@ -164,15 +171,11 @@ int main(int argc, char* argv[])
     GLuint kAUniformPF;
     GLuint kDUniformPF;
     GLuint kSUniformPF;
-    GLfloat kShininessUniformPF;
+    GLfloat kShininessUniformPF;;
     
     GLuint LKeyPressedUniformPF;
 
     vmath::mat4 perspectiveProjectionMatrix;   //4x4 matrix
-    
-    bool bLight;
-    bool pvLighting;
-    //struct Light light[3];
     
     GLfloat lightAngle0;
     GLfloat lightAngle1;
@@ -241,15 +244,15 @@ int main(int argc, char* argv[])
     
     //opengl code
     
-    /****************SHADERS****************/
+    /********SHADERS********/
 
 
-    /****PV LIGHTING****/
+    //PER VERTEX LIGHTING
 
 
     /*****VERTEX SHADER*****/
 
-        //create shader
+    //create shader
     vertexShaderObjectPV = glCreateShader(GL_VERTEX_SHADER);
 
     //provide source code to vertex shader
@@ -273,7 +276,7 @@ int main(int argc, char* argv[])
         "out vec3 phong_ads_light; \n" \
         "void main(void) \n" \
         "{ \n" \
-        "   phong_ads_light = vec3(1.0, 1.0, 1.0); \n" \
+        "   phong_ads_light = vec3(0.0, 0.0, 0.0); \n" \
         "   if(u_lKeyPressed==1) \n" \
         "   { \n" \
         "       vec4 eye_coordinates = u_view_matrix * u_model_matrix * vPosition; \n" \
@@ -326,7 +329,7 @@ int main(int argc, char* argv[])
             {
                 GLsizei written;
                 glGetShaderInfoLog(vertexShaderObjectPV, infoLogLength, &written, szBuffer);
-                fprintf(gpFile, "\nVertex Shader Compilation Log of Per Vertex Lighting : %s\n", szBuffer);
+                fprintf(gpFile, "\nVertex Shader Compilation Log of PV Lighting: %s\n", szBuffer);
                 free(szBuffer);
                 [self release];
                 [NSApp terminate : self];
@@ -375,10 +378,11 @@ int main(int argc, char* argv[])
             {
                 GLsizei written;
                 glGetShaderInfoLog(fragmentShaderObjectPV, infoLogLength, &written, szBuffer);
-                fprintf(gpFile, "\nFragment Shader Compilation Log of Per Vertex Lighting : %s\n", szBuffer);
+                fprintf(gpFile, "\nFragment Shader Compilation Log of PV Lighting : %s\n", szBuffer);
                 free(szBuffer);
                 [self release];
                 [NSApp terminate : self];
+
             }
         }
     }
@@ -404,7 +408,7 @@ int main(int argc, char* argv[])
 
     //shader linking error checking
     infoLogLength = 0;
-    GLint shaderProgramLinkStatus;
+    GLint shaderProgramLinkStatus = 0;
     szBuffer = NULL;
 
     glGetProgramiv(shaderProgramObjectPV, GL_LINK_STATUS, &shaderProgramLinkStatus);
@@ -421,7 +425,7 @@ int main(int argc, char* argv[])
             {
                 GLsizei written;
                 glGetProgramInfoLog(shaderProgramObjectPV, infoLogLength, &written, szBuffer);
-                fprintf(gpFile, "\nShader Program Link Log of Per Vertex Lighting : %s\n", szBuffer);
+                fprintf(gpFile, "\nShader Program Link Log of PV Lighting : %s\n", szBuffer);
                 free(szBuffer);
                 [self release];
                 [NSApp terminate : self];
@@ -456,9 +460,12 @@ int main(int argc, char* argv[])
     kSUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_kS");
     kShininessUniformPV = glGetUniformLocation(shaderProgramObjectPV, "u_materialShininess");
 
-    
 
-    /****PF LIGHTING****/
+
+    /*******************************************************************************************************/
+
+
+    //PER FRAGMENT LIGHTING
 
 
     /*****VERTEX SHADER*****/
@@ -497,7 +504,6 @@ int main(int argc, char* argv[])
         "   gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * vPosition; \n" \
         "} \n";
 
-
     glShaderSource(vertexShaderObjectPF, 1, (const GLchar**)&vertexShaderSourceCodePF, NULL);
 
     //compile shader
@@ -521,7 +527,7 @@ int main(int argc, char* argv[])
             {
                 GLsizei written;
                 glGetShaderInfoLog(vertexShaderObjectPF, infoLogLength, &written, szBuffer);
-                fprintf(gpFile, "\nVertex Shader Compilation Log of Per Fragment Lighting : %s\n", szBuffer);
+                fprintf(gpFile, "\nVertex Shader Compilation Log of PF Lighting : %s\n", szBuffer);
                 free(szBuffer);
                 [self release];
                 [NSApp terminate : self];
@@ -555,36 +561,36 @@ int main(int argc, char* argv[])
         "vec3 phong_ads_light; \n" \
         "void main(void) \n" \
         "{ \n" \
-        "   phong_ads_light = vec3(1.0, 1.0, 1.0); \n" \
-        "   vec3 normalized_transformed_normals; \n" \
-        "   vec3 normalized_view_vector; \n" \
-        "   vec3 normalized_light_direction[3]; \n" \
-        "   vec3 reflection_vector[3]; \n" \
-        "   vec3 ambient[3]; \n" \
-        "   vec3 diffuse[3]; \n" \
-        "   vec3 specular[3]; \n" \
+        "\t phong_ads_light = vec3(0.0, 0.0, 0.0); \n" \
+        "\t vec3 normalized_transformed_normals; \n" \
+        "\t vec3 normalized_view_vector; \n" \
+        "\t vec3 normalized_light_direction[3]; \n" \
+        "\t vec3 reflection_vector[3]; \n" \
+        "\t vec3 ambient[3]; \n" \
+        "\t vec3 diffuse[3]; \n" \
+        "\t vec3 specular[3]; \n" \
         "\n" \
-        "   if(u_lKeyPressed==1) \n" \
-        "   { \n" \
-        "       normalized_transformed_normals = normalize(transformed_normal); \n" \
-        "       normalized_view_vector = normalize(view_vector); \n" \
+        "\t if(u_lKeyPressed==1) \n" \
+        "\t { \n" \
+        "\t \t normalized_transformed_normals = normalize(transformed_normal); \n" \
+        "\t \t normalized_view_vector = normalize(view_vector); \n" \
         "\n" \
-        "       for(int i = 0; i < 3; i++) \n" \
-        "       { \n" \
-        "           normalized_light_direction[i] = normalize(light_direction[i]); \n" \
-        "           reflection_vector[i] = reflect(-normalized_light_direction[i], normalized_transformed_normals); \n" \
-        "           ambient[i] = u_lA[i] * u_kA; \n" \
-        "           diffuse[i] = u_lD[i] * u_kD * max(dot(normalized_light_direction[i], normalized_transformed_normals), 0.0); \n" \
-        "           specular[i] = u_lS[i] * u_kS * pow(max(dot(reflection_vector[i], normalized_view_vector), 0.0), u_materialShininess); \n" \
-        "           phong_ads_light += ambient[i] + diffuse[i] + specular[i]; \n" \
-        "       } \n" \
-        "   } \n" \
-        "   else \n" \
-        "   { \n" \
-        "       phong_ads_light = vec3(1.0, 1.0, 1.0); \n" \
-        "   } \n" \
+        "\t \t for(int i = 0; i < 3; i++) \n" \
+        "\t \t { \n" \
+        "\t \t \t normalized_light_direction[i] = normalize(light_direction[i]); \n" \
+        "\t \t \t reflection_vector[i] = reflect(-normalized_light_direction[i], normalized_transformed_normals); \n" \
+        "\t \t \t ambient[i] = u_lA[i] * u_kA; \n" \
+        "\t \t \t diffuse[i] = u_lD[i] * u_kD * max(dot(normalized_light_direction[i], normalized_transformed_normals), 0.0); \n" \
+        "\t \t \t specular[i] = u_lS[i] * u_kS * pow(max(dot(reflection_vector[i], normalized_view_vector), 0.0), u_materialShininess); \n" \
+        "\t \t \t phong_ads_light += ambient[i] + diffuse[i] + specular[i]; \n" \
+        "\t \t } \n" \
+        "\t } \n" \
+        "\t else \n" \
+        "\t { \n" \
+        "\t \t phong_ads_light = vec3(1.0, 1.0, 1.0); \n" \
+        "\t } \n" \
         "\n" \
-        "   FragColor = vec4(phong_ads_light, 1.0f); \n" \
+        "\t FragColor = vec4(phong_ads_light, 1.0f); \n" \
         "} \n";
 
     glShaderSource(fragmentShaderObjectPF, 1, (const GLchar**)&fragmentShaderSourceCodePF, NULL);
@@ -610,7 +616,7 @@ int main(int argc, char* argv[])
             {
                 GLsizei written;
                 glGetShaderInfoLog(fragmentShaderObjectPF, infoLogLength, &written, szBuffer);
-                fprintf(gpFile, "\nFragment Shader Compilation Log of Per Fragment Lighting : %s\n", szBuffer);
+                fprintf(gpFile, "\nFragment Shader Compilation Log of PF Lighting : %s\n", szBuffer);
                 free(szBuffer);
                 [self release];
                 [NSApp terminate : self];
@@ -657,7 +663,7 @@ int main(int argc, char* argv[])
             {
                 GLsizei written;
                 glGetProgramInfoLog(shaderProgramObjectPF, infoLogLength, &written, szBuffer);
-                fprintf(gpFile, "\nShader Program Link Log of Per Fragment Lighting : %s\n", szBuffer);
+                fprintf(gpFile, "\nShader Program Link Log of PF Lighting: %s\n", szBuffer);
                 free(szBuffer);
                 [self release];
                 [NSApp terminate : self];
@@ -693,10 +699,38 @@ int main(int argc, char* argv[])
     kShininessUniformPF = glGetUniformLocation(shaderProgramObjectPF, "u_materialShininess");
 
 
+
+    /*******************************************************************************************************/
+
+
+
     //vertices array declaration
 
     makeSphere(1.0, 50, 50);
     
+    //variables initialization
+    pvLighting = true;
+    bLight = false;
+    
+    //LIGHT INITIALIZATION
+    light[0].lightAmbient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    light[0].lightDiffuse = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    light[0].lightSpecular = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    light[0].lightPosition = vec4(2.0f, 0.0f, 0.0f, 1.0f);
+
+    light[1].lightAmbient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    light[1].lightDiffuse = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    light[1].lightSpecular = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    light[1].lightPosition = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+    light[2].lightAmbient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    light[2].lightDiffuse = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    light[2].lightSpecular = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    light[2].lightPosition = vec4(-2.0f, 0.0f, 0.0f, 1.0f);
+
+    lightAngle0 = 0.0f;
+    lightAngle1 = 0.0f;
+    lightAngle2 = 0.0f;
     
     //depth
     glClearDepth(1.0f);
@@ -708,29 +742,6 @@ int main(int argc, char* argv[])
     
     //set perspective matrix to identity matrix
     perspectiveProjectionMatrix = vmath::mat4::identity();
-    
-    //variables initialization
-    pvLighting = true;
-    bLight = false;
-    
-//    light[0].lightAmbient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-//    light[0].lightDiffuse = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-//    light[0].lightSpecular = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-//    light[0].lightPosition = vec4(2.0f, 0.0f, 0.0f, 1.0f);
-//
-//    light[1].lightAmbient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-//    light[1].lightDiffuse = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-//    light[1].lightSpecular = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-//    light[1].lightPosition = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-//
-//    light[2].lightAmbient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-//    light[2].lightDiffuse = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-//    light[2].lightSpecular = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-//    light[2].lightPosition = vec4(-2.0f, 0.0f, 0.0f, 1.0f);
-//
-    lightAngle0 = 0.0f;
-    lightAngle1 = 0.0f;
-    lightAngle2 = 0.0f;
     
     //CV and CGL related code
     CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
@@ -778,101 +789,132 @@ int main(int argc, char* argv[])
 
     //start using OpenGL program object
     if (pvLighting == true)
+    {
+        fprintf(gpFile, "PV shader uni\n");
         glUseProgram(shaderProgramObjectPV);
+    }
 
     else
+    {
+        fprintf(gpFile, "PV shader uni\n");
         glUseProgram(shaderProgramObjectPF);
+    }
 
 
     if (bLight == true)
     {
+        fprintf(gpFile, "blight\n");
         if (pvLighting == true)
         {
+            fprintf(gpFile, "PV light\n");
             glUniform1i(LKeyPressedUniformPV, 1);
 
             /****GOURAUD****/
 
-            glUniform3f(lAUniformPV[0], 0.0f, 0.0f, 0.0f);
-            glUniform3f(lDUniformPV[0], 1.0f, 0.0f, 0.0f);
-            glUniform3f(lSUniformPV[0], 1.0f, 0.0f, 0.0f);
-            //glUniform4f(lightPositionUniformPV[0], 2.0f, 0.0f, 0.0f, 1.0f);
-            glUniform4f(lightPositionUniformPV[0], 0.0f, r * sin(lightAngle0), r * cos(lightAngle0), 1.0f);
+            glUniform3fv(lAUniformPV[0], 1, light[0].lightAmbient);
+            glUniform3fv(lDUniformPV[0], 1, light[0].lightDiffuse);
+            glUniform3fv(lSUniformPV[0], 1, light[0].lightSpecular);
+            glUniform4fv(lightPositionUniformPV[0], 1, light[0].lightPosition);
 
-            glUniform3f(lAUniformPV[1], 0.0f, 0.0f, 0.0f);
-            glUniform3f(lDUniformPV[1], 0.0f, 1.0f, 0.0f);
-            glUniform3f(lSUniformPV[1], 0.0f, 1.0f, 0.0f);
-            //glUniform4f(lightPositionUniformPV[1], 0.0f, 0.0f, 0.0f, 1.0f);
-            glUniform4f(lightPositionUniformPV[1], r * sin(lightAngle1), 0.0f, r * cos(lightAngle1), 1.0f);
+            glUniform3fv(lAUniformPV[1], 1, light[1].lightAmbient);
+            glUniform3fv(lDUniformPV[1], 1, light[1].lightDiffuse);
+            glUniform3fv(lSUniformPV[1], 1, light[1].lightSpecular);
+            glUniform4fv(lightPositionUniformPV[1], 1, light[1].lightPosition);
 
-            glUniform3f(lAUniformPV[2], 0.0f, 0.0f, 0.0f);
-            glUniform3f(lDUniformPV[2], 0.0f, 0.0f, 1.0f);
-            glUniform3f(lSUniformPV[2], 0.0f, 0.0f, 1.0f);
-            //glUniform4f(lightPositionUniformPV[2], -2.0f, 0.0f, 0.0f, 1.0f);
-            glUniform4f(lightPositionUniformPV[2], r * sin(lightAngle2), r * cos(lightAngle2), 0.0f, 1.0f);
+            glUniform3fv(lAUniformPV[2], 1, light[2].lightAmbient);
+            glUniform3fv(lDUniformPV[2], 1, light[2].lightDiffuse);
+            glUniform3fv(lSUniformPV[2], 1, light[2].lightSpecular);
+            glUniform4fv(lightPositionUniformPV[2], 1, light[2].lightPosition);
 
             glUniform3f(kAUniformPV, 0.0f, 0.0f, 0.0f);
             glUniform3f(kDUniformPV, 1.0f, 1.0f, 1.0f);
             glUniform3f(kSUniformPV, 1.0f, 1.0f, 1.0f);
             glUniform1f(kShininessUniformPV, 50.0);
+
+            ///****ALBEDO****/
+            //
+            //glUniform3f(lAUniform, 0.1f, 0.1f, 0.1f);
+            //glUniform3f(lDUniform, 1.0f, 1.0f, 1.0f);
+            //glUniform3f(lSUniform, 1.0f, 1.0f, 1.0f);
+            //glUniform4fv(lightPositionUniform, 1, (GLfloat*)lightPosition);
+
+            //glUniform3f(kAUniform, 0.0f, 0.0f, 0.0f);
+            //glUniform3f(kDUniform, 0.5f, 0.2f, 0.7f);
+            //glUniform3f(kSUniform, 0.7f, 0.7f, 0.7f);
+            //glUniform1f(kShininessUniform, 128.0);
+
         }
 
         else
         {
+            fprintf(gpFile, "PF light\n");
             glUniform1i(LKeyPressedUniformPF, 1);
 
             /****GOURAUD****/
 
-            glUniform3f(lAUniformPF[0], 0.0f, 0.0f, 0.0f);
-            glUniform3f(lDUniformPF[0], 1.0f, 0.0f, 0.0f);
-            glUniform3f(lSUniformPF[0], 1.0f, 0.0f, 0.0f);
-            //glUniform4f(lightPositionUniformPF[0], 2.0f, 0.0f, 0.0f, 1.0f);
-            glUniform4f(lightPositionUniformPF[0], 0.0f, r * sin(lightAngle0), r * cos(lightAngle0), 1.0f);
+            glUniform3fv(lAUniformPF[0], 1, light[0].lightAmbient);
+            glUniform3fv(lDUniformPF[0], 1, light[0].lightDiffuse);
+            glUniform3fv(lSUniformPF[0], 1, light[0].lightSpecular);
+            glUniform4fv(lightPositionUniformPF[0], 1, light[0].lightPosition);
 
+            glUniform3fv(lAUniformPF[1], 1, light[1].lightAmbient);
+            glUniform3fv(lDUniformPF[1], 1, light[1].lightDiffuse);
+            glUniform3fv(lSUniformPF[1], 1, light[1].lightSpecular);
+            glUniform4fv(lightPositionUniformPF[1], 1, light[1].lightPosition);
 
-            glUniform3f(lAUniformPF[1], 0.0f, 0.0f, 0.0f);
-            glUniform3f(lDUniformPF[1], 0.0f, 1.0f, 0.0f);
-            glUniform3f(lSUniformPF[1], 0.0f, 1.0f, 0.0f);
-            //glUniform4f(lightPositionUniformPF[1], 0.0f, 0.0f, 0.0f, 1.0f);
-            glUniform4f(lightPositionUniformPF[1], r * sin(lightAngle1), 0.0f, r * cos(lightAngle1), 1.0f);
-
-
-            glUniform3f(lAUniformPF[2], 0.0f, 0.0f, 0.0f);
-            glUniform3f(lDUniformPF[2], 0.0f, 0.0f, 1.0f);
-            glUniform3f(lSUniformPF[2], 0.0f, 0.0f, 1.0f);
-            //glUniform4f(lightPositionUniformPF[2], -2.0f, 0.0f, 0.0f, 1.0f);
-            glUniform4f(lightPositionUniformPF[2], r * sin(lightAngle2), r * cos(lightAngle2), 0.0f, 1.0f);
-
+            glUniform3fv(lAUniformPF[2], 1, light[2].lightAmbient);
+            glUniform3fv(lDUniformPF[2], 1, light[2].lightDiffuse);
+            glUniform3fv(lSUniformPF[2], 1, light[2].lightSpecular);
+            glUniform4fv(lightPositionUniformPF[2], 1, light[2].lightPosition);
 
             glUniform3f(kAUniformPF, 0.0f, 0.0f, 0.0f);
             glUniform3f(kDUniformPF, 1.0f, 1.0f, 1.0f);
             glUniform3f(kSUniformPF, 1.0f, 1.0f, 1.0f);
             glUniform1f(kShininessUniformPF, 128.0);
+
+            ///****ALBEDO****/
+            //
+            //glUniform3f(lAUniform, 0.1f, 0.1f, 0.1f);
+            //glUniform3f(lDUniform, 1.0f, 1.0f, 1.0f);
+            //glUniform3f(lSUniform, 1.0f, 1.0f, 1.0f);
+            //glUniform4fv(lightPositionUniform, 1, (GLfloat*)lightPosition);
+
+            //glUniform3f(kAUniform, 0.0f, 0.0f, 0.0f);
+            //glUniform3f(kDUniform, 0.5f, 0.2f, 0.7f);
+            //glUniform3f(kSUniform, 0.7f, 0.7f, 0.7f);
+            //glUniform1f(kShininessUniform, 128.0);
+
         }
         
-//        light[0].lightPosition[0] = 0.0f;
-//        light[0].lightPosition[1] = r * sin(lightAngle0);
-//        light[0].lightPosition[2] = r * cos(lightAngle0);
-//        light[0].lightPosition[3] = 1.0f;
-//
-//        light[1].lightPosition[0] = r * sin(lightAngle1);
-//        light[1].lightPosition[1] = 0.0f;
-//        light[1].lightPosition[2] = r * cos(lightAngle1);
-//        light[1].lightPosition[3] = 1.0f;
-//
-//        light[2].lightPosition[0] = r * sin(lightAngle2);
-//        light[2].lightPosition[1] = r * cos(lightAngle2);
-//        light[2].lightPosition[2] = 0.0f;
-//        light[2].lightPosition[3] = 1.0f;
+        light[0].lightPosition[0] = 0.0f;
+        light[0].lightPosition[1] = r * sin(lightAngle0);
+        light[0].lightPosition[2] = r * cos(lightAngle0);
+        light[0].lightPosition[3] = 1.0f;
 
+        light[1].lightPosition[0] = r * sin(lightAngle1);
+        light[1].lightPosition[1] = 0.0f;
+        light[1].lightPosition[2] = r * cos(lightAngle1);
+        light[1].lightPosition[3] = 1.0f;
+
+        light[2].lightPosition[0] = r * sin(lightAngle2);
+        light[2].lightPosition[1] = r * cos(lightAngle2);
+        light[2].lightPosition[2] = 0.0f;
+        light[2].lightPosition[3] = 1.0f;
     }
     else
     {
         if (pvLighting == true)
+        {
             glUniform1i(LKeyPressedUniformPV, 0);
+        }
         else
+        {
             glUniform1i(LKeyPressedUniformPF, 0);
-    }
+        }
         
+    }
+
+
 
     //OpenGL Drawing
 
@@ -880,6 +922,7 @@ int main(int argc, char* argv[])
     mat4 viewMatrix;
     mat4 projectionMatrix;
     mat4 translateMatrix;
+
 
     modelMatrix = mat4::identity();
     viewMatrix = mat4::identity();
@@ -894,12 +937,14 @@ int main(int argc, char* argv[])
 
     if (pvLighting == true)
     {
+        fprintf(gpFile, "PV light uni\n");
         glUniformMatrix4fv(modelMatrixUniformPV, 1, GL_FALSE, modelMatrix);
         glUniformMatrix4fv(viewMatrixUniformPV, 1, GL_FALSE, viewMatrix);
         glUniformMatrix4fv(projectionMatrixUniformPV, 1, GL_FALSE, projectionMatrix);
     }
     else
     {
+        fprintf(gpFile, "PF light uni\n");
         glUniformMatrix4fv(modelMatrixUniformPF, 1, GL_FALSE, modelMatrix);
         glUniformMatrix4fv(viewMatrixUniformPF, 1, GL_FALSE, viewMatrix);
         glUniformMatrix4fv(projectionMatrixUniformPF, 1, GL_FALSE, projectionMatrix);
@@ -971,6 +1016,7 @@ int main(int argc, char* argv[])
 
     }
 
+
     if (shaderProgramObjectPF)
     {
         glUseProgram(shaderProgramObjectPF);
@@ -1026,10 +1072,13 @@ int main(int argc, char* argv[])
         case 'L':
         case 'l':
             if (bLight == true)
+            {
                 bLight = false;
+            }
             else
+            {
                 bLight = true;
-            break;
+            }
 
         case 'V':
         case 'v':
