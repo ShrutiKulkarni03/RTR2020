@@ -463,7 +463,9 @@ int main(int argc, char* argv[])
     //code
     [super reshape];
     CGLLockContext((CGLContextObj)[[self openGLContext]CGLContextObj]);
-    NSRect rect = [self bounds];
+    
+//    NSRect rect = [self bounds];
+    NSRect rect = [self convertRectToBacking:[self bounds]];
     
     if(rect.size.height<0)
         rect.size.height = 1;
