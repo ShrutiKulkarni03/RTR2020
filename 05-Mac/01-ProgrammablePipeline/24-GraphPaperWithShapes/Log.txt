@@ -1,0 +1,6 @@
+Program Started Successfully. 
+
+size = 189
+inNumVertices = 63
+exNumVertices = 63
+Program Terminated Successfully. 
