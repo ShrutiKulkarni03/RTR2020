@@ -349,11 +349,6 @@ int main(int argc, char* argv[])
     //get MVP uniform location
     mvpMatrixUniform = glGetUniformLocation(shaderProgramObject, "u_mvpMatrix");
 
-
-    //vertices array declaration
-
-    mvpMatrixUniform = glGetUniformLocation(shaderProgramObject, "u_mvpMatrix");
-
     makeSphere(0.5f, 15, 15);
     pStack = Create();
     
