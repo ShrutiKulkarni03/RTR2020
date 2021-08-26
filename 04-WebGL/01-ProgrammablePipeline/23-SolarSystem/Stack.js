@@ -4,10 +4,11 @@ function Stack()
 {
     var elements=[];
     var top = 0;
-    var target;
+   
 
     this.push=function(matrix)
     {
+        var target = {};
         // code
         //elements[top] = matrix;
         elements[top] = Object.assign(target, matrix);
