@@ -3,13 +3,14 @@
 function Stack()
 {
     var elements=[];
-    var top=0;
+    var top = 0;
+    var target;
 
     this.push=function(matrix)
     {
         // code
         //elements[top] = matrix;
-        elements[top] = Object.assign(top, matrix);
+        elements[top] = Object.assign(target, matrix);
         top = top + 1;
     }
     
