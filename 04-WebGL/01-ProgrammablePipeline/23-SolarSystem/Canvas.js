@@ -272,7 +272,7 @@ function draw()
 	//SUN
 
 	mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -6.0]);
-	//stack.push(modelViewMatrix);
+	stack.push(modelViewMatrix);
 
 	mat4.rotateX(modelViewMatrix, modelViewMatrix, degToRad(90.0));
 
@@ -282,8 +282,8 @@ function draw()
 
 	sphere.draw();
 
-	//modelViewMatrix = stack.pop();
-	//stack.push(modelViewMatrix);
+	modelViewMatrix = stack.pop();
+	stack.push(modelViewMatrix);
 
 
 	//EARTH
@@ -293,7 +293,7 @@ function draw()
 	mat4.scale(modelViewMatrix, modelViewMatrix, [0.3, 0.3, 0.3]);
 	mat4.rotateX(modelViewMatrix, modelViewMatrix, degToRad(90.0));
 
-	//stack.push(modelViewMatrix);
+	stack.push(modelViewMatrix);
 
 	mat4.rotateZ(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(day)));
 
@@ -303,8 +303,8 @@ function draw()
 
 	sphere.draw();
 
-	//modelViewMatrix = stack.pop();
-	//stack.push(modelViewMatrix);
+	modelViewMatrix = stack.pop();
+	stack.push(modelViewMatrix);
 
 	//MOON
 
@@ -320,7 +320,7 @@ function draw()
 
 	sphere.draw();
 
-	//modelViewMatrix = stack.pop();
+	modelViewMatrix = stack.pop();
 	
 	gl.useProgram(null);
 
