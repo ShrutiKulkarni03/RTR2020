@@ -274,7 +274,7 @@ function draw()
 	mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -6.0]);
 	//stack.push(modelViewMatrix);
 
-	//mat4.rotateX(modelViewMatrix, modelViewMatrix, degToRad(90.0));
+	mat4.rotateX(modelViewMatrix, modelViewMatrix, degToRad(90.0));
 
 	mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
 	gl.uniformMatrix4fv(mvpUniform, false, modelViewProjectionMatrix);
@@ -291,11 +291,11 @@ function draw()
 	mat4.rotateY(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(year)));
 	mat4.translate(modelViewMatrix, modelViewMatrix, [2.5, 0.0, 0.0]);
 	mat4.scale(modelViewMatrix, modelViewMatrix, [0.3, 0.3, 0.3]);
-	//mat4.rotateX(modelViewMatrix, modelViewMatrix, degToRad(90.0));
+	mat4.rotateX(modelViewMatrix, modelViewMatrix, degToRad(90.0));
 
 	//stack.push(modelViewMatrix);
 
-	mat4.rotateY(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(day)));
+	mat4.rotateZ(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(day)));
 
 	mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
 	gl.uniformMatrix4fv(mvpUniform, false, modelViewProjectionMatrix);
@@ -308,11 +308,11 @@ function draw()
 
 	//MOON
 
-	mat4.rotateY(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(day)));
+	mat4.rotateZ(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(day)));
 	mat4.translate(modelViewMatrix, modelViewMatrix, [3.0, 0.0, 0.0]);
 	mat4.scale(modelViewMatrix, modelViewMatrix, [0.5, 0.5, 0.5]);
 
-	mat4.rotateY(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(hour)));
+	mat4.rotateZ(modelViewMatrix, modelViewMatrix, degToRad(parseFloat(hour)));
 
 	mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
 	gl.uniformMatrix4fv(mvpUniform, false, modelViewProjectionMatrix);

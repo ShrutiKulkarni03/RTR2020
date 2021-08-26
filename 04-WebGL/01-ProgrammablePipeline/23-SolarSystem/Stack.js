@@ -8,7 +8,8 @@ function Stack()
     this.push=function(matrix)
     {
         // code
-        elements[top] = matrix;
+        //elements[top] = matrix;
+        elements[top] = Object.assign(top, matrix);
         top = top + 1;
     }
     
