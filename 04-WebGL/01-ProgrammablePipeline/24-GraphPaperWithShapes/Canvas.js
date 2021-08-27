@@ -35,6 +35,8 @@ var vbo_incircle_position;
 var vao_excircle;
 var vbo_excircle_position;
 
+var numVertices = 0;
+
 var mvpUniform;
 
 var perspectiveProjectionMatrix;
@@ -281,6 +283,7 @@ function init()
 
 	for (var angle = 0.0; angle <= (2 * Math.PI); angle += 0.1)
 	{
+
 		in_verts.push(in_r * Math.cos(angle) + in_x);
 		in_verts.push(in_r * Math.sin(angle) + in_y);
 		in_verts.push(in_r * 0.0);
@@ -288,6 +291,8 @@ function init()
 		ex_verts.push(ex_r * Math.cos(angle));
 		ex_verts.push(ex_r * Math.sin(angle));
 		ex_verts.push(ex_r * 0.0);
+
+		numVertices++;
 
 		//var x = in_x + in_r * Math.cos(angle);
 		//var y = in_y + in_r * Math.sin(angle);
@@ -543,7 +548,7 @@ function draw()
 
 	gl.bindVertexArray(vao_incircle);
 
-	gl.drawArrays(gl.LINE_LOOP, 0, 63);
+	gl.drawArrays(gl.LINE_LOOP, 0, numVertices);
 
 	gl.bindVertexArray(null);
 
@@ -557,7 +562,7 @@ function draw()
 
 	gl.bindVertexArray(vao_excircle);
 
-	gl.drawArrays(gl.LINE_LOOP, 0, 63);
+	gl.drawArrays(gl.LINE_LOOP, 0, numVertices);
 
 	gl.bindVertexArray(null);
 
