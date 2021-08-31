@@ -1,0 +1,133 @@
+Log File Created Successfully, Program Started Successfully.
+
+Number of FBConfigs = 24
+
+When i = 0 -> samples = 0 -> sampleBuffers = 0
+When i = 1 -> samples = 0 -> sampleBuffers = 0
+When i = 2 -> samples = 0 -> sampleBuffers = 0
+When i = 3 -> samples = 0 -> sampleBuffers = 0
+When i = 4 -> samples = 2 -> sampleBuffers = 1
+When i = 5 -> samples = 2 -> sampleBuffers = 1
+When i = 6 -> samples = 2 -> sampleBuffers = 1
+When i = 7 -> samples = 2 -> sampleBuffers = 1
+When i = 8 -> samples = 4 -> sampleBuffers = 1
+When i = 9 -> samples = 4 -> sampleBuffers = 1
+When i = 10 -> samples = 4 -> sampleBuffers = 1
+When i = 11 -> samples = 4 -> sampleBuffers = 1
+When i = 12 -> samples = 8 -> sampleBuffers = 1
+When i = 13 -> samples = 8 -> sampleBuffers = 1
+When i = 14 -> samples = 8 -> sampleBuffers = 1
+When i = 15 -> samples = 8 -> sampleBuffers = 1
+When i = 16 -> samples = 0 -> sampleBuffers = 0
+When i = 17 -> samples = 0 -> sampleBuffers = 0
+When i = 18 -> samples = 0 -> sampleBuffers = 0
+When i = 19 -> samples = 0 -> sampleBuffers = 0
+When i = 20 -> samples = 0 -> sampleBuffers = 0
+When i = 21 -> samples = 0 -> sampleBuffers = 0
+When i = 22 -> samples = 0 -> sampleBuffers = 0
+When i = 23 -> samples = 0 -> sampleBuffers = 0
+
+Rendering Context is Direct Hardware Rendering Context.
+OpenGL VENDOR : X.Org
+OpenGL RENDERER : AMD Radeon(TM) Vega 3 Graphics (RAVEN2, DRM 3.38.0, 5.8.0-53-generic, LLVM 11.0.0)
+OpenGL VERSION : 4.6 (Core Profile) Mesa 20.2.6
+GLSL[Graphics Library Shading Language] VERSION : 4.60
+
+EXTENTIONS : 
+GL_AMD_conservative_depth
+GL_AMD_depth_clamp_separate
+GL_AMD_draw_buffers_blend
+GL_AMD_framebuffer_multisample_advanced
+GL_AMD_gpu_shader_int64
+GL_AMD_multi_draw_indirect
+GL_AMD_performance_monitor
+GL_AMD_pinned_memory
+GL_AMD_query_buffer_object
+GL_AMD_seamless_cubemap_per_texture
+GL_AMD_shader_stencil_export
+GL_AMD_shader_trinary_minmax
+GL_AMD_texture_texture4
+GL_AMD_vertex_shader_layer
+GL_AMD_vertex_shader_viewport_index
+GL_ANGLE_texture_compression_dxt3
+GL_ANGLE_texture_compression_dxt5
+GL_ARB_ES2_compatibility
+GL_ARB_ES3_1_compatibility
+GL_ARB_ES3_2_compatibility
+GL_ARB_ES3_compatibility
+GL_ARB_arrays_of_arrays
+GL_ARB_base_instance
+GL_ARB_bindless_texture
+GL_ARB_blend_func_extended
+GL_ARB_buffer_storage
+GL_ARB_clear_buffer_object
+GL_ARB_clear_texture
+GL_ARB_clip_control
+GL_ARB_color_buffer_float
+GL_ARB_compressed_texture_pixel_storage
+GL_ARB_compute_shader
+GL_ARB_compute_variable_group_size
+GL_ARB_conditional_render_inverted
+GL_ARB_conservative_depth
+GL_ARB_copy_buffer
+GL_ARB_copy_image
+GL_ARB_cull_distance
+GL_ARB_debug_output
+GL_ARB_depth_buffer_float
+GL_ARB_depth_clamp
+GL_ARB_derivative_control
+GL_ARB_direct_state_access
+GL_ARB_draw_buffers
+GL_ARB_draw_buffers_blend
+GL_ARB_draw_elements_base_vertex
+GL_ARB_draw_indirect
+GL_ARB_draw_instanced
+GL_ARB_enhanced_layouts
+GL_ARB_explicit_attrib_location
+GL_ARB_explicit_uniform_location
+GL_ARB_fragment_coord_conventions
+GL_ARB_fragment_layer_viewport
+GL_ARB_fragment_shader
+GL_ARB_framebuffer_no_attachments
+GL_ARB_framebuffer_object
+GL_ARB_framebuffer_sRGB
+GL_ARB_get_program_binary
+GL_ARB_get_texture_sub_image
+GL_ARB_gl_spirv
+GL_ARB_gpu_shader5
+GL_ARB_gpu_shader_fp64
+GL_ARB_gpu_shader_int64
+GL_ARB_half_float_pixel
+GL_ARB_half_float_vertex
+GL_ARB_indirect_parameters
+GL_ARB_instanced_arrays
+GL_ARB_internalformat_query
+GL_ARB_internalformat_query2
+GL_ARB_invalidate_subdata
+GL_ARB_map_buffer_alignment
+GL_ARB_map_buffer_range
+GL_ARB_multi_bind
+GL_ARB_multi_draw_indirect
+GL_ARB_occlusion_query2
+GL_ARB_parallel_shader_compile
+GL_ARB_pipeline_statistics_query
+GL_ARB_pixel_buffer_object
+GL_ARB_point_sprite
+GL_ARB_polygon_offset_clamp
+GL_ARB_program_interface_query
+GL_ARB_provoking_vertex
+GL_ARB_query_buffer_object
+GL_ARB_robust_buffer_access_behavior
+GL_ARB_robustness
+GL_ARB_sample_shading
+GL_ARB_sampler_objects
+GL_ARB_seamless_cube_map
+GL_ARB_seamless_cubemap_per_texture
+GL_ARB_separate_shader_objects
+GL_ARB_shader_atomic_counter_ops
+GL_ARB_shader_atomic_counters
+GL_ARB_shader_ballot
+GL_ARB_shader_bit_encoding
+GL_ARB_shader_clock
+GL_ARB_shader_draw_parameters
+GL_ARB_shader_group_vote
