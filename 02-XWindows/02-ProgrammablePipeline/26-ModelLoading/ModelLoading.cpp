@@ -645,8 +645,8 @@ void LoadMeshData(void)
 	void show_vec_float(struct vect_float* p_vec_float);
 	void show_vec_int(struct vect_int* p_vec_int);
 
-	char *space = " ";
-    char *slash = "/";
+	char *space = (char *)" ";
+    char *slash = (char *)"/";
     char *first_token = NULL;
     char *token;
 	char* f_entries[3] = { NULL, NULL, NULL };
