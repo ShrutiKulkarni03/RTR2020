@@ -439,7 +439,7 @@ HRESULT Initialize(void)
 			"struct vertex_output \n" \
 			"{ \n" \
 			"	float4 position: SV_POSITION; \n" \
-			"	float4 diffuse_light: COLOR; \n" \
+			"	float4 diffuse_light: NORMAL; \n" \
 			"}; \n" \
 
 			"vertex_output main(float4 pos : POSITION, float4 normal : NORMAL)\n" \
@@ -532,7 +532,7 @@ HRESULT Initialize(void)
 			"struct vertex_output \n" \
 			"{ \n" \
 			"	float4 position: SV_POSITION; \n" \
-			"	float4 diffuse_light: COLOR; \n" \
+			"	float4 diffuse_light: NORMAL; \n" \
 			"}; \n" \
 
 			"float4 main(vertex_output input) : SV_TARGET\n" \
