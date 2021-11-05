@@ -806,7 +806,7 @@ HRESULT Initialize(void)
 
 		ZeroMemory(&d3d11MappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		gpID3D11DeviceContext->Map(gpID3D11Buffer_VertexBuffer_normal_pyramid, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3d11MappedSubResource);
-		memcpy(d3d11MappedSubResource.pData, pyramidVertices, sizeof(pyramidNormals));
+		memcpy(d3d11MappedSubResource.pData, pyramidNormals, sizeof(pyramidNormals));
 		gpID3D11DeviceContext->Unmap(gpID3D11Buffer_VertexBuffer_normal_pyramid, 0);
 
 

@@ -43,4 +43,20 @@ Resize() successful
 
 Initialize() successful
 
+CreateRenderTargetView() successful
+
+CreateTexture2D() successful
+
+CreateDepthStencilView() successful
+
+WM_SIZE- resize() successful
+
+CreateRenderTargetView() successful
+
+CreateTexture2D() successful
+
+CreateDepthStencilView() successful
+
+WM_SIZE- resize() successful
+
 Log File Closed Successfully, Program Completed Successfully.
