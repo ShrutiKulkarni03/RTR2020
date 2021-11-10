@@ -13,6 +13,7 @@
 #include "inc/wavhelper.h"
 #include "inc/vmath.h"
 #include "inc/SphereMesh.h"
+#include "inc/TorusMesh.h"
 #include "inc/CircleVector.h"
 #include "inc/stack.h"
 #include "inc/GlobalVariableDeclarations.h"
@@ -170,147 +171,197 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			ToggleFullscreen();
 			break;*/
 
+		case VK_UP:
+			if (frameCount >= 2800)
+				orbitsXRot -= 0.5f;
+			break;
+
+		case VK_DOWN:
+			if (frameCount >= 2800)
+				orbitsXRot += 0.5f;
+			break;
+
+		case VK_LEFT:
+			if (frameCount >= 2800)
+				orbitsZRot += 0.5f;
+			break;
+
+		case VK_RIGHT:
+			if (frameCount >= 2800)
+				orbitsZRot -= 0.5f;
+			break;
+
 		case 48:
 		case VK_NUMPAD0:
 			break;
 
 		case 49:
 		case VK_NUMPAD1:
-			bTextViewport = true;
-			isMercuryClicked = true;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = true;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 50:
 		case VK_NUMPAD2:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = true;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = true;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 51:
 		case VK_NUMPAD3:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = true;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = true;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 52:
 		case VK_NUMPAD4:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = true;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = true;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 53:
 		case VK_NUMPAD5:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = true;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = true;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 54:
 		case VK_NUMPAD6:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = true;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = true;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 55:
 		case VK_NUMPAD7:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = true;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = true;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 56:
 		case VK_NUMPAD8:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = true;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = true;
+				isPlutoClicked = false;
+			}
 			break;
 
 		case 57:
 		case VK_NUMPAD9:
-			bTextViewport = true;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = true;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = true;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = true;
+			}
 			break;
 
 		default:
-			bTextViewport = false;
-			isMercuryClicked = false;
-			isVenusClicked = false;
-			isEarthClicked = false;
-			isMarsClicked = false;
-			isJupiterClicked = false;
-			isSaturnClicked = false;
-			isUranusClicked = false;
-			isNeptuneClicked = false;
-			isPlutoClicked = false;
+			if (frameCount >= 2800)
+			{
+				bTextViewport = false;
+				isMercuryClicked = false;
+				isVenusClicked = false;
+				isEarthClicked = false;
+				isMarsClicked = false;
+				isJupiterClicked = false;
+				isSaturnClicked = false;
+				isUranusClicked = false;
+				isNeptuneClicked = false;
+				isPlutoClicked = false;
+			}
 			break;
 		}
 		break;
@@ -321,6 +372,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		case 'F':
 		case 'f':
 			ToggleFullscreen();
+			break;
+
+		case 'R':
+		case 'r':
+			orbitsXRot = 30.0f;
+			orbitsZRot = 0.0f;
 			break;
 		}
 		break;
@@ -345,7 +402,7 @@ void ToggleFullscreen(void)
 	MONITORINFO mi = { sizeof(MONITORINFO) };
 
 	//code
-	if (gbFullscreen == false)
+	/*if (gbFullscreen == false)
 	{
 		dwStyle = GetWindowLong(ghwnd, GWL_STYLE);
 
@@ -369,7 +426,20 @@ void ToggleFullscreen(void)
 
 		ShowCursor(true);
 		gbFullscreen = false;
+	}*/
+
+	dwStyle = GetWindowLong(ghwnd, GWL_STYLE);
+
+	if (dwStyle & WS_OVERLAPPEDWINDOW)
+	{
+		if (GetWindowPlacement(ghwnd, &wpPrev) && GetMonitorInfo(MonitorFromWindow(ghwnd, MONITORINFOF_PRIMARY), &mi))
+		{
+			SetWindowLong(ghwnd, GWL_STYLE, (dwStyle & ~WS_OVERLAPPEDWINDOW));
+			SetWindowPos(ghwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_NOZORDER | SWP_FRAMECHANGED);
+		}
+
 	}
+	ShowCursor(true);
 }
 
 void initFreetype(void)
@@ -520,6 +590,8 @@ void Initialize(void)
 	int iPixelFormatIndex;
 
 	//code
+	ToggleFullscreen();
+
 	ghdc = GetDC(ghwnd);
 
 	ZeroMemory(&pfd, sizeof(PIXELFORMATDESCRIPTOR));
@@ -601,10 +673,11 @@ void Initialize(void)
 	initGodraysShader();
 	initFinalPassForGodraysShader();
 	initSkyboxShader();
+	initCubemapCubeShader();
 	initTextShader();
+	initStarfieldShader();
 	//initFullScreenQuad();
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -614,8 +687,11 @@ void Initialize(void)
 	pStack = Create();
 
 	//SPHERE_SUN
-	makeSphere(0.5, 60, 60);
+	makeSphere(0.5, 100, 100);
 	fprintf(gpFile, "\nnumVertices = %d\nnumElements = %d\n", numVertices, numElements);
+
+	//SATURN_RING
+	makeTorus(0.75f, 0.13f, 40, 40);
 
 	//SQUARE
 	//vertices
@@ -637,7 +713,7 @@ void Initialize(void)
 									  0.0f, 0.0f, 1.0f };
 
 	//cube vertices
-	const GLfloat cubeVertices[] = { -1.0f,  1.0f, -1.0f,     //front (NZ)
+	const GLfloat skyboxVertices[] = { -1.0f,  1.0f, -1.0f,     //front (NZ)
 									-1.0f, -1.0f, -1.0f,
 									 1.0f, -1.0f, -1.0f,
 									 1.0f, -1.0f, -1.0f,
@@ -678,6 +754,61 @@ void Initialize(void)
 									 1.0f, -1.0f, -1.0f,
 									-1.0f, -1.0f,  1.0f,
 									 1.0f, -1.0f,  1.0f };
+
+
+	//cube vertices
+	const GLfloat cubeVertices[] = { 1.0f, 1.0f, 1.0f,        //front
+									-1.0f, 1.0f, 1.0f,
+									-1.0f, -1.0f, 1.0f,
+									 1.0f, -1.0f, 1.0f,
+									 1.0f, 1.0f, -1.0f,       //right
+									 1.0f, 1.0f, 1.0f,
+									 1.0f, -1.0f, 1.0f,
+									 1.0f, -1.0f, -1.0f,
+									-1.0f, 1.0f, -1.0f,       //back
+									 1.0f, 1.0f, -1.0f,
+									 1.0f, -1.0f, -1.0f,
+									-1.0f, -1.0f, -1.0f,
+									-1.0f, 1.0f, 1.0f,        //left
+									-1.0f, 1.0f, -1.0f,
+									-1.0f, -1.0f, -1.0f,
+									-1.0f, -1.0f, 1.0f,
+									 1.0f, 1.0f, -1.0f,       //top
+									-1.0f, 1.0f, -1.0f,
+									-1.0f, 1.0f, 1.0f,
+									 1.0f, 1.0f, 1.0f,
+									 1.0f, -1.0f, -1.0f,      //bottom
+									-1.0f, -1.0f, -1.0f,
+									-1.0f, -1.0f, 1.0f,
+									 1.0f, -1.0f, 1.0f };
+
+	//color
+	const GLfloat cubeTexture[] = { 1.0f, 1.0f,        //front
+									0.0f, 1.0f,
+									0.0f, 0.0f,
+									1.0f, 0.0f,
+									0.0f, 1.0f,        //right
+									1.0f, 1.0f,
+									1.0f, 0.0f,
+									0.0f, 0.0f,
+									0.0f, 0.0f,        //back
+									1.0f, 0.0f,
+									1.0f, 1.0f,
+									0.0f, 1.0f,
+									0.0f, 1.0f,        //left
+									1.0f, 1.0f,
+									1.0f, 0.0f,
+									0.0f, 0.0f,
+									1.0f, 1.0f,        //top
+									0.0f, 1.0f,
+									0.0f, 0.0f,
+									1.0f, 0.0f,
+									1.0f, 1.0f,        //bottom
+									0.0f, 1.0f,
+									0.0f, 0.0f,
+									1.0f, 0.0f, };
+
+
 
 
 	//init all ellipses
@@ -722,16 +853,75 @@ void Initialize(void)
 
 	/*****CUBE VAO*****/
 
-	glGenVertexArrays(1, &vao_skybox);
-	glBindVertexArray(vao_skybox);
+	glGenVertexArrays(1, &vao_cube);
+	glBindVertexArray(vao_cube);
 
-	glGenBuffers(1, &vbo_skybox);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_skybox);
+	glGenBuffers(1, &vbo_position_cube);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_position_cube);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(SPK_ATTRIBUTE_POSITION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(SPK_ATTRIBUTE_POSITION);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	glGenBuffers(1, &vbo_texture_cube);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_texture_cube);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeTexture), cubeTexture, GL_STATIC_DRAW);
+	glVertexAttribPointer(SPK_ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(SPK_ATTRIBUTE_TEXCOORD);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+
+	/*****SKYBOX VAO*****/
+
+	glGenVertexArrays(1, &vao_skybox);
+	glBindVertexArray(vao_skybox);
+
+	glGenBuffers(1, &vbo_skybox);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_skybox);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(SPK_ATTRIBUTE_POSITION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(SPK_ATTRIBUTE_POSITION);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+
+	/*****STAR VAO*****/
+
+	glGenVertexArrays(1, &vao_star);
+	glBindVertexArray(vao_star);
+
+	struct star_t
+	{
+		vec3 position;
+		vec3 color;
+	};
+
+	glGenBuffers(1, &vbo_star);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_star);
+	glBufferData(GL_ARRAY_BUFFER, NUM_STARS * sizeof(star_t), NULL, GL_STATIC_DRAW);
+
+	star_t* star = (star_t*)glMapBufferRange(GL_ARRAY_BUFFER, 0, NUM_STARS * sizeof(star_t), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
+	for (int i = 0; i < 1000; i++)
+	{
+		star[i].position[0] = (random_float() * 2.0f - 1.0f) * 100.0f;
+		star[i].position[1] = (random_float() * 2.0f - 1.0f) * 100.0f;
+		star[i].position[2] = random_float();
+
+		star[i].color[0] = 0.8f + random_float() * 0.2f;
+		star[i].color[1] = 0.8f + random_float() * 0.2f;
+		star[i].color[2] = 0.8f + random_float() * 0.2f;
+	}
+
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+
+	glVertexAttribPointer(SPK_ATTRIBUTE_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(star_t), NULL);
+	glEnableVertexAttribArray(SPK_ATTRIBUTE_POSITION);
+	glVertexAttribPointer(SPK_ATTRIBUTE_COLOR, 3, GL_FLOAT, GL_FALSE, sizeof(star_t), (void*)sizeof(vec3));
+	glEnableVertexAttribArray(SPK_ATTRIBUTE_COLOR);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
 	/*FBO*/
@@ -814,6 +1004,23 @@ void Initialize(void)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	/*FBO for CUBEMAP*/
+	glGenFramebuffers(1, &fbo_starfield);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_starfield);
+
+	glGenTextures(1, &starfieldTextureColorBuffer);
+	glBindTexture(GL_TEXTURE_2D, starfieldTextureColorBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIN_WIDTH, WIN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, starfieldTextureColorBuffer, 0);
+
+	glGenRenderbuffers(1, &rbo_starfield);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_starfield);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WIN_WIDTH, WIN_HEIGHT);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_starfield);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	//depth
@@ -824,8 +1031,12 @@ void Initialize(void)
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	//glEnable(GL_CULL_FACE);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_POINT_SPRITE);
+
+	/*glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+
 
 	//Loading Textures
 	//loadGLTexture(&smiley_texture, MAKEINTRESOURCE(SMILEY_BITMAP));
@@ -842,6 +1053,7 @@ void Initialize(void)
 		fprintf(gpFile, "Cubemap texLoad successful\n");
 	}
 
+	star_texture = LoadImageAsTexture("res//star.png");
 	sun_texture = LoadImageAsTexture("res//sunMap.jpg");
 	mercury_texture = LoadImageAsTexture("res//mercuryMap.jpg");
 	venus_texture = LoadImageAsTexture("res//venusMap.jpg");
@@ -852,14 +1064,14 @@ void Initialize(void)
 	jupiter_texture = LoadImageAsTexture("res//jupiterMap.jpg");
 	jupiterMoon_texture = LoadImageAsTexture("res//europaMoonMap.jpg");
 	saturn_texture = LoadImageAsTexture("res//saturnMap.jpg");
+	//saturn_ring_texture = LoadImageAsTexture("res//saturnRingColor.jpg");
+	saturn_ring_texture = LoadImageAsTexture("res//saturnRingAlphaColor.png");
 	saturnMoon_texture = LoadImageAsTexture("res//titanMoonMap.jpg");
 	uranus_texture = LoadImageAsTexture("res//uranusMap.jpg");
 	uranusMoon_texture = LoadImageAsTexture("res//arielMoonMap.jpg");
 	neptune_texture = LoadImageAsTexture("res//neptuneMap.jpg");
 	neptuneMoon_texture = LoadImageAsTexture("res//tritonMoonMap.jpg");
 	pluto_texture = LoadImageAsTexture("res//plutoMap.jpg");
-
-	glEnable(GL_TEXTURE_2D);
 
 	//OpenAL
 	alInitialize();
@@ -870,7 +1082,7 @@ void Initialize(void)
 	//set perspective matrix to identity matrix
 	perspectiveProjectionMatrix = mat4::identity();
 
-	Resize(WIN_WIDTH, WIN_HEIGHT);
+	//Resize(WIN_WIDTH, WIN_HEIGHT);
 }
 
 GLuint cubemapLoadTexture(const char** f)
@@ -1022,7 +1234,7 @@ void Resize(int width, int height)
 
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
-	perspectiveProjectionMatrix = perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	perspectiveProjectionMatrix = perspective(50.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
 }
 
 void Display(void)
@@ -1045,27 +1257,53 @@ void Display(void)
 	//draw sun + godrays
 	//drawSunGodrays();
 
-	/**********************************DEFAULT FRAMEBUFFER*********************************/
+	/**********************************DRAW STARFIELD IN FBO*********************************/
+	//bind fbo
+	//glBindFramebuffer(GL_FRAMEBUFFER, fbo_starfield);
 
+	////glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glViewport(0, 0, (GLsizei)WIN_WIDTH, (GLsizei)WIN_HEIGHT);
+	
+	//drawStarfield();
+
+	//unbind fbo
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/**********************************DEFAULT FRAMEBUFFER*********************************/
+	glDisable(GL_DEPTH_TEST);
 	//glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	perspectiveProjectionMatrix = perspective(45.0f, (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 100.0f);
+	perspectiveProjectionMatrix = perspective(50.0f, (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 1000.0f);
 	glViewport(0, 0, (GLsizei)gWidth, (GLsizei)gHeight);
+	
+	//DRAW SKYBOX [2D TEXTURE]
+	//drawSkybox();
 
-	//DRAW SKYBOX
-	drawSkybox();
+	//DRAW CUBE FOR CUBEMAP [STARFIELD]
+	//drawCubeForCubemap();
 
+	//DRAW STARFIELD IN DEFAULT FB
+	drawStarfield();
+
+	glEnable(GL_DEPTH_TEST);
+
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	//DRAW SOLAR SYSTEM
 	drawSolarSystem();
 
-	/**********************************FOCUSED PLANETS*********************************/
-	if (bTextViewport == true)
-		drawFocusedPlanets();
-	
-	/**********************************DRAW TEXT IN NEW VIEWPORT*********************************/
+
+	/**********************************DRAW FOCUSED PLANETS & TEXT IN NEW VIEWPORT*********************************/
 
 	if (bTextViewport == true)
 	{
+		//planets
+		drawFocusedPlanets();
+
+		//text
 		glViewport(5 * gWidth / 6, 0, (GLsizei)gWidth / 6, (GLsizei)gHeight);
 		perspectiveProjectionMatrix = perspective(45.0f, ((GLfloat)gWidth / 6) / ((GLfloat)gHeight), 0.1f, 100.0f);
 
@@ -1135,7 +1373,6 @@ void Display(void)
 
 		//RenderText(textShaderProgramObject, "not-to-scale", -0.045f, -0.4f, 0.0003f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	}
-
 	
 	/**********************************NOT-TO-SCALE*********************************/
 
@@ -1143,7 +1380,13 @@ void Display(void)
 	glViewport(0, 0, (GLsizei)gWidth, (GLsizei)gHeight);
 	RenderText(textShaderProgramObject, "not-to-scale", 0.57f, -0.4f, 0.00025f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	
-		
+	if (frameCount >= 2800)
+	{
+		RenderText(textShaderProgramObject, "NAVIGATION: Arrow Keys", -0.7f, 0.38f, 0.00025f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		RenderText(textShaderProgramObject, "INFO: Numpad 1-9", -0.7f, 0.36f, 0.00025f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		RenderText(textShaderProgramObject, "RESET: Key 'R'", -0.7f, 0.34f, 0.00025f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
 	SwapBuffers(ghdc);
 }
 
@@ -1151,6 +1394,7 @@ void Update(void)
 {
 	//code
 	frameCount++;
+	currentTime++;
 
 	//sunPosY+=0.001f;
 
@@ -1178,6 +1422,8 @@ void Update(void)
 			mercuryRevAngle = 0.0f;
 
 		mercuryRotAngle -= 1.0f;
+		if (mercuryRotAngle <= -360.0f)
+			mercuryRotAngle = 0.0f;
 	}
 	
 	//venus
@@ -1193,11 +1439,13 @@ void Update(void)
 
 	if (isVenusInOrbit == true)
 	{
-		venusRevAngle -= 0.03f;
-		if (venusRevAngle <= -2 * PI)
+		venusRevAngle += 0.03f;
+		if (venusRevAngle >= 2 * PI)
 			venusRevAngle = 0.0f;
 
 		venusRotAngle += 1.0f;
+		if (venusRotAngle >= 360.0f)
+			venusRotAngle = 0.0f;
 	}
 
 	//earth
@@ -1218,6 +1466,8 @@ void Update(void)
 			earthRevAngle = 0.0f;
 
 		earthRotAngle -= 1.0f;
+		if (earthRotAngle <= -360.0f)
+			earthRotAngle = 0.0f;
 	}
 
 	//mars
@@ -1238,6 +1488,8 @@ void Update(void)
 			marsRevAngle = 0.0f;
 
 		marsRotAngle -= 1.0f;
+		if (marsRotAngle <= -360.0f)
+			marsRotAngle = 0.0f;
 	}
 	
 	//jupiter
@@ -1258,6 +1510,8 @@ void Update(void)
 			jupiterRevAngle = 0.0f;
 
 		jupiterRotAngle -= 1.0f;
+		if (jupiterRotAngle <= -360.0f)
+			jupiterRotAngle = 0.0f;
 	}
 
 	//saturn
@@ -1278,6 +1532,8 @@ void Update(void)
 			saturnRevAngle = 0.0f;
 
 		saturnRotAngle -= 1.0f;
+		if (saturnRotAngle <= -360.0f)
+			saturnRotAngle = 0.0f;
 	}
 
 	//uranus
@@ -1298,6 +1554,8 @@ void Update(void)
 			uranusRevAngle = 0.0f;
 
 		uranusRotAngle -= 1.0f;
+		if (uranusRotAngle <= -360.0f)
+			uranusRotAngle = 0.0f;
 	}
 
 	//neptune
@@ -1318,6 +1576,8 @@ void Update(void)
 			neptuneRevAngle = 0.0f;
 
 		neptuneRotAngle -= 1.0f;
+		if (neptuneRotAngle <= -360.0f)
+			neptuneRotAngle = 0.0f;
 	}
 
 	//pluto
@@ -1338,7 +1598,59 @@ void Update(void)
 			plutoRevAngle = 0.0f;
 
 		plutoRotAngle -= 1.0f;
+		if (plutoRotAngle <= -360.0f)
+			plutoRotAngle = 0.0f;
 	}
+
+	//moons
+	/*earthMoonRevAngle -= 2.0f;
+	if (earthMoonRevAngle <= -360.0f)
+		earthMoonRevAngle = 0.0f;*/
+
+	earthMoonRotAngle += 2.0f;
+	if (earthMoonRotAngle >= 360.0f)
+		earthMoonRotAngle = 0.0f;
+
+	/*marsMoonRevAngle -= 2.0f;
+	if (marsMoonRevAngle <= -360.0f)
+		marsMoonRevAngle = 0.0f;*/
+
+	marsMoonRotAngle += 2.0f;
+	if (marsMoonRotAngle >= 360.0f)
+		marsMoonRotAngle = 0.0f;
+
+	/*jupiterMoonRevAngle -= 2.0f;
+	if (jupiterMoonRevAngle <= -360.0f)
+		jupiterMoonRevAngle = 0.0f;*/
+
+	jupiterMoonRotAngle += 2.0f;
+	if (jupiterMoonRotAngle >= 360.0f)
+		jupiterMoonRotAngle = 0.0f;
+
+	/*saturnMoonRevAngle -= 2.0f;
+	if (saturnMoonRevAngle <= -360.0f)
+		saturnMoonRevAngle = 0.0f;*/
+
+	saturnMoonRotAngle += 2.0f;
+	if (saturnMoonRotAngle >= 360.0f)
+		saturnMoonRotAngle = 0.0f;
+
+	/*uranusMoonRevAngle -= 2.0f;
+	if (uranusMoonRevAngle <= -360.0f)
+		uranusMoonRevAngle = 0.0f;*/
+
+	uranusMoonRotAngle += 2.0f;
+	if (uranusMoonRotAngle >= 360.0f)
+		uranusMoonRotAngle = 0.0f;
+
+	//neptuneMoonRevAngle -= 2.0f;
+	//if (neptuneMoonRevAngle <= -360.0f)
+	//	neptuneMoonRevAngle = 0.0f;
+
+	neptuneMoonRotAngle += 2.0f;
+	if (neptuneMoonRotAngle >= 360.0f)
+		neptuneMoonRotAngle = 0.0f;
+
 
 
 	////last animation (planet focused)
@@ -1407,7 +1719,7 @@ void Update(void)
 	//	}
 	//}
 
-	if (frameCount >= 4324 && frameCount <= 4866)
+	/*if (frameCount >= 4324 && frameCount <= 4866)
 	{
 		bTextViewport = true;
 		isMercuryClicked = true;
@@ -1545,7 +1857,7 @@ void Update(void)
 		isUranusClicked = false;
 		isNeptuneClicked = false;
 		isPlutoClicked = false;
-	}
+	}*/
 	
 
 }
@@ -1626,6 +1938,19 @@ void Uninitialize(void)
 
 	//sphere
 	deallocate();
+	uninitTorus();
+
+	if (vao_star)
+	{
+		glDeleteVertexArrays(1, &vao_star);
+		vao_star = 0;
+	}
+
+	if (vbo_star)
+	{
+		glDeleteBuffers(1, &vbo_star);
+		vbo_star = 0;
+	}
 
 	//cube
 	if (vao_skybox)
@@ -1803,9 +2128,12 @@ void Uninitialize(void)
 	uninitGodraysShader();
 	uninitFinalPassForGodraysShader();
 	uninitSkyboxShader();
+	uninitCubemapCubeShader();
 	uninitTextShader();
+	uninitStarfieldShader();
 	//uninitFullScreenQuad();
 
+	
 	//delete textures
 	glDeleteTextures(1, &sun_texture);
 	glDeleteTextures(1, &mercury_texture);
@@ -1823,7 +2151,7 @@ void Uninitialize(void)
 	glDeleteTextures(1, &neptune_texture);
 	glDeleteTextures(1, &neptuneMoon_texture);
 	glDeleteTextures(1, &pluto_texture);
-
+	glDeleteTextures(1, &star_texture);
 	glDeleteTextures(1, &cubemap_texture);
 
 

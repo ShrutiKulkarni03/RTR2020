@@ -5,14 +5,18 @@ void initSceneLightingShader(void);
 void initGodraysShader(void);
 void initFinalPassForGodraysShader(void);
 void initSkyboxShader(void);
+void initCubemapCubeShader(void);
 void initTextShader(void);
+void initStarfieldShader(void);
 //void initFullScreenQuad(void);
 
 void uninitSceneLightingShader(void);
 void uninitGodraysShader(void);
 void uninitFinalPassForGodraysShader(void);
 void uninitSkyboxShader(void);
+void uninitCubemapCubeShader(void);
 void uninitTextShader(void);
+void uninitStarfieldShader(void);
 //void uninitFullScreenQuad(void);
 
 //init
@@ -35,21 +39,35 @@ void initSceneLightingShader(void)
 		"in vec4 vColor; \n" \
 		"in vec2 vTexcoord; \n" \
 		"in vec3 vNormal; \n" \
-		"uniform vec4 u_light_position; \n" \
+		"uniform vec4 u_positional_light_position; \n" \
+		"uniform vec4 u_point_light_position; \n" \
 		"uniform mat4 u_projection_matrix; \n" \
 		"uniform mat4 u_model_matrix; \n" \
 		"uniform mat4 u_view_matrix; \n" \
+		"uniform int u_light; \n" \
 		"out vec4 out_color; \n" \
 		"out vec2 out_texcoord; \n" \
 		"out vec3 transformed_normal; \n" \
 		"out vec3 light_direction; \n" \
 		"out vec3 view_vector; \n" \
+		"out float distance; \n" \
 		"void main(void) \n" \
 		"{ \n" \
 		"	vec4 eye_coordinates = u_view_matrix * u_model_matrix * vPosition; \n" \
 		"	transformed_normal = mat3(u_view_matrix * u_model_matrix) * vNormal; \n" \
-		"	light_direction = vec3(u_light_position - eye_coordinates); \n" \
 		"	view_vector = -eye_coordinates.xyz; \n" \
+		
+		"	if(u_light == 0) \n" \
+		"	{ \n" \
+		"		light_direction = vec3(u_point_light_position - eye_coordinates); \n" \
+		"		distance = length(u_point_light_position - vPosition);" \
+		"	} \n" \
+		"	else if(u_light == 1) \n" \
+		"	{ \n" \
+		"		light_direction = vec3(u_positional_light_position - eye_coordinates); \n" \
+		"		distance = length(u_positional_light_position - vPosition);" \
+		"	} \n" \
+		
 		"	gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * vPosition; \n" \
 		"	out_color = vColor; \n" \
 		"	out_texcoord = vTexcoord; \n" \
@@ -101,15 +119,18 @@ void initSceneLightingShader(void)
 		"in vec3 light_direction; \n" \
 		"in vec3 view_vector; \n" \
 		"in vec2 out_texcoord; \n" \
+		"in float distance; \n" \
 		"uniform int u_pass; \n" \
 		"uniform sampler2D u_texture_sampler; \n" \
 		"uniform vec3 u_lA; \n" \
 		"uniform vec3 u_lD; \n" \
 		"uniform vec3 u_lS; \n" \
-		"uniform vec3 u_kA; \n" \
-		"uniform vec3 u_kD; \n" \
-		"uniform vec3 u_kS; \n" \
 		"uniform float u_materialShininess; \n" \
+		"uniform vec3 u_light_target; \n" /*light direction*/ \
+		"uniform float u_light_constant; \n" \
+		"uniform float u_light_linear; \n" \
+		"uniform float u_light_quadratic; \n" \
+		"uniform int u_light; \n" \
 		"out vec4 FragColor; \n" \
 		"vec3 phong_ads_light; \n" \
 		"void main(void) \n" \
@@ -132,11 +153,27 @@ void initSceneLightingShader(void)
 		"		vec3 normalized_light_direction = normalize(light_direction); \n" \
 		"		vec3 normalized_view_vector = normalize(view_vector); \n" \
 		"		vec3 reflection_vector = reflect(-normalized_light_direction, normalized_transformed_normals); \n" \
-		"		vec3 ambient = u_lA * texColor.rgb; \n" \
-		"		vec3 diffuse = u_lD * texColor.rgb * max(dot(normalized_light_direction, normalized_transformed_normals), 0.0); \n" \
-		"		vec3 specular = u_lS * pow(max(dot(reflection_vector, normalized_view_vector), 0.0), u_materialShininess); \n" \
-		"		phong_ads_light = ambient + diffuse + specular; \n" \
-		"		FragColor = vec4(phong_ads_light, 1.0f); \n" \
+	
+		"		if(u_light == 0) \n" \
+		"		{ \n" \
+		"			vec3 ambient = u_lA * texColor.rgb; \n" \
+		"			vec3 diffuse = u_lD * texColor.rgb * max(dot(normalized_light_direction, normalized_transformed_normals), 0.0); \n" \
+		"			vec3 specular = u_lS * pow(max(dot(reflection_vector, normalized_view_vector), 0.0), u_materialShininess); \n" \
+		"			float attenuation = 1.0 / (u_light_constant + u_light_linear * distance + u_light_quadratic * (distance * distance)); \n" \
+		"			ambient *= attenuation; \n" \
+		"			diffuse *= attenuation; \n" \
+		"			specular *= attenuation; \n" \
+		"			phong_ads_light = ambient + diffuse + specular; \n" \
+		"			FragColor = vec4(phong_ads_light, 1.0f); \n" \
+		"		} \n" \
+		"		else if(u_light == 1) \n" \
+		"		{ \n" \
+		"			vec3 ambient = u_lA * texColor.rgb; \n" \
+		"			vec3 diffuse = u_lD * texColor.rgb * max(dot(normalized_light_direction, normalized_transformed_normals), 0.0); \n" \
+		"			vec3 specular = u_lS * pow(max(dot(reflection_vector, normalized_view_vector), 0.0), u_materialShininess); \n" \
+		"			phong_ads_light = ambient + diffuse + specular; \n" \
+		"			FragColor = vec4(phong_ads_light, 1.0f); \n" \
+		"		} \n" \
 		"	} \n" \
 		"} \n";
 
@@ -224,16 +261,20 @@ void initSceneLightingShader(void)
 	projectionMatrixUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_projection_matrix");
 
 	passUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_pass");
+	lightUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_light");
 
 	lAUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_lA");
 	lDUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_lD");
 	lSUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_lS");
-	lightPositionUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_light_position");
+
+	positionalLightPositionUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_positional_light_position");
+	pointLightPositionUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_point_light_position");
+	lightConstantUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_light_constant");
+	lightLinearUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_light_linear");
+	lightQuadraticUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_light_quadratic");
 
 	kShininessUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_materialShininess");
-
 	textureSamplerUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_texture_sampler");
-
 
 }
 
@@ -754,6 +795,162 @@ void initSkyboxShader(void)
 
 }
 
+void initCubemapCubeShader(void)
+{
+	GLuint cubeVertexShaderObject;
+	GLuint cubeFragmentShaderObject;
+
+	/*****VERTEX SHADER CUBE*****/
+
+	//create shader
+	cubeVertexShaderObject = glCreateShader(GL_VERTEX_SHADER);
+
+	//provide source code to vertex shader
+	const GLchar* cubeVertexShaderSourceCode =
+		"#version 450 core \n" \
+		"\n" \
+		"in vec4 vPosition; \n" \
+		"in vec2 vTexcoord; \n" \
+		"uniform mat4 u_mvpMatrix; \n" \
+		"out vec2 out_texcoord; \n" \
+		"void main(void) \n" \
+		"{ \n" \
+		"	gl_Position = u_mvpMatrix * vPosition; \n" \
+		"	out_texcoord = vTexcoord; \n" \
+		"} \n";
+
+	glShaderSource(cubeVertexShaderObject, 1, (const GLchar**)&cubeVertexShaderSourceCode, NULL);
+
+	//compile shader
+	glCompileShader(cubeVertexShaderObject);
+
+	//vertex shader compilation error checking
+	GLint infoLogLength = 0;
+	GLint shaderCompiledStatus = 0;
+	char* szBuffer = NULL;
+
+	glGetShaderiv(cubeVertexShaderObject, GL_COMPILE_STATUS, &shaderCompiledStatus);
+
+	if (shaderCompiledStatus == GL_FALSE)
+	{
+		glGetShaderiv(cubeVertexShaderObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetShaderInfoLog(cubeVertexShaderObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nVertex Shader Compilation Log : %s\n", szBuffer);
+				free(szBuffer);
+				DestroyWindow(ghwnd);
+			}
+
+		}
+	}
+
+
+	/*****FRAGMENT SHADER CUBE*****/
+
+	//create shader
+	cubeFragmentShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
+
+	//provide source code to fragment shader
+	const GLchar* cubeFragmentShaderSourceCode =
+		"#version 450 core \n" \
+		"\n" \
+		"in vec2 out_texcoord; \n" \
+		"uniform sampler2D u_texture_sampler; \n" \
+		"out vec4 FragColor; \n" \
+		"void main(void) \n" \
+		"{ \n" \
+		"	vec3 col = texture(u_texture_sampler, out_texcoord).rgb; \n" \
+		"	FragColor = vec4(col, 1.0); \n" \
+		"} \n";
+
+	glShaderSource(cubeFragmentShaderObject, 1, (const GLchar**)&cubeFragmentShaderSourceCode, NULL);
+
+	//compile shader
+	glCompileShader(cubeFragmentShaderObject);
+
+	//fragment shader compilation error checking
+	infoLogLength = 0;
+	shaderCompiledStatus = 0;
+	szBuffer = NULL;
+
+	glGetShaderiv(cubeFragmentShaderObject, GL_COMPILE_STATUS, &shaderCompiledStatus);
+
+	if (shaderCompiledStatus == GL_FALSE)
+	{
+		glGetShaderiv(cubeFragmentShaderObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetShaderInfoLog(cubeFragmentShaderObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nFragment Shader Compilation Log : %s\n", szBuffer);
+				free(szBuffer);
+				DestroyWindow(ghwnd);
+
+			}
+		}
+	}
+
+
+	/*****SHADER PROGRAM CUBE*****/
+
+	//create
+	cubeShaderProgramObject = glCreateProgram();
+
+	//attach vertex shader to shader program
+	glAttachShader(cubeShaderProgramObject, cubeVertexShaderObject);
+
+	//attach fragment shader to shader program
+	glAttachShader(cubeShaderProgramObject, cubeFragmentShaderObject);
+
+	//pre-linking binding
+	glBindAttribLocation(cubeShaderProgramObject, SPK_ATTRIBUTE_POSITION, "vPosition");
+	glBindAttribLocation(cubeShaderProgramObject, SPK_ATTRIBUTE_TEXCOORD, "vTexcoord");
+
+	//link shader
+	glLinkProgram(cubeShaderProgramObject);
+
+	//shader linking error checking
+	infoLogLength = 0;
+	GLint shaderProgramLinkStatus;
+	szBuffer = NULL;
+
+	glGetProgramiv(cubeShaderProgramObject, GL_LINK_STATUS, &shaderProgramLinkStatus);
+
+	if (shaderProgramLinkStatus == GL_FALSE)
+	{
+		glGetProgramiv(cubeShaderProgramObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetProgramInfoLog(cubeShaderProgramObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nShader Program Link Log : %s\n", szBuffer);
+				free(szBuffer);
+				DestroyWindow(ghwnd);
+			}
+		}
+	}
+
+	//get MVP uniform location
+	mvpMatrixUniformC = glGetUniformLocation(cubeShaderProgramObject, "u_mvpMatrix");
+	textureSamplerUniformC = glGetUniformLocation(cubeShaderProgramObject, "u_texture_sampler");
+
+}
+
 void initTextShader(void)
 {
 	GLuint textVertexShaderObject;
@@ -922,6 +1119,184 @@ void initTextShader(void)
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+}
+
+void initStarfieldShader(void)
+{
+	GLuint starfieldVertexShaderObject;
+	GLuint starfieldFragmentShaderObject;
+
+	/*****VERTEX SHADER*****/
+
+	//create shader
+	starfieldVertexShaderObject = glCreateShader(GL_VERTEX_SHADER);
+
+	//provide source code to vertex shader
+	const GLchar* starfieldVertexShaderSourceCode =
+		"#version 450 core \n" \
+
+		"in vec4 vPosition; \n" \
+		"in vec4 vColor; \n" \
+
+		"uniform float time; \n" \
+		"uniform mat4 u_projMatrix; \n" \
+
+		"flat out vec4 out_color; \n" \
+
+		"void main(void) \n" \
+		"{ \n" \
+		"	vec4 newVertex = vPosition; \n" \
+
+		"	newVertex.z += time; \n" \
+		"	newVertex.z = fract(newVertex.z); \n" \
+
+		"	float size = (35.0 * newVertex.z * newVertex.z); \n" \
+
+		"	out_color = smoothstep(1.0, 7.0, size) * vColor; \n" \
+
+		"	newVertex.z = (999.9 * newVertex.z) - 1000.0; \n" \
+		"	gl_Position = u_projMatrix * newVertex; \n" \
+		"	gl_PointSize = size; \n" \
+
+		"} \n";
+
+	glShaderSource(starfieldVertexShaderObject, 1, (const GLchar**)&starfieldVertexShaderSourceCode, NULL);
+
+	//compile shader
+	glCompileShader(starfieldVertexShaderObject);
+
+	//vertex shader compilation error checking
+	GLint infoLogLength = 0;
+	GLint shaderCompiledStatus = 0;
+	char* szBuffer = NULL;
+
+	glGetShaderiv(starfieldVertexShaderObject, GL_COMPILE_STATUS, &shaderCompiledStatus);
+
+	if (shaderCompiledStatus == GL_FALSE)
+	{
+		glGetShaderiv(starfieldVertexShaderObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetShaderInfoLog(starfieldVertexShaderObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nVertex Shader Compilation Log : %s\n", szBuffer);
+				free(szBuffer);
+				DestroyWindow(ghwnd);
+			}
+
+		}
+	}
+
+
+	/*****FRAGMENT SHADER*****/
+
+	//create shader
+	starfieldFragmentShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
+
+	//provide source code to fragment shader
+	const GLchar* starfieldFragmentShaderSourceCode =
+		"#version 450 core \n" \
+		"\n" \
+		"flat in vec4 out_color; \n" \
+
+		"uniform sampler2D u_star_texture_sampler; \n" \
+
+		"out vec4 FragColor; \n" \
+
+		"void main(void) \n" \
+		"{ \n" \
+		"	vec4 texColor = texture(u_star_texture_sampler, gl_PointCoord); \n" \
+		"	if(texColor.a < 0.5) \n" \
+		"		discard; \n" \
+		"	FragColor = out_color * texColor; \n" \
+		"} \n";
+
+	glShaderSource(starfieldFragmentShaderObject, 1, (const GLchar**)&starfieldFragmentShaderSourceCode, NULL);
+
+	//compile shader
+	glCompileShader(starfieldFragmentShaderObject);
+
+	//fragment shader compilation error checking
+	infoLogLength = 0;
+	shaderCompiledStatus = 0;
+	szBuffer = NULL;
+
+	glGetShaderiv(starfieldFragmentShaderObject, GL_COMPILE_STATUS, &shaderCompiledStatus);
+
+	if (shaderCompiledStatus == GL_FALSE)
+	{
+		glGetShaderiv(starfieldFragmentShaderObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetShaderInfoLog(starfieldFragmentShaderObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nFragment Shader Compilation Log : %s\n", szBuffer);
+				free(szBuffer);
+				DestroyWindow(ghwnd);
+
+			}
+		}
+	}
+
+
+	/*****SHADER PROGRAM*****/
+
+	//create
+	starfieldShaderProgramObject = glCreateProgram();
+
+	//attach vertex shader to shader program
+	glAttachShader(starfieldShaderProgramObject, starfieldVertexShaderObject);
+
+	//attach fragment shader to shader program
+	glAttachShader(starfieldShaderProgramObject, starfieldFragmentShaderObject);
+
+	//pre-linking binding
+	glBindAttribLocation(starfieldShaderProgramObject, SPK_ATTRIBUTE_POSITION, "vPosition");
+	glBindAttribLocation(starfieldShaderProgramObject, SPK_ATTRIBUTE_COLOR, "vColor");
+	//glBindAttribLocation(shaderProgramObject, SPK_ATTRIBUTE_TEXCOORD, "vTexcoord");
+
+	//link shader
+	glLinkProgram(starfieldShaderProgramObject);
+
+	//shader linking error checking
+	infoLogLength = 0;
+	GLint shaderProgramLinkStatus;
+	szBuffer = NULL;
+
+	glGetProgramiv(starfieldShaderProgramObject, GL_LINK_STATUS, &shaderProgramLinkStatus);
+
+	if (shaderProgramLinkStatus == GL_FALSE)
+	{
+		glGetProgramiv(starfieldShaderProgramObject, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		if (infoLogLength > 0)
+		{
+			szBuffer = (char*)malloc(infoLogLength);
+
+			if (szBuffer != NULL)
+			{
+				GLsizei written;
+				glGetProgramInfoLog(starfieldShaderProgramObject, infoLogLength, &written, szBuffer);
+				fprintf(gpFile, "\nShader Program Link Log : %s\n", szBuffer);
+				free(szBuffer);
+				DestroyWindow(ghwnd);
+			}
+		}
+	}
+
+	//get MVP uniform location
+	projectionMatrixUniformSF = glGetUniformLocation(starfieldShaderProgramObject, "u_projMatrix");
+	textureSamplerUniformSF = glGetUniformLocation(starfieldShaderProgramObject, "u_star_texture_sampler");
+	timeUniformSF = glGetUniformLocation(starfieldShaderProgramObject, "time");
+
 }
 
 //void initFullScreenQuad(void)
@@ -1192,6 +1567,34 @@ void uninitSkyboxShader(void)
 	}
 }
 
+void uninitCubemapCubeShader(void)
+{
+	if (cubeShaderProgramObject)
+	{
+		glUseProgram(cubeShaderProgramObject);
+		GLsizei shaderCount;
+		glGetProgramiv(cubeShaderProgramObject, GL_ATTACHED_SHADERS, &shaderCount);
+
+		GLuint* pShaders = NULL;
+		pShaders = (GLuint*)malloc(sizeof(GLuint) * shaderCount);
+
+		glGetAttachedShaders(cubeShaderProgramObject, shaderCount, &shaderCount, pShaders);
+
+		for (GLsizei i = 0; i < shaderCount; i++)
+		{
+			glDetachShader(cubeShaderProgramObject, pShaders[i]);
+			glDeleteShader(pShaders[i]);
+			pShaders[i] = 0;
+		}
+		free(pShaders);
+
+		glDeleteProgram(cubeShaderProgramObject);
+		cubeShaderProgramObject = 0;
+		glUseProgram(0);
+
+	}
+}
+
 void uninitTextShader(void)
 {
 	/*****SAFE SHADER CLEAN-UP*****/
@@ -1220,6 +1623,35 @@ void uninitTextShader(void)
 		glUseProgram(0);
 
 	}
+}
+
+void uninitStarfieldShader(void)
+{
+	if (starfieldShaderProgramObject)
+	{
+		glUseProgram(starfieldShaderProgramObject);
+		GLsizei shaderCount;
+		glGetProgramiv(starfieldShaderProgramObject, GL_ATTACHED_SHADERS, &shaderCount);
+
+		GLuint* pShaders = NULL;
+		pShaders = (GLuint*)malloc(sizeof(GLuint) * shaderCount);
+
+		glGetAttachedShaders(starfieldShaderProgramObject, shaderCount, &shaderCount, pShaders);
+
+		for (GLsizei i = 0; i < shaderCount; i++)
+		{
+			glDetachShader(starfieldShaderProgramObject, pShaders[i]);
+			glDeleteShader(pShaders[i]);
+			pShaders[i] = 0;
+		}
+		free(pShaders);
+
+		glDeleteProgram(starfieldShaderProgramObject);
+		starfieldShaderProgramObject = 0;
+		glUseProgram(0);
+
+	}
+
 }
 
 //void uninitFullScreenQuad(void)

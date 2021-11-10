@@ -361,15 +361,15 @@ GL_SUN_slice_accum
 GL_WIN_swap_hint
 WGL_EXT_swap_control
 
-numVertices = 3721
-numElements = 21600
+numVertices = 10201
+numElements = 60000
 0 tex success
 1 tex success
 2 tex success
 3 tex success
 4 tex success
 5 tex success
-textureID = 132
+textureID = 133
 Cubemap texLoad successful
 Device created!
 Context created!

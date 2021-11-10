@@ -13,6 +13,10 @@ void drawSolarSystem(void);
 void drawFocusedPlanets(void);
 void drawSunGodrays(void);
 void drawSkybox(void);
+void drawCubeForCubemap(void);
+void drawStarfield(void);
+
+
 void renderTextMercury(void);
 void renderTextVenus(void);
 void renderTextEarth(void);
@@ -41,12 +45,10 @@ void drawSolarSystem(void)
 	//start using OpenGL program object
 	glUseProgram(sceneShaderProgramObject);
 
-	//glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
-
-	glUniform3f(lAUniformS, 0.5f, 0.5f, 0.5f);
+	glUniform3f(lAUniformS, 0.2f, 0.2f, 0.2f);
 	glUniform3f(lDUniformS, 1.0f, 1.0f, 1.0f);
 	glUniform3f(lSUniformS, 0.0f, 0.0f, 0.0f);
-	glUniform4f(lightPositionUniformS, 0.0f, 0.0f, 0.0f, 1.0f);
+	glUniform4f(positionalLightPositionUniformS, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	glUniform1f(kShininessUniformS, 50.0);
 
@@ -66,6 +68,7 @@ void drawSolarSystem(void)
 	//SUN
 
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 1);     //positional light
 	scaleMatrix = scale(0.4f, 0.4f, 0.4f);
 	rotateXMatrix = rotate(90.0f, 1.0f, 0.0f, 0.0f);             //axis change
 
@@ -88,6 +91,17 @@ void drawSolarSystem(void)
 	//modelMatrix = Pop(pStack);
 
 	Push(pStack, modelMatrix);
+
+	//PLANETS
+
+	glUniform3f(lAUniformS, 0.5f, 0.5f, 0.5f);
+	glUniform3f(lDUniformS, 1.0f, 1.0f, 1.0f);
+	glUniform3f(lSUniformS, 0.0f, 0.0f, 0.0f);
+
+	glUniform4f(pointLightPositionUniformS, 0.0f, 1.0f, 0.0f, 1.0f);
+	glUniform1f(lightConstantUniformS, 1.0f);
+	glUniform1f(lightLinearUniformS, 0.12f);
+	glUniform1f(lightQuadraticUniformS, 0.032f);
 
 	//MERCURY
 
@@ -118,6 +132,7 @@ void drawSolarSystem(void)
 	//planet	
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isMercuryInOrbit == true)
 	{
@@ -183,6 +198,7 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isVenusInOrbit == true)
 	{
@@ -247,6 +263,7 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isEarthInOrbit == true)
 	{
@@ -339,6 +356,7 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isMarsInOrbit == true)
 	{
@@ -403,6 +421,7 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isJupiterInOrbit == true)
 	{
@@ -467,13 +486,14 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isSaturnInOrbit == true)
 	{
 		saturnXPos = (saturnXLengthConstant + saturnOrbitRadius) * cosf(saturnRevAngle) + 0.0f;
 		saturnZPos = saturnOrbitRadius * sinf(saturnRevAngle) + 0.0f;
 
-		glLineWidth(50.0f);
+		//glLineWidth(50.0f);
 	}
 
 	translateMatrix = translate(saturnXPos, saturnYPos, saturnZPos);    //to revolve in ellipse
@@ -499,17 +519,38 @@ void drawSolarSystem(void)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glUniform1i(passUniformS, 1);     //pass 1 (color)
+	//ring
+	rotateXMatrix = rotate(0.0f, 1.0f, 0.0f, 0.0f);
+	rotateZMatrix = rotate(0.0f, 0.0f, 0.0f, 1.0f);
 
-	//bind vao_circle
-	glBindVertexArray(vao_saturnRing_ellipse);
-	glVertexAttrib4f(SPK_ATTRIBUTE_COLOR, 0.72f, 0.67f, 0.54f, 1.0f);
-	glDrawArrays(GL_LINE_LOOP, 0, saturnRing_ellipse_num_vertices);
-	glVertexAttrib3f(SPK_ATTRIBUTE_COLOR, 1.0f, 1.0f, 1.0f);
-	//unbind vao_circle
-	glBindVertexArray(0);
+	scaleMatrix = scale(1.0f, 1.0f, 0.1f);
+	modelMatrix = modelMatrix * scaleMatrix * rotateXMatrix * rotateZMatrix;
 
-	glLineWidth(1.0f);
+
+	projectionMatrix = perspectiveProjectionMatrix;
+	glUniformMatrix4fv(modelMatrixUniformS, 1, GL_FALSE, modelMatrix);
+	glUniformMatrix4fv(viewMatrixUniformS, 1, GL_FALSE, viewMatrix);
+	glUniformMatrix4fv(projectionMatrixUniformS, 1, GL_FALSE, projectionMatrix);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, saturn_ring_texture);
+	glUniform1i(textureSamplerUniformS, 0);
+
+	drawTorus();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//glUniform1i(passUniformS, 1);     //pass 1 (color)
+
+	////bind vao_circle
+	//glBindVertexArray(vao_saturnRing_ellipse);
+	//glVertexAttrib4f(SPK_ATTRIBUTE_COLOR, 0.72f, 0.67f, 0.54f, 1.0f);
+	//glDrawArrays(GL_LINE_LOOP, 0, saturnRing_ellipse_num_vertices);
+	//glVertexAttrib3f(SPK_ATTRIBUTE_COLOR, 1.0f, 1.0f, 1.0f);
+	////unbind vao_circle
+	//glBindVertexArray(0);
+
+	//glLineWidth(1.0f);
 
 	modelMatrix = Pop(pStack);
 	modelMatrix = Pop(pStack);
@@ -545,6 +586,7 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isUranusInOrbit == true)
 	{
@@ -610,6 +652,7 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isNeptuneInOrbit == true)
 	{
@@ -675,6 +718,7 @@ void drawSolarSystem(void)
 	//planet
 	//position after transforming from sun is the radius of next transformation... so use the transformed x variable in place of bracket in 1st parameter
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 0);     //point light
 
 	if (isPlutoInOrbit == true)
 	{
@@ -724,11 +768,12 @@ void drawFocusedPlanets(void)
 	glUseProgram(sceneShaderProgramObject);
 
 	glUniform1i(passUniformS, 2);     //pass 2 (scene lighting)
+	glUniform1i(lightUniformS, 1);     //pass 2 (scene lighting)
 
 	glUniform3f(lAUniformS, 0.2f, 0.2f, 0.2f);
 	glUniform3f(lDUniformS, 1.0f, 1.0f, 1.0f);
 	glUniform3f(lSUniformS, 0.0f, 0.0f, 0.0f);
-	glUniform4f(lightPositionUniformS, 100.0f, 100.0f, 0.0f, 1.0f);
+	glUniform4f(positionalLightPositionUniformS, 100.0f, 100.0f, 0.0f, 1.0f);
 
 	glUniform1f(kShininessUniformS, 50.0);
 
@@ -840,12 +885,11 @@ void drawFocusedPlanets(void)
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		
 		//moon
 		glUniform1i(passUniformS, 0);     //pass 2 (scene lighting)
 		rotateZMatrix1 = rotate(earthMoonRevAngle, 0.0f, 0.0f, 1.0f);
-		translateMatrix1 = translate(1.0f, 0.0f, 0.0f);
-		scaleMatrix1 = scale(0.35f, 0.35f, 0.35f);
+		translateMatrix1 = translate(0.8f, 0.0f, 0.0f);
+		scaleMatrix1 = scale(0.3f, 0.3f, 0.3f);
 
 		modelMatrix1 = modelMatrix1 * rotateZMatrix1 * translateMatrix1 * scaleMatrix1;
 
@@ -902,8 +946,8 @@ void drawFocusedPlanets(void)
 		//moon
 		glUniform1i(passUniformS, 0);     //pass 2 (scene lighting)
 		rotateZMatrix1 = rotate(marsMoonRevAngle, 0.0f, 0.0f, 1.0f);
-		translateMatrix1 = translate(1.0f, 0.0f, 0.0f);
-		scaleMatrix1 = scale(0.35f, 0.35f, 0.35f);
+		translateMatrix1 = translate(0.8f, 0.0f, 0.0f);
+		scaleMatrix1 = scale(0.3f, 0.3f, 0.3f);
 
 		modelMatrix1 = modelMatrix1 * rotateZMatrix1 * translateMatrix1 * scaleMatrix1;
 
@@ -960,8 +1004,8 @@ void drawFocusedPlanets(void)
 		//moon
 		glUniform1i(passUniformS, 0);     //pass 2 (scene lighting)
 		rotateZMatrix1 = rotate(jupiterMoonRevAngle, 0.0f, 0.0f, 1.0f);
-		translateMatrix1 = translate(1.0f, 0.0f, 0.0f);
-		scaleMatrix1 = scale(0.35f, 0.35f, 0.35f);
+		translateMatrix1 = translate(0.8f, 0.0f, 0.0f);
+		scaleMatrix1 = scale(0.3f, 0.3f, 0.3f);
 
 		modelMatrix1 = modelMatrix1 * rotateZMatrix1 * translateMatrix1 * scaleMatrix1;
 
@@ -996,8 +1040,9 @@ void drawFocusedPlanets(void)
 
 		translateMatrix1 = translate(0.0f, 0.0f, 2.5f);    //to revolve in ellipse
 		scaleMatrix1 = scale(0.5f, 0.5f, 0.5f);
-		rotateXMatrix1 = rotate(90.0f, 1.0f, 0.0f, 0.0f);             //axis change
-		modelMatrix1 = modelMatrix1 * translateMatrix1 * scaleMatrix1 * rotateXMatrix1;
+		rotateZMatrix1 = rotate(-10.0f, 0.0f, 0.0f, 1.0f);             //axis change
+		rotateXMatrix1 = rotate(115.0f, 1.0f, 0.0f, 0.0f);             //axis change
+		modelMatrix1 = modelMatrix1 * translateMatrix1 * scaleMatrix1 * rotateZMatrix1 * rotateXMatrix1;
 
 		Push(pStack, modelMatrix1);
 
@@ -1018,12 +1063,33 @@ void drawFocusedPlanets(void)
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
+		Push(pStack, modelMatrix1);
+
+		//ring
+		scaleMatrix1 = scale(1.0f, 1.0f, 0.1f);
+		modelMatrix1 = modelMatrix1 * scaleMatrix1;
+
+
+		projectionMatrix1 = perspectiveProjectionMatrix;
+		glUniformMatrix4fv(modelMatrixUniformS, 1, GL_FALSE, modelMatrix1);
+		glUniformMatrix4fv(viewMatrixUniformS, 1, GL_FALSE, viewMatrix1);
+		glUniformMatrix4fv(projectionMatrixUniformS, 1, GL_FALSE, projectionMatrix1);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, saturn_ring_texture);
+		glUniform1i(textureSamplerUniformS, 0);
+
+		drawTorus();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		modelMatrix1 = Pop(pStack);
 
 		//moon
 		glUniform1i(passUniformS, 0);     //pass 2 (scene lighting)
 		rotateZMatrix1 = rotate(saturnMoonRevAngle, 0.0f, 0.0f, 1.0f);
-		translateMatrix1 = translate(0.8f, 0.0f, -0.3f);
-		scaleMatrix1 = scale(0.35f, 0.35f, 0.35f);
+		translateMatrix1 = translate(0.7f, 0.0f, -0.15f);
+		scaleMatrix1 = scale(0.25f, 0.25f, 0.25f);
 
 		modelMatrix1 = modelMatrix1 * rotateZMatrix1 * translateMatrix1 * scaleMatrix1;
 
@@ -1080,8 +1146,8 @@ void drawFocusedPlanets(void)
 		//moon
 		glUniform1i(passUniformS, 0);     //pass 2 (scene lighting)
 		rotateZMatrix1 = rotate(uranusMoonRevAngle, 0.0f, 0.0f, 1.0f);
-		translateMatrix1 = translate(1.0f, 0.0f, 0.0f);
-		scaleMatrix1 = scale(0.35f, 0.35f, 0.35f);
+		translateMatrix1 = translate(0.8f, 0.0f, 0.0f);
+		scaleMatrix1 = scale(0.3f, 0.3f, 0.3f);
 
 		modelMatrix1 = modelMatrix1 * rotateZMatrix1 * translateMatrix1 * scaleMatrix1;
 
@@ -1138,8 +1204,8 @@ void drawFocusedPlanets(void)
 		//moon
 		glUniform1i(passUniformS, 0);     //pass 2 (scene lighting)
 		rotateZMatrix1 = rotate(neptuneMoonRevAngle, 0.0f, 0.0f, 1.0f);
-		translateMatrix1 = translate(1.0f, 0.0f, 0.0f);
-		scaleMatrix1 = scale(0.35f, 0.35f, 0.35f);
+		translateMatrix1 = translate(0.8f, 0.0f, 0.0f);
+		scaleMatrix1 = scale(0.3f, 0.3f, 0.3f);
 
 		modelMatrix1 = modelMatrix1 * rotateZMatrix1 * translateMatrix1 * scaleMatrix1;
 
@@ -1210,7 +1276,7 @@ void drawFocusedPlanets(void)
 	glUniformMatrix4fv(viewMatrixUniformS, 1, GL_FALSE, viewMatrix1);
 	glUniformMatrix4fv(projectionMatrixUniformS, 1, GL_FALSE, projectionMatrix1);
 
-	glVertexAttrib4f(SPK_ATTRIBUTE_COLOR, 0.3f, 0.3f, 0.3f, 0.5f);
+	glVertexAttrib4f(SPK_ATTRIBUTE_COLOR, 0.3f, 0.3f, 0.3f, 0.6f);
 	//bind vao_rectangle
 	glBindVertexArray(vao_square);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -1230,6 +1296,35 @@ void drawFocusedPlanets(void)
 
 	//stop using OpenGL program object
 	glUseProgram(0);
+
+	if (isMercuryClicked == true)
+		RenderText(textShaderProgramObject, "MERCURY", -0.09f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isVenusClicked == true)
+		RenderText(textShaderProgramObject, "VENUS", -0.06f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isEarthClicked == true)
+		RenderText(textShaderProgramObject, "EARTH & MOON", -0.15f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isMarsClicked == true)
+		RenderText(textShaderProgramObject, "MARS & PHOBOS", -0.15f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isJupiterClicked == true)
+		RenderText(textShaderProgramObject, "JUPITER & EUROPA", -0.18f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isSaturnClicked == true)
+		RenderText(textShaderProgramObject, "SATURN & TITAN", -0.15f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isUranusClicked == true)
+		RenderText(textShaderProgramObject, "URANUS & ARIEL", -0.15f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isNeptuneClicked == true)
+		RenderText(textShaderProgramObject, "NEPTUNE & TRITON", -0.18f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (isPlutoClicked == true)
+		RenderText(textShaderProgramObject, "PLUTO", -0.06f, 0.21f, 0.0008f, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+
 }
 
 void drawSunGodrays(void)
@@ -1465,6 +1560,95 @@ void drawSkybox(void)
 
 	//stop using OpenGL program object
 	glUseProgram(0);
+}
+
+void drawCubeForCubemap(void)
+{
+	//start using OpenGL program object
+	glUseProgram(cubeShaderProgramObject);
+
+	mat4 modelViewProjectionMatrixC = mat4::identity();
+	mat4 translateMatrixC = mat4::identity();
+	mat4 modelMatrixC = mat4::identity();
+	//mat4 viewMatrixC = mat4::identity();
+	//
+	translateMatrixC = translate(0.0f, 0.0f, 0.0f);
+	modelMatrixC = translateMatrixC;
+
+	//camPos = vec3(0.0f, 0.0f, 0.0f);   //z : -3.0
+	//camTarget = vec3(0.0f, 0.0f, -1.0f);
+	//camUpAxis = vec3(0.0f, 1.0f, 0.0f);
+
+	//viewMatrixC = lookat(camPos, camTarget, camUpAxis);
+
+	//modelViewProjectionMatrixC = perspectiveProjectionMatrix * modelMatrixC * viewMatrixC;
+	modelViewProjectionMatrixC = perspectiveProjectionMatrix * modelMatrixC;
+
+	glUniformMatrix4fv(mvpMatrixUniformC, 1, GL_FALSE, modelViewProjectionMatrixC);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, starfieldTextureColorBuffer);
+	glUniform1i(textureSamplerUniformC, 0);
+
+	//bind vao_rectangle
+	glBindVertexArray(vao_cube);
+
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glDrawArrays(GL_TRIANGLE_FAN, 4, 4);
+	glDrawArrays(GL_TRIANGLE_FAN, 8, 4);
+	glDrawArrays(GL_TRIANGLE_FAN, 12, 4);
+	glDrawArrays(GL_TRIANGLE_FAN, 16, 4);
+	glDrawArrays(GL_TRIANGLE_FAN, 20, 4);
+
+	//unbind vao_rectangle
+	glBindVertexArray(0);
+
+	//stop using OpenGL program object
+	glUseProgram(0);
+}
+
+void drawStarfield(void)
+{
+	float t = (float)currentTime;
+
+	t *= 0.0001f;
+	t -= floor(t);
+
+	//start using OpenGL program object
+	glUseProgram(starfieldShaderProgramObject);
+
+	glUniform1f(timeUniformSF, t);
+
+	//OpenGL Drawing
+
+	mat4 projectionMatrixSF;
+
+	projectionMatrixSF = mat4::identity();
+	projectionMatrixSF = perspectiveProjectionMatrix;
+
+	glUniformMatrix4fv(projectionMatrixUniformSF, 1, GL_FALSE, projectionMatrixSF);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, star_texture);
+	glUniform1i(textureSamplerUniformSF, 0);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	//bind vao_rectangle
+	glBindVertexArray(vao_star);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+	glDrawArrays(GL_POINTS, 0, NUM_STARS);
+
+	glDisable(GL_BLEND);
+
+	//unbind vao_rectangle
+	glBindVertexArray(0);
+
+	//stop using OpenGL program object
+	glUseProgram(0);
+
 }
 
 void renderTextMercury(void)

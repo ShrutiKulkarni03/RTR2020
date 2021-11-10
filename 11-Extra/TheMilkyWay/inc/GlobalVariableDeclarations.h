@@ -10,9 +10,10 @@
 #include<string>
 #pragma once
 
-#define WIN_WIDTH 800
-#define WIN_HEIGHT 600
+#define WIN_WIDTH 1920
+#define WIN_HEIGHT 1080
 #define PI 3.14159265358979323846
+#define NUM_STARS 5000
 
 using namespace vmath;
 
@@ -28,7 +29,7 @@ enum
 //global variable declaration
 DWORD dwStyle;
 WINDOWPLACEMENT wpPrev = { sizeof(WINDOWPLACEMENT) };
-bool gbFullscreen = false;
+bool gbFullscreen = true;
 HWND ghwnd = NULL;
 bool gbActiveWindow = false;
 HDC ghdc = NULL;
@@ -59,6 +60,7 @@ int gWidth, gHeight;
 
 LPSTACK pStack = NULL;
 GLuint frameCount = 0.0f;
+double currentTime = 0.0f;
 bool bTextViewport = false;
 
 //camera
@@ -80,12 +82,25 @@ GLuint viewMatrixUniformS;
 GLuint projectionMatrixUniformS;
 
 GLuint passUniformS;
+GLuint lightUniformS;
 GLuint textureSamplerUniformS;
 GLuint lAUniformS;
 GLuint lDUniformS;
 GLuint lSUniformS;
-GLuint lightPositionUniformS;
+GLuint positionalLightPositionUniformS;
+GLuint pointLightPositionUniformS;
 GLfloat kShininessUniformS;
+
+GLuint lightConstantUniformS;
+GLuint lightLinearUniformS;
+GLuint lightQuadraticUniformS;
+
+//starfield shader
+GLuint starfieldShaderProgramObject;
+
+GLuint projectionMatrixUniformSF;
+GLuint textureSamplerUniformSF;
+GLuint timeUniformSF;
 
 //godrays shader
 GLuint godraysShaderProgramObject;
@@ -115,6 +130,12 @@ GLuint projectionMatrixUniform;
 GLuint viewMatrixUniform;
 GLuint textureSamplerUniform;
 
+//cube for cubemap shader
+GLuint cubeShaderProgramObject;
+
+GLuint mvpMatrixUniformC;
+GLuint textureSamplerUniformC;
+
 //text shader
 GLuint textShaderProgramObject;
 
@@ -140,9 +161,24 @@ GLuint rbo_pass2;
 GLuint fbo_godrays;
 GLuint colorBuffer;
 
+//fbo for cubemap
+
+GLuint fbo_starfield;
+GLuint starfieldTextureColorBuffer;
+GLuint rbo_starfield;
+
+//vao for square
+GLuint vao_star;
+GLuint vbo_star;
+
 //vao for text
 GLuint vao_text;
 GLuint vbo_text;
+
+//vao for cube
+GLuint vao_cube;
+GLuint vbo_position_cube;
+GLuint vbo_texture_cube;
 
 //vao for square
 GLuint vao_square;
@@ -273,9 +309,12 @@ GLfloat plutoRotAngle = 0.0f;
 
 //texture variables
 GLuint textureID;
-GLuint cubemapTextureID;
 
+GLuint star_texture;
+
+GLuint cubemapTextureID;
 GLuint cubemap_texture;
+
 GLuint sun_texture;
 GLuint mercury_texture;
 GLuint venus_texture;
@@ -286,6 +325,7 @@ GLuint marsMoon_texture;
 GLuint jupiter_texture;
 GLuint jupiterMoon_texture;
 GLuint saturn_texture;
+GLuint saturn_ring_texture;
 GLuint saturnMoon_texture;
 GLuint uranus_texture;
 GLuint uranusMoon_texture;
@@ -389,4 +429,22 @@ bool isPlutoClicked = false;
 GLfloat focusedPlutoXPos = 0.0f;
 GLfloat focusedPlutoYPos = 0.0f;
 GLfloat focusedPlutoZPos = 0.0f;
+
+//random number generator
+static unsigned int seed = 0x13371337;
+
+static inline float random_float()
+{
+	float res;
+	unsigned int tmp;
+
+	seed *= 16807;
+
+	tmp = seed ^ (seed >> 4) ^ (seed << 15);
+
+	*((unsigned int*)&res) = (tmp >> 9) | 0x3F800000;
+
+	return(res - 1.0f);
+}
+
 
