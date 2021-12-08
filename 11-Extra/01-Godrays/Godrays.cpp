@@ -108,7 +108,8 @@ GLuint vbo_texture_square;
 GLuint vbo_normal_square;
 
 //update variables
-
+GLfloat sunPosX = 0.0f;
+GLfloat sunPosY = 0.0f;
 
 //texture variables
 GLuint textureID;
@@ -482,6 +483,9 @@ void Initialize(void)
 		"{ \n" \
 		"	if(u_pass == 1) \n" \
 		"	{ \n" \
+		"		vec4 texColor = texture(u_texture_sampler, out_texcoord); \n" \
+		"		if(texColor.a < 0.1) \n" \
+		"			discard; \n" \
 		"		FragColor = out_color; \n" \
 		"	} \n" \
 
@@ -586,7 +590,7 @@ void Initialize(void)
 	modelMatrixUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_model_matrix");
 	viewMatrixUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_view_matrix");
 	projectionMatrixUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_projection_matrix");
-	
+
 	passUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_pass");
 
 	lAUniformS = glGetUniformLocation(sceneShaderProgramObject, "u_lA");
@@ -615,16 +619,13 @@ void Initialize(void)
 		"in vec4 vPosition; \n" \
 		"in vec2 vTexcoord; \n" \
 		"in vec3 vNormal; \n" \
-		"uniform mat4 u_projection_matrix; \n" \
-		"uniform mat4 u_model_matrix; \n" \
-		"uniform mat4 u_view_matrix; \n" \
 		"out vec3 out_normal; \n" \
 		"out vec2 out_texcoord; \n" \
 		"void main(void) \n" \
 		"{ \n" \
 		"	out_normal = vNormal; \n" \
 		"	out_texcoord = vTexcoord; \n" \
-		"	gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * vPosition; \n" \
+		"	gl_Position = vPosition; \n" \
 		"} \n";
 
 	glShaderSource(godraysVertexShaderObject, 1, (const GLchar**)&godraysVertexShaderSourceCode, NULL);
@@ -704,6 +705,7 @@ void Initialize(void)
 		"	} \n" \
 
 		"	FragColor *= u_exposure; \n" \
+		"	FragColor = vec4(FragColor.rgb, 1.0); \n" \
 		"} \n";
 
 	glShaderSource(godraysFragmentShaderObject, 1, (const GLchar**)&godraysFragmentShaderSourceCode, NULL);
@@ -753,7 +755,7 @@ void Initialize(void)
 	glBindAttribLocation(godraysShaderProgramObject, SPK_ATTRIBUTE_POSITION, "vPosition");
 	glBindAttribLocation(godraysShaderProgramObject, SPK_ATTRIBUTE_COLOR, "vColor");
 	glBindAttribLocation(godraysShaderProgramObject, SPK_ATTRIBUTE_NORMAL, "vNormal");
-	glBindAttribLocation(godraysShaderProgramObject, SPK_ATTRIBUTE_TEXCOORD, "vTexccord");
+	glBindAttribLocation(godraysShaderProgramObject, SPK_ATTRIBUTE_TEXCOORD, "vTexcoord");
 
 	//link shader
 	glLinkProgram(godraysShaderProgramObject);
@@ -867,7 +869,7 @@ void Initialize(void)
 		"void main(void) \n" \
 		"{ \n" \
 		"	vec4 result = texture(u_pass1Tex, out_texcoord) + texture(u_pass2Tex, out_texcoord);"
-		"	FragColor = texture(u_pass2Tex, out_texcoord); \n" \
+		"	FragColor = vec4(result.rgb, 1.0); \n" \
 		"} \n";
 
 	glShaderSource(finalPassFragmentShaderObject, 1, (const GLchar**)&finalPassFragmentShaderSourceCode, NULL);
@@ -917,7 +919,7 @@ void Initialize(void)
 	glBindAttribLocation(finalPassShaderProgramObject, SPK_ATTRIBUTE_POSITION, "vPosition");
 	glBindAttribLocation(finalPassShaderProgramObject, SPK_ATTRIBUTE_COLOR, "vColor");
 	glBindAttribLocation(finalPassShaderProgramObject, SPK_ATTRIBUTE_NORMAL, "vNormal");
-	glBindAttribLocation(finalPassShaderProgramObject, SPK_ATTRIBUTE_TEXCOORD, "vTexccord");
+	glBindAttribLocation(finalPassShaderProgramObject, SPK_ATTRIBUTE_TEXCOORD, "vTexcoord");
 
 	//link shader
 	glLinkProgram(finalPassShaderProgramObject);
@@ -959,7 +961,7 @@ void Initialize(void)
 	//vertices array declaration
 
 	//SPHERE_SUN
-	makeSphere(0.1, 40, 40);
+	makeSphere(0.08, 40, 40);
 	fprintf(gpFile, "\nnumVertices = %d\n", numVertices);
 	fprintf(gpFile, "numElements = %d\n", numElements);
 
@@ -972,9 +974,9 @@ void Initialize(void)
 
 	//color
 	const GLfloat squareTexture[] = { 1.0f, 1.0f,        //front
-								    0.0f, 1.0f,
-								    0.0f, 0.0f,
-								    1.0f, 0.0f };
+									0.0f, 1.0f,
+									0.0f, 0.0f,
+									1.0f, 0.0f };
 
 	//normals
 	const GLfloat squareNormals[] = { 0.0f, 0.0f, 1.0f,
@@ -1035,6 +1037,11 @@ void Initialize(void)
 	GLenum buffers[] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, buffers);
 
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		fprintf(gpFile, "FBO_pass1 failed\n");
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//FBO_pass2
@@ -1053,12 +1060,17 @@ void Initialize(void)
 	glGenRenderbuffers(1, &rbo_pass2);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo_pass2);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WIN_WIDTH, WIN_HEIGHT);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_pass2);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_pass1);
 
 	glDrawBuffers(1, buffers);
 
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		fprintf(gpFile, "FBO_pass2 failed\n");
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
+
 	//FBO_pass3 - godrays
 	glGenFramebuffers(1, &fbo_godrays);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo_godrays);
@@ -1075,6 +1087,11 @@ void Initialize(void)
 
 	glDrawBuffers(1, buffers);
 
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		fprintf(gpFile, "FBO_pass3 failed\n");
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
@@ -1090,11 +1107,11 @@ void Initialize(void)
 	//Loading Textures
 	//loadGLTexture(&smiley_texture, MAKEINTRESOURCE(SMILEY_BITMAP));
 	pngTexture = LoadImageAsTexture("grass.png");
-	
+
 	glEnable(GL_TEXTURE_2D);
 
 	//SetClearColor
-	glClearColor(1.0f, 1.0f, 0.2f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 	//set perspective matrix to identity matrix
 	perspectiveProjectionMatrix = mat4::identity();
@@ -1215,10 +1232,10 @@ void Display(void)
 	mat4 rotateZMatrix;
 	mat4 scaleMatrix;
 
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	//pass1
 	//light source colored with black scene objects (silhouette pass)
 
@@ -1231,7 +1248,8 @@ void Display(void)
 
 	//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, gWidth, gHeight);
+	glViewport(0, 0, (GLsizei)WIN_WIDTH, (GLsizei)WIN_HEIGHT);
+	//glViewport(0, 0, gWidth, gHeight);
 
 	//start using OpenGL program object
 	glUseProgram(sceneShaderProgramObject);
@@ -1250,7 +1268,7 @@ void Display(void)
 	viewMatrix = mat4::identity();
 	projectionMatrix = mat4::identity();
 
-	translateMatrix = translate(0.0f, 0.0f, -3.0f);
+	translateMatrix = translate(sunPosX, sunPosY, -3.0f);
 
 	modelMatrix = translateMatrix;
 	projectionMatrix = perspectiveProjectionMatrix;
@@ -1260,7 +1278,7 @@ void Display(void)
 	glUniformMatrix4fv(projectionMatrixUniformS, 1, GL_FALSE, projectionMatrix);
 
 	glVertexAttrib3f(SPK_ATTRIBUTE_COLOR, 1.0f, 1.0f, 1.0f);
-	
+
 	drawSphere();
 
 
@@ -1275,7 +1293,7 @@ void Display(void)
 	projectionMatrix = mat4::identity();
 
 	glVertexAttrib3f(SPK_ATTRIBUTE_COLOR, 0.0f, 0.0f, 0.0f);
-		
+
 	translateMatrix = translate(1.0f, 0.0f, -3.0f);
 	scaleMatrix = scale(0.5f, 0.5f, 0.0f);
 
@@ -1294,12 +1312,12 @@ void Display(void)
 	glBindVertexArray(vao_square);
 
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-	
+
 	//unbind vao_rectangle
 	glBindVertexArray(0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+
 	//stop using OpenGL program object
 	glUseProgram(0);
 
@@ -1310,7 +1328,7 @@ void Display(void)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	//pass2
 	//no light source with colored scene objects
 
@@ -1323,7 +1341,7 @@ void Display(void)
 
 	//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, gWidth, gHeight);
+	glViewport(0, 0, (GLsizei)WIN_WIDTH, (GLsizei)WIN_HEIGHT);
 
 	//start using OpenGL program object
 	glUseProgram(sceneShaderProgramObject);
@@ -1370,7 +1388,7 @@ void Display(void)
 	glBindVertexArray(0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+
 	//stop using OpenGL program object
 	glUseProgram(0);
 
@@ -1391,8 +1409,8 @@ void Display(void)
 	glDisable(GL_DEPTH_TEST);
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, gWidth, gHeight);
-	
+	glViewport(0, 0, (GLsizei)WIN_WIDTH, (GLsizei)WIN_HEIGHT);
+
 	//start using OpenGL program object
 	glUseProgram(godraysShaderProgramObject);
 
@@ -1405,12 +1423,14 @@ void Display(void)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, silhouetteTexture_pass1);
 
-	glUniform4f(lightPositionUniformG, 0.0f, 0.0f, 0.0f, 1.0f);
+	glUniform4f(lightPositionUniformG, sunPosX, sunPosY, 0.0f, 1.0f);
 	glUniform1f(densityUniformG, 1.0f);
 	glUniform1f(weightUniformG, 0.01f);
 	glUniform1f(decayUniformG, 1.0f);
 	glUniform1f(exposureUniformG, 1.0f);
 	glUniform1i(numSamplesUniformG, 100);
+
+	glUniform1i(occlusionTextureSamplerUniformG, 0);
 
 	glUniformMatrix4fv(modelMatrixUniformG, 1, GL_FALSE, modelMatrix);
 	glUniformMatrix4fv(viewMatrixUniformG, 1, GL_FALSE, viewMatrix);
@@ -1437,10 +1457,10 @@ void Display(void)
 	glUseProgram(finalPassShaderProgramObject);
 
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, gWidth, gHeight);
+	glViewport(0, 0, (GLsizei)gWidth, (GLsizei)gHeight);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorTexture_pass2);
@@ -1466,6 +1486,10 @@ void Display(void)
 void Update(void)
 {
 	//code
+
+	sunPosY += 0.001f;
+
+
 }
 
 void Uninitialize(void)
